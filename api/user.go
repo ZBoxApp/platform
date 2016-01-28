@@ -414,7 +414,7 @@ func LoginByZBox(c *Context, w http.ResponseWriter, r *http.Request, email, pass
 
 		if result := <-Srv.Store.User().GetByAuth(team.Id, authData, "zbox", T); result.Err != nil {
 			if user != nil {
-				SignUpAndLogin(c, w, r, team, user, "zbox", T)
+				SignUpAndLogin(c, w, r, team, user, deviceId, "zbox", T)
 				if c.Err != nil {
 					return nil
 				}
@@ -426,7 +426,7 @@ func LoginByZBox(c *Context, w http.ResponseWriter, r *http.Request, email, pass
 			}
 		} else {
 			user = result.Data.(*model.User)
-			Login(c, w, r, user, "")
+			Login(c, w, r, user, deviceId)
 
 			if c.Err != nil {
 				return nil
@@ -439,7 +439,7 @@ func LoginByZBox(c *Context, w http.ResponseWriter, r *http.Request, email, pass
 	}
 }
 
-func SignUpAndLogin (c *Context, w http.ResponseWriter, r *http.Request, team *model.Team, user *model.User, service string, T goi18n.TranslateFunc) {
+func SignUpAndLogin (c *Context, w http.ResponseWriter, r *http.Request, team *model.Team, user *model.User, deviceId, service string, T goi18n.TranslateFunc) {
 	euchan := Srv.Store.User().GetByEmail(team.Id, user.Email, T)
 
 	if result := <-euchan; result.Err == nil {
@@ -482,7 +482,7 @@ func SignUpAndLogin (c *Context, w http.ResponseWriter, r *http.Request, team *m
 		return
 	}
 
-	Login(c, w, r, ruser, "")
+	Login(c, w, r, ruser, deviceId)
 
 	if c.Err != nil {
 		return
