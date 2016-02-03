@@ -73,11 +73,13 @@ func InitWeb() {
 	l4g.Debug("Using static directory at %v", staticDir)
 	mainrouter.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
 
+	mainrouter.Handle("/", api.AppHandlerIndependent(ping)).Methods("HEAD")
 	mainrouter.Handle("/", api.AppHandlerIndependent(root)).Methods("GET")
 	mainrouter.Handle("/oauth/authorize", api.UserRequired(authorizeOAuth)).Methods("GET")
 	mainrouter.Handle("/oauth/access_token", api.ApiAppHandler(getAccessToken)).Methods("POST")
 	mainrouter.Handle("/oauth/client_token", api.ApiAppHandler(getAddonToken)).Methods("POST")
 
+	mainrouter.Handle("/zimbra_login", api.AppHandler(zimbra)).Methods("GET")
 	mainrouter.Handle("/signup_team_complete/", api.AppHandlerIndependent(signupTeamComplete)).Methods("GET")
 	mainrouter.Handle("/signup_user_complete/", api.AppHandlerIndependent(signupUserComplete)).Methods("GET")
 	mainrouter.Handle("/signup_team_confirm/", api.AppHandlerIndependent(signupTeamConfirm)).Methods("GET")
@@ -172,6 +174,10 @@ func CheckBrowserCompatability(c *api.Context, r *http.Request) bool {
 	}
 
 	return true
+
+}
+
+func ping(c *api.Context, w http.ResponseWriter, r *http.Request) {
 
 }
 
@@ -1203,6 +1209,17 @@ func claimAccount(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	page.Props["TeamName"] = team.Name
 
 	page.Render(c, w)
+}
+
+func zimbra(c *api.Context, w http.ResponseWriter, r *http.Request) {
+	params := r.URL.Query()
+	email := params.Get("email")
+
+	if err := api.Zimbra(c, w, r, email); err != nil {
+		c.Err = err
+	} else {
+		root(c, w, r)
+	}
 }
 
 func getAddonToken(c *api.Context, w http.ResponseWriter, r *http.Request) {

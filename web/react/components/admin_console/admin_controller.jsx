@@ -1,4 +1,4 @@
-// Copyright (c) 2016 Mattermost, Inc. All Rights Reserved.
+// Copyright (c) 2015 ZBox, Spa. All Rights Reserved.
 // See License.txt for license information.
 
 import AdminSidebar from './admin_sidebar.jsx';
@@ -25,6 +25,7 @@ import TeamAnalyticsTab from './team_analytics.jsx';
 import LdapSettingsTab from './ldap_settings.jsx';
 import LicenseSettingsTab from './license_settings.jsx';
 import SystemAnalyticsTab from './system_analytics.jsx';
+import ZBoxSettingsTab from './zbox_settings.jsx';
 
 export default class AdminController extends React.Component {
     constructor(props) {
@@ -149,6 +150,8 @@ export default class AdminController extends React.Component {
                 tab = <RateSettingsTab config={this.state.config} />;
             } else if (this.state.selected === 'gitlab_settings') {
                 tab = <GitLabSettingsTab config={this.state.config} />;
+            } else if (this.state.selected === 'zbox_settings') {
+                tab = <ZBoxSettingsTab config={this.state.config} />;
             } else if (this.state.selected === 'sql_settings') {
                 tab = <SqlSettingsTab config={this.state.config} />;
             } else if (this.state.selected === 'team_settings') {

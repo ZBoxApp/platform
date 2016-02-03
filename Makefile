@@ -73,7 +73,7 @@ build-server:
 	$(GO) clean $(GOFLAGS) -i ./...
 
 	@echo GOFMT
-	$(eval GOFMT_OUTPUT := $(shell gofmt -d -s api/ model/ store/ utils/ manualtesting/ mattermost.go 2>&1))
+	$(eval GOFMT_OUTPUT := $(shell gofmt -d -s api/ model/ store/ utils/ manualtesting/ zbox/ mattermost.go 2>&1))
 	@echo "$(GOFMT_OUTPUT)"
 	@if [ ! "$(GOFMT_OUTPUT)" ]; then \
 		echo "gofmt sucess"; \

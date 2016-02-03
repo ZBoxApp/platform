@@ -24,12 +24,18 @@ export default class TeamSignUp extends React.Component {
             count = count + 1;
         }
 
+        if (global.window.mm_config.EnableSignUpWithZBox === 'true') {
+            count = count + 1;
+        }
+
         if (count > 1) {
             this.state = {page: 'choose'};
         } else if (global.window.mm_config.EnableSignUpWithEmail === 'true') {
             this.state = {page: 'email'};
         } else if (global.window.mm_config.EnableSignUpWithGitLab === 'true') {
-            this.state = {page: 'gitlab'};
+            this.state = {page: Constants.GITLAB_SERVICE};
+        } else if (global.window.mm_config.EnableSignUpWithZBox === 'true') {
+            this.state = {page: Constants.ZBOX_SERVICE};
         } else {
             this.state = {page: 'none'};
         }
@@ -133,7 +139,7 @@ export default class TeamSignUp extends React.Component {
                     <EmailSignUpPage />
                 </div>
             );
-        } else if (this.state.page === 'gitlab') {
+        } else if (this.state.page === Constants.GITLAB_SERVICE) {
             return (
                 <div>
                     {teamListing}
@@ -145,6 +151,13 @@ export default class TeamSignUp extends React.Component {
                 <div>
                     {teamListing}
                     <SSOSignupPage service={Constants.GOOGLE_SERVICE} />
+                </div>
+            );
+        } else if (this.state.page === Constants.ZBOX_SERVICE) {
+            return (
+                <div>
+                    {teamListing}
+                    <SSOSignupPage service={Constants.ZBOX_SERVICE} />
                 </div>
             );
         } else if (this.state.page === 'none') {

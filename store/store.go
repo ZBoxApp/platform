@@ -131,6 +131,8 @@ type UserStore interface {
 	GetSystemAdminProfiles() StoreChannel
 	PermanentDelete(userId string) StoreChannel
 	AnalyticsUniqueUserCount(teamId string) StoreChannel
+
+	GetUserStatusByEmails(emails []string) StoreChannel
 }
 
 type SessionStore interface {

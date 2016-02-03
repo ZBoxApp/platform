@@ -1448,6 +1448,10 @@
     "translation": "Could not parse auth data out of {{.Service}} user object"
   },
   {
+    "id": "api.user.login_by_zbox.authorized.app_error",
+    "translation": "Your user is not authorized to use ZBox Now"
+  },
+  {
     "id": "api.user.login_ldap.blank_pwd.app_error",
     "translation": "Password field must not be blank"
   },
@@ -1618,6 +1622,10 @@
   {
     "id": "api.user.upload_profile_user.upload_profile.app_error",
     "translation": "Couldn't upload profile image"
+  },
+  {
+    "id": "api.user.zbox_login.unathorized.app_error",
+    "translation": "Unauthorized"
   },
   {
     "id": "api.web_conn.new_web_conn.last_activity.error",

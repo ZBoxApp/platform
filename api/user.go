@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	b64 "encoding/base64"
+	"encoding/json"
 	"fmt"
 	l4g "github.com/alecthomas/log4go"
 	"github.com/disintegration/imaging"
@@ -16,6 +17,7 @@ import (
 	"github.com/mattermost/platform/model"
 	"github.com/mattermost/platform/store"
 	"github.com/mattermost/platform/utils"
+	"github.com/mattermost/platform/zbox"
 	"github.com/mssola/user_agent"
 	"hash/fnv"
 	"html/template"
@@ -58,6 +60,7 @@ func InitUser(r *mux.Router) {
 
 	sr.Handle("/me", ApiAppHandler(getMe)).Methods("GET")
 	sr.Handle("/status", ApiUserRequiredActivity(getStatuses, false)).Methods("POST")
+	sr.Handle("/status_info", ApiAppHandler(getUserStatusInfo)).Methods("POST")
 	sr.Handle("/profiles", ApiUserRequired(getProfiles)).Methods("GET")
 	sr.Handle("/profiles/{id:[A-Za-z0-9]+}", ApiUserRequired(getProfiles)).Methods("GET")
 	sr.Handle("/{id:[A-Za-z0-9]+}", ApiUserRequired(getUser)).Methods("GET")
@@ -512,6 +515,91 @@ func LoginByOAuth(c *Context, w http.ResponseWriter, r *http.Request, service st
 	}
 }
 
+func LoginByZBox(c *Context, w http.ResponseWriter, r *http.Request, email, password, deviceId string) *model.User {
+	var team *model.Team
+	var service = zbox.USER_AUTH_SERVICE_ZBOX
+	provider := einterfaces.GetOauthProvider(service)
+
+	if provider == nil {
+		c.Err = model.NewLocAppError("LoginByZBox", "api.user.login_by_oauth.not_available.app_error",
+			map[string]interface{}{"Service": service}, "")
+		return nil
+	} else {
+
+		if body, err := zboxLogin(email, password); err != nil {
+			c.Err = err
+			return nil
+		} else {
+			var user *model.User
+			var bodyBytes []byte
+			if body != nil {
+				bodyBytes, _ = ioutil.ReadAll(body)
+			}
+
+			authData := ""
+			teamName := ""
+
+			body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+			zbu := zbox.ZBoxUserFromJson(body)
+			teamName = zbu.Team
+			authData = zbu.Email
+
+			body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+			user = provider.GetUserFromJson(body)
+
+			if len(authData) == 0 {
+				c.Err = model.NewLocAppError("LoginByZBox", "api.user.login_by_oauth.parse.app_error",
+					map[string]interface{}{"Service": service}, "")
+				return nil
+			}
+
+			if len(teamName) == 0 {
+				c.Err = model.NewLocAppError("loginWithOAuth", "web.login_with_oauth.invalid_team.app_error", nil, "team_name="+teamName)
+				c.Err.StatusCode = http.StatusBadRequest
+				return nil
+			}
+
+			if !zbu.Enabled || !zbu.ChatEnabled {
+				c.Err = model.NewLocAppError("zboxOAuth", "api.user.login_by_zbox.authorized.app_error", nil, "")
+				c.Err.StatusCode = http.StatusForbidden
+				return nil
+			}
+
+			if result := <-Srv.Store.Team().GetByName(teamName); result.Err != nil {
+				c.Err = result.Err
+				return nil
+			} else {
+				team = result.Data.(*model.Team)
+			}
+
+			if result := <-Srv.Store.User().GetByAuth(team.Id, authData, service); result.Err != nil {
+				if user != nil {
+					SignUpAndLogin(c, w, r, team, user, deviceId, service)
+					if c.Err != nil {
+						return nil
+					}
+
+					return user
+				} else {
+					c.Err = result.Err
+					return nil
+				}
+			} else {
+				user = result.Data.(*model.User)
+				Login(c, w, r, user, deviceId)
+
+				if c.Err != nil {
+					return nil
+				}
+
+				return user
+			}
+
+			return nil
+		}
+	}
+}
+
 func checkUserLoginAttempts(c *Context, user *model.User) bool {
 	if user.FailedAttempts >= utils.Cfg.ServiceSettings.MaximumLoginAttempts {
 		c.LogAuditWithUserId(user.Id, "fail")
@@ -669,6 +757,8 @@ func login(c *Context, w http.ResponseWriter, r *http.Request) {
 	var user *model.User
 	if len(props["id"]) != 0 {
 		user = LoginById(c, w, r, props["id"], props["password"], props["device_id"])
+	} else if len(props["email"]) != 0 && len(props["zbox"]) != 0 {
+		user = LoginByZBox(c, w, r, props["email"], props["password"], props["device_id"])
 	} else if len(props["email"]) != 0 && len(props["name"]) != 0 {
 		user = LoginByEmail(c, w, r, props["email"], props["name"], props["password"], props["device_id"])
 	} else if len(props["username"]) != 0 && len(props["name"]) != 0 {
@@ -753,6 +843,49 @@ func loginLdap(c *Context, w http.ResponseWriter, r *http.Request) {
 		user = &model.User{}
 	}
 	w.Write([]byte(user.ToJson()))
+}
+
+func SignUpAndLogin(c *Context, w http.ResponseWriter, r *http.Request, team *model.Team, user *model.User, deviceId, service string) {
+	euchan := Srv.Store.User().GetByEmail(team.Id, user.Email)
+
+	if result := <-euchan; result.Err == nil {
+		c.Err = model.NewLocAppError("signupCompleteOAuth", "api.user.create_oauth_user.already_attached.app_error",
+			map[string]interface{}{"Service": service, "DisplayName": team.DisplayName}, "email="+user.Email)
+		return
+	}
+
+	if team.Email == "" {
+		team.Email = user.Email
+		if result := <-Srv.Store.Team().Update(team); result.Err != nil {
+			c.Err = result.Err
+			return
+		}
+	} else {
+		found := true
+		count := 0
+		for found {
+			if found = IsUsernameTaken(user.Username, team.Id); c.Err != nil {
+				return
+			} else if found {
+				user.Username = user.Username + strconv.Itoa(count)
+				count += 1
+			}
+		}
+	}
+	user.TeamId = team.Id
+	user.EmailVerified = true
+
+	ruser, err := CreateUser(team, user)
+	if err != nil {
+		c.Err = err
+		return
+	}
+
+	Login(c, w, r, ruser, deviceId)
+
+	if c.Err != nil {
+		return
+	}
 }
 
 func revokeSession(c *Context, w http.ResponseWriter, r *http.Request) {
@@ -1905,6 +2038,40 @@ func getStatuses(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getUserStatusInfo(c *Context, w http.ResponseWriter, r *http.Request) {
+	props := model.ArrayFromJson(r.Body)
+	if result := <-Srv.Store.User().GetUserStatusByEmails(props); result.Err != nil {
+		c.Err = result.Err
+		return
+	} else {
+		profiles := result.Data.(map[string]*model.User)
+
+		type UserStatus struct {
+			Id       string `json:"id"`
+			TeamName string `json:"team_name"`
+			Status   string `json:"status"`
+		}
+
+		statuses := map[string]UserStatus{}
+		for _, profile := range profiles {
+			u := UserStatus{Id: profile.Id, TeamName: profile.AuthData}
+			if profile.IsOffline() {
+				u.Status = model.USER_OFFLINE
+			} else if profile.IsAway() {
+				u.Status = model.USER_AWAY
+			} else {
+				u.Status = model.USER_ONLINE
+			}
+			statuses[profile.Email] = u
+		}
+
+		res2B, _ := json.Marshal(statuses)
+		//w.Header().Set("Cache-Control", "max-age=9, public") // 2 mins
+		w.Write([]byte(string(res2B)))
+		return
+	}
+}
+
 func GetAuthorizationCode(c *Context, service, teamName string, props map[string]string, loginHint string) (string, *model.AppError) {
 
 	sso := utils.Cfg.GetSSOService(service)
@@ -2233,6 +2400,128 @@ func sendSignInChangeEmailAndForget(c *Context, email, teamDisplayName, teamURL,
 		}
 
 	}()
+}
+
+func Zimbra(c *Context, w http.ResponseWriter, r *http.Request, email string) *model.AppError {
+	service := zbox.USER_AUTH_SERVICE_ZBOX
+
+	provider := einterfaces.GetOauthProvider(service)
+
+	if provider == nil {
+		return model.NewLocAppError("zimbra", "api.user.login_by_oauth.not_available.app_error",
+			map[string]interface{}{"Service": service}, "")
+	} else {
+		if body, err := ZimbraAuth(service, email); err != nil {
+			return err
+		} else {
+			var user *model.User
+			var bodyBytes []byte
+			if body != nil {
+				bodyBytes, _ = ioutil.ReadAll(body)
+			}
+
+			authData := ""
+			teamName := ""
+
+			body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+			zbu := zbox.ZBoxUserFromJson(body)
+			teamName = zbu.Team
+			authData = zbu.Email
+
+			body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+			user = provider.GetUserFromJson(body)
+
+			if len(authData) == 0 {
+				return model.NewLocAppError("zimbraAuth", "api.user.login_by_oauth.parse.app_error",
+					map[string]interface{}{"Service": service}, "")
+			}
+
+			if len(teamName) == 0 {
+				c.Err.StatusCode = http.StatusBadRequest
+				return model.NewLocAppError("zimbraAuth", "web.login_with_oauth.invalid_team.app_error", nil, "team_name="+teamName)
+			}
+
+			if !zbu.Enabled || !zbu.ChatEnabled {
+				c.Err.StatusCode = http.StatusForbidden
+				return model.NewLocAppError("zimbraAuth", "api.user.login_by_zbox.authorized.app_error", nil, "")
+			}
+
+			// Make sure team exists
+			tchan := <-Srv.Store.Team().GetByName(teamName)
+			if tchan.Err != nil {
+				return tchan.Err
+			}
+
+			team := tchan.Data.(*model.Team)
+
+			if result := <-Srv.Store.User().GetByAuth(team.Id, authData, service); result.Err != nil {
+				if user != nil {
+					SignUpAndLogin(c, w, r, team, user, "", service)
+					return nil
+				} else {
+					return result.Err
+				}
+			} else {
+				user = result.Data.(*model.User)
+				Login(c, w, r, user, "")
+
+				if c.Err != nil {
+					return c.Err
+				}
+
+				return nil
+			}
+		}
+	}
+}
+
+func ZimbraAuth(service string, email string) (io.ReadCloser, *model.AppError) {
+	sso := utils.Cfg.GetSSOService(service)
+	if sso == nil || !sso.Enable {
+		return nil, model.NewLocAppError("AuthorizeOAuthUser", "api.user.authorize_oauth_user.unsupported.app_error", nil, "service="+service)
+	}
+
+	p := url.Values{}
+	p.Set("email", email)
+
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", sso.UserApiEndpoint, strings.NewReader(p.Encode()))
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Accept", "application/json")
+
+	if resp, err := client.Do(req); err != nil {
+		return nil, model.NewLocAppError("ZimbraAuth", "api.user.authorize_oauth_user.token_failed.app_error", nil, "service="+service)
+	} else {
+		if resp.StatusCode != 200 {
+			return nil, model.NewLocAppError("ZimbraAuth", "api.user.zbox_login.unathorized.app_error", nil, "service="+service)
+		}
+		return resp.Body, nil
+	}
+}
+
+func zboxLogin(email, password string) (io.ReadCloser, *model.AppError) {
+	sso := utils.Cfg.GetSSOService("zbox")
+	if sso == nil || !sso.Enable {
+		return nil, model.NewLocAppError("AuthorizeOAuthUser", "api.user.authorize_oauth_user.unsupported.app_error", nil, "service=zbox")
+	}
+
+	var jsonStr = []byte(fmt.Sprintf(`{"username":"%s", "password":"%s", "zbox":"true"}`, email, password))
+
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", sso.LoginEndPoint, bytes.NewBuffer(jsonStr))
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+
+	if resp, err := client.Do(req); err != nil {
+		return nil, model.NewLocAppError("ZBoxAuth", "api.user.authorize_oauth_user.token_failed.app_error", nil, "service=zbox")
+	} else {
+		if resp.StatusCode != 200 {
+			return nil, model.NewLocAppError("ZBoxAuth", "api.user.zbox_login.unathorized.app_error", nil, "service=zbox")
+		}
+		return resp.Body, nil
+	}
 }
 
 func createSystemBots(c *Context, w http.ResponseWriter, r *http.Request) {

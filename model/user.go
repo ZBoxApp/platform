@@ -466,3 +466,9 @@ func CleanUsername(s string) string {
 
 	return s
 }
+
+func SetUsernameFromEmail(s string) string {
+	s = strings.Split(s, "@")[0]
+
+	return s
+}

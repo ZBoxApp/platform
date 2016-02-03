@@ -670,3 +670,36 @@ func (us SqlUserStore) GetSystemBot(teamId string) StoreChannel {
 
 	return storeChannel
 }
+
+func (us SqlUserStore) GetUserStatusByEmails(emails []string) StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		var users []*model.User
+
+		var args []interface{}
+		for _, email := range emails {
+			args = append(args, email)
+		}
+
+		query := "SELECT u.Id, u.TeamId, u.Email, t.name as AuthData FROM Users u INNER JOIN Teams t ON u.TeamId = t.Id AND u.Email IN (" + model.NumberedSqlElements(1, len(emails)) + ")"
+
+		if _, err := us.GetReplica().Select(&users, query, args...); err != nil {
+			result.Err = model.NewLocAppError("SqlUserStore.GetProfiles", "store.sql_user.get_profiles.app_error", nil, err.Error())
+		} else {
+			userMap := make(map[string]*model.User)
+
+			for _, u := range users {
+				userMap[u.Id] = u
+			}
+			result.Data = userMap
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
