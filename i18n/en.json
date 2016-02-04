@@ -48,6 +48,14 @@
     "translation": "September"
   },
   {
+    "id": "api.addon.publish.descriptor_url.app_error",
+    "translation": "We couldn't get the descriptor from the specified Descriptor URL"
+  },
+  {
+    "id": "api.addon.uninstall.no_installed.app_error",
+    "translation": "This addon is not installed for this team"
+  },
+  {
     "id": "api.admin.file_read_error",
     "translation": "Error reading log file"
   },
@@ -3774,6 +3782,18 @@
   {
     "id": "web.get_access_token.revoking.error",
     "translation": "Encountered an error revoking an access token, err="
+  },
+  {
+    "id": "web.get_addon_token.invalid_team.app_error",
+    "translation": "invalid_client: Invalid team"
+  },
+  {
+    "id": "web.get_addon_token.missing_team.app_error",
+    "translation": "invalid_request: Missing team"
+  },
+  {
+    "id": "web.get_addon_token.not_installed.app_error",
+    "translation": "invalid_client: This addon is not installed for team={{.Team}}"
   },
   {
     "id": "web.incoming_webhook.channel.app_error",

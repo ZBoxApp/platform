@@ -37,6 +37,8 @@ func NewSqlWebhookStore(sqlStore *SqlStore) WebhookStore {
 }
 
 func (s SqlWebhookStore) UpgradeSchemaIfNeeded() {
+	s.CreateColumnIfNotExists("IncomingWebhooks", "AddonId", "varchar(26)", "character varying(26)", "")
+	s.CreateColumnIfNotExists("OutgoingWebhooks", "AddonWebhookId", "varchar(26)", "character varying(26)", "")
 }
 
 func (s SqlWebhookStore) CreateIndexesIfNotExists() {

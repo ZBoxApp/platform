@@ -48,6 +48,14 @@
     "translation": "Septiembre"
   },
   {
+    "id": "api.addon.publish.descriptor_url.app_error",
+    "translation": "No pudimos obtener el descriptor del URL especificado"
+  },
+  {
+    "id": "api.addon.uninstall.no_installed.app_error",
+    "translation": "Este addon no está instalado en este equipo"
+  },
+  {
     "id": "api.admin.file_read_error",
     "translation": "Error leyendo el archivo de registro"
   },
@@ -3774,6 +3782,18 @@
   {
     "id": "web.get_access_token.revoking.error",
     "translation": "Se encontró un error al revocar el acceso del token, err="
+  },
+  {
+    "id": "web.get_addon_token.invalid_team.app_error",
+    "translation": "cliente inválido: Equipo inválido"
+  },
+  {
+    "id": "web.get_addon_token.missing_team.app_error",
+    "translation": "solicitud inválida: Falta el equipo"
+  },
+  {
+    "id": "web.get_addon_token.not_installed.app_error",
+    "translation": "cliente inválido: Este addon no esta instalado para el equipo={{.Team}}"
   },
   {
     "id": "web.incoming_webhook.channel.app_error",

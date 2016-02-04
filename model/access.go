@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	ACCESS_CLIENT_GRANT_TYPE = "client_credentials"
 	ACCESS_TOKEN_GRANT_TYPE  = "authorization_code"
 	ACCESS_TOKEN_TYPE        = "bearer"
 	REFRESH_TOKEN_GRANT_TYPE = "refresh_token"
