@@ -64,6 +64,7 @@ func InitUser(r *mux.Router) {
 	sr.Handle("/{id:[A-Za-z0-9]+}/sessions", ApiUserRequired(getSessions)).Methods("GET")
 	sr.Handle("/{id:[A-Za-z0-9]+}/audits", ApiUserRequired(getAudits)).Methods("GET")
 	sr.Handle("/{id:[A-Za-z0-9]+}/image", ApiUserRequired(getProfileImage)).Methods("GET")
+	sr.Handle("/create_systembot", ApiAppHandler(createSystemBots)).Methods("POST")
 }
 
 func createUser(c *Context, w http.ResponseWriter, r *http.Request) {
@@ -124,6 +125,8 @@ func createUser(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	if user.IsSSOUser() {
 		user.EmailVerified = true
+	} else if user.Username == model.SYSTEM_BOT_NAME {
+		sendWelcomeEmail = false
 	}
 
 	if !CheckUserDomain(user, utils.Cfg.TeamSettings.RestrictCreationToDomains) {
@@ -218,29 +221,32 @@ func CreateUser(team *model.Team, user *model.User) (*model.User, *model.AppErro
 		ruser := result.Data.(*model.User)
 
 		// Soft error if there is an issue joining the default channels
-		if err := JoinDefaultChannels(ruser, channelRole); err != nil {
-			l4g.Error(utils.T("api.user.create_user.joining.error"), ruser.Id, ruser.TeamId, err)
-		}
+		if ruser.Username != model.SYSTEM_BOT_NAME {
 
-		addDirectChannelsAndForget(ruser)
-
-		if user.EmailVerified {
-			if cresult := <-Srv.Store.User().VerifyEmail(ruser.Id); cresult.Err != nil {
-				l4g.Error(utils.T("api.user.create_user.verified.error"), cresult.Err)
+			if err := JoinDefaultChannels(ruser, channelRole); err != nil {
+				l4g.Error(utils.T("api.user.create_user.joining.error"), ruser.Id, ruser.TeamId, err)
 			}
+
+			addDirectChannelsAndForget(ruser)
+
+			if user.EmailVerified {
+				if cresult := <-Srv.Store.User().VerifyEmail(ruser.Id); cresult.Err != nil {
+					l4g.Error(utils.T("api.user.create_user.verified.error"), cresult.Err)
+				}
+			}
+
+			pref := model.Preference{UserId: ruser.Id, Category: model.PREFERENCE_CATEGORY_TUTORIAL_STEPS, Name: ruser.Id, Value: "0"}
+			if presult := <-Srv.Store.Preference().Save(&model.Preferences{pref}); presult.Err != nil {
+				l4g.Error(utils.T("api.user.create_user.tutorial.error"), presult.Err.Message)
+			}
+
+			ruser.Sanitize(map[string]bool{})
+
+			// This message goes to every channel, so the channelId is irrelevant
+			message := model.NewMessage(team.Id, "", ruser.Id, model.ACTION_NEW_USER)
+
+			PublishAndForget(message)
 		}
-
-		pref := model.Preference{UserId: ruser.Id, Category: model.PREFERENCE_CATEGORY_TUTORIAL_STEPS, Name: ruser.Id, Value: "0"}
-		if presult := <-Srv.Store.Preference().Save(&model.Preferences{pref}); presult.Err != nil {
-			l4g.Error(utils.T("api.user.create_user.tutorial.error"), presult.Err.Message)
-		}
-
-		ruser.Sanitize(map[string]bool{})
-
-		// This message goes to every channel, so the channelId is irrelevant
-		message := model.NewMessage(team.Id, "", ruser.Id, model.ACTION_NEW_USER)
-
-		PublishAndForget(message)
 
 		return ruser, nil
 	}
@@ -2227,4 +2233,18 @@ func sendSignInChangeEmailAndForget(c *Context, email, teamDisplayName, teamURL,
 		}
 
 	}()
+}
+
+func createSystemBots(c *Context, w http.ResponseWriter, r *http.Request) {
+	if result := <-Srv.Store.Team().GetAll(); result.Err == nil {
+		teams := result.Data.([]*model.Team)
+		client := model.NewClient(c.GetSiteURL())
+		for _, t := range teams {
+			if !IsUsernameTaken(model.SYSTEM_BOT_NAME, t.Id) {
+				CreateSystemUser(client, t.Id)
+			}
+		}
+		w.Write([]byte("true"))
+		return
+	}
 }

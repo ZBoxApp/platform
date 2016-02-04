@@ -976,6 +976,10 @@
     "translation": "El registro a equipos por correo electrónico está deshabilitado."
   },
   {
+    "id": "api.team.create_team.system_boot.app_error",
+    "translation": "Encontramos un error mientras se creaba el usuario de System Bot."
+  },
+  {
     "id": "api.team.create_team_from_signup.email_disabled.app_error",
     "translation": "El registro a equipos por correo electrónico está deshabilitado."
   },

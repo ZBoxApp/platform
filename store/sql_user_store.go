@@ -396,7 +396,8 @@ func (us SqlUserStore) GetProfiles(teamId string) StoreChannel {
 
 		var users []*model.User
 
-		if _, err := us.GetReplica().Select(&users, "SELECT * FROM Users WHERE TeamId = :TeamId", map[string]interface{}{"TeamId": teamId}); err != nil {
+		if _, err := us.GetReplica().Select(&users, "SELECT * FROM Users WHERE TeamId = :TeamId AND Username != :SystemBot",
+			map[string]interface{}{"TeamId": teamId, "SystemBot": model.SYSTEM_BOT_NAME}); err != nil {
 			result.Err = model.NewLocAppError("SqlUserStore.GetProfiles", "store.sql_user.get_profiles.app_error", nil, err.Error())
 		} else {
 
@@ -545,7 +546,8 @@ func (us SqlUserStore) GetForExport(teamId string) StoreChannel {
 
 		var users []*model.User
 
-		if _, err := us.GetReplica().Select(&users, "SELECT * FROM Users WHERE TeamId = :TeamId", map[string]interface{}{"TeamId": teamId}); err != nil {
+		if _, err := us.GetReplica().Select(&users, "SELECT * FROM Users WHERE TeamId = :TeamId AND Username != :SystemBot",
+			map[string]interface{}{"TeamId": teamId, "SystemBot": model.SYSTEM_BOT_NAME}); err != nil {
 			result.Err = model.NewLocAppError("SqlUserStore.GetProfiles", "store.sql_user.get_for_export.app_error", nil, err.Error())
 		} else {
 			for _, u := range users {
@@ -569,7 +571,7 @@ func (us SqlUserStore) GetTotalUsersCount() StoreChannel {
 	go func() {
 		result := StoreResult{}
 
-		if count, err := us.GetReplica().SelectInt("SELECT COUNT(Id) FROM Users"); err != nil {
+		if count, err := us.GetReplica().SelectInt("SELECT COUNT(Id) FROM Users WHERE Username != :SystemBot", map[string]interface{}{"SystemBot": model.SYSTEM_BOT_NAME}); err != nil {
 			result.Err = model.NewLocAppError("SqlUserStore.GetTotalUsersCount", "store.sql_user.get_total_users_count.app_error", nil, err.Error())
 		} else {
 			result.Data = count

@@ -281,6 +281,13 @@ func CreateTeam(c *Context, team *model.Team) *model.Team {
 			return nil
 		}
 
+		client := model.NewClient(c.GetSiteURL())
+
+		if err := CreateSystemUser(client, rteam.Id); err != nil {
+			c.Err = model.NewLocAppError("createTeam", "api.team.create_team.system_boot.app_error", nil, "err="+err.Error())
+			return nil
+		}
+
 		return rteam
 	}
 }

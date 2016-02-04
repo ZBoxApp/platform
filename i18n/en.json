@@ -976,6 +976,10 @@
     "translation": "Team sign-up with email is disabled."
   },
   {
+    "id": "api.team.create_team.system_boot.app_error",
+    "translation": "We encountered an error while creating the System Bot User."
+  },
+  {
     "id": "api.team.create_team_from_signup.email_disabled.app_error",
     "translation": "Team sign-up with email is disabled."
   },
