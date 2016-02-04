@@ -649,3 +649,24 @@ func (us SqlUserStore) AnalyticsUniqueUserCount(teamId string) StoreChannel {
 
 	return storeChannel
 }
+
+func (us SqlUserStore) GetSystemBot(teamId string) StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		user := model.User{}
+
+		if err := us.GetReplica().SelectOne(&user, "SELECT * FROM Users WHERE TeamId = :TeamId AND Email = :Email", map[string]interface{}{"TeamId": teamId, "Email": model.SYSTEM_BOT_EMAIL}); err != nil {
+			result.Err = model.NewLocAppError("SqlUserStore.GetByEmail", "store.sql_user.get_system_bot.app_error", nil, "teamId="+teamId+", email="+model.SYSTEM_BOT_EMAIL+", "+err.Error())
+		}
+
+		result.Data = &user
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}

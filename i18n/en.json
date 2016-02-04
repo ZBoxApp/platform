@@ -1816,6 +1816,186 @@
     "translation": "Invalid refresh token"
   },
   {
+    "id": "model.addon.config_url.app_error",
+    "translation": "Invalid Config URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.currency.app_error",
+    "translation": "Invalid Currency. Must be a valid ISO 4217 currency code"
+  },
+  {
+    "id": "model.addon.descriptor_url.app_error",
+    "translation": "Invalid Descriptor URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.icon_url.app_error",
+    "translation": "Invalid Icon URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.installed_url.app_error",
+    "translation": "Invalid Installed URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.invalid_create_at.app_error",
+    "translation": "Create at must be a valid time"
+  },
+  {
+    "id": "model.addon.invalid_description.app_error",
+    "translation": "Invalid description"
+  },
+  {
+    "id": "model.addon.invalid_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon.invalid_name.app_error",
+    "translation": "Invalid name"
+  },
+  {
+    "id": "model.addon.invalid_update_at.app_error",
+    "translation": "Update at must be a valid time"
+  },
+  {
+    "id": "model.addon.published_url.app_error",
+    "translation": "Invalid Published URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.uninstalled_url.app_error",
+    "translation": "Invalid Uninstalled URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_action.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_action.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_action.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_action.invalid_name.app_error",
+    "translation": "Invalid name"
+  },
+  {
+    "id": "model.addon_action.invalid_target.app_error",
+    "translation": "Invalid target"
+  },
+  {
+    "id": "model.addon_compact.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_compact.icon_url.app_error",
+    "translation": "Invalid Icon URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_compact.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_compact.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_compact.invalid_name.app_error",
+    "translation": "Invalid name"
+  },
+  {
+    "id": "model.addon_compact.invalid_target.app_error",
+    "translation": "Invalid target"
+  },
+  {
+    "id": "model.addon_compact.query_url.app_error",
+    "translation": "Invalid Query URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_dialog.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_dialog.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_dialog.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_dialog.invalid_url.app_error",
+    "translation": "Invalid URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_dialog.primary_key.app_error",
+    "translation": "Invalid Primary action key"
+  },
+  {
+    "id": "model.addon_dialog.primary_name.app_error",
+    "translation": "Invalid Primary action name"
+  },
+  {
+    "id": "model.addon_dialog.secondary_key.app_error",
+    "translation": "Invalid Secondary action key"
+  },
+  {
+    "id": "model.addon_dialog.secondary_name.app_error",
+    "translation": "Invalid Secondary action name"
+  },
+  {
+    "id": "model.addon_dialog.title.app_error",
+    "translation": "Invalid title"
+  },
+  {
+    "id": "model.addon_webhook.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_webhook.callbacks.app_error",
+    "translation": "Invalid callback urls"
+  },
+  {
+    "id": "model.addon_webhook.callbacks_url.app_error",
+    "translation": "Invalid callback URLs. Each must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_webhook.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_webhook.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_webhook.trigger_words.app_error",
+    "translation": "Invalid trigger words"
+  },
+  {
+    "id": "model.addon_webpanel.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_name.app_error",
+    "translation": "Invalid name"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_url.app_error",
+    "translation": "Invalid URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Invalid authorization code"
   },
@@ -2260,6 +2440,22 @@
     "translation": "Invalid URL Identifier"
   },
   {
+    "id": "model.team_addon.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.team_addon.installed.app_error",
+    "translation": "Installed at must be a valid time"
+  },
+  {
+    "id": "model.team_addon.team_addon_id.app_error",
+    "translation": "Invalid team addon id"
+  },
+  {
+    "id": "model.team_addon.team_id.app_error",
+    "translation": "Invalid team id"
+  },
+  {
     "id": "model.user.is_valid.auth_data.app_error",
     "translation": "Invalid auth data"
   },
@@ -2442,6 +2638,142 @@
   {
     "id": "store.sql.upgraded.warn",
     "translation": "The database schema has been upgraded to version %v"
+  },
+  {
+    "id": "store.sql_addon.delete.addon.app_error",
+    "translation": "We couldn't delete the addon"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_actions.app_error",
+    "translation": "We couldn't delete the addon actions"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_compacts.app_error",
+    "translation": "We couldn't delete the addon compacts"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_dialogs.app_error",
+    "translation": "We couldn't delete the addon dialogs"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_hooks.app_error",
+    "translation": "We couldn't delete the addon webhooks"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_webpanels.app_error",
+    "translation": "We couldn't delete the addon web panels"
+  },
+  {
+    "id": "store.sql_addon.disable.app_error",
+    "translation": "We couldn't disable the addon"
+  },
+  {
+    "id": "store.sql_addon.enable.app_error",
+    "translation": "We couldn't enable the addon"
+  },
+  {
+    "id": "store.sql_addon.get.addon.app_error",
+    "translation": "We couldn't get the addon"
+  },
+  {
+    "id": "store.sql_addon.get.addon_actions.app_error",
+    "translation": "We couln't get the addon actions"
+  },
+  {
+    "id": "store.sql_addon.get.addon_compacts.app_error",
+    "translation": "We couln't get the addon compacts"
+  },
+  {
+    "id": "store.sql_addon.get.addon_dialogs.app_error",
+    "translation": "We couln't get the addon dialogs"
+  },
+  {
+    "id": "store.sql_addon.get.addon_hooks.app_error",
+    "translation": "We couln't get the addon webhooks"
+  },
+  {
+    "id": "store.sql_addon.get.addon_webpanels.app_error",
+    "translation": "We couln't get the addon web panels"
+  },
+  {
+    "id": "store.sql_addon.get.addons.app_error",
+    "translation": "We couldn't get the addons"
+  },
+  {
+    "id": "store.sql_addon.install.app_error",
+    "translation": "We couldn't install the addon."
+  },
+  {
+    "id": "store.sql_addon.installed.already.app_error",
+    "translation": "This addon is already installed for this team"
+  },
+  {
+    "id": "store.sql_addon.save.addon_action.app_error",
+    "translation": "We couldn't save the addon action"
+  },
+  {
+    "id": "store.sql_addon.save.addon_compact.app_error",
+    "translation": "We couldn't save the addon compact"
+  },
+  {
+    "id": "store.sql_addon.save.addon_dialog.app_error",
+    "translation": "We couldn't save the addon dialog"
+  },
+  {
+    "id": "store.sql_addon.save.addon_hook.app_error",
+    "translation": "We couldn't save the addon webhook"
+  },
+  {
+    "id": "store.sql_addon.save.addon_webpanel.app_error",
+    "translation": "We couldn't save the addon Web panel"
+  },
+  {
+    "id": "store.sql_addon.save.already_exists.app_error",
+    "translation": "An addon with that Name already exists"
+  },
+  {
+    "id": "store.sql_addon.save.app_error",
+    "translation": "We couldn't save the addon"
+  },
+  {
+    "id": "store.sql_addon.save.commit_transaction.app_error",
+    "translation": "Unable to commit transaction"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon.app_error",
+    "translation": "Must call update for exisiting addon"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_action.app_error",
+    "translation": "Must call update for exisiting addon action"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_compact.app_error",
+    "translation": "Must call update for exisiting addon compact"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_dialog.app_error",
+    "translation": "Must call update for exisiting addon dialog"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_hook.app_error",
+    "translation": "Must call update for exisiting addon webhook"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_webpanel.app_error",
+    "translation": "Must call update for exisiting addon Web panel"
+  },
+  {
+    "id": "store.sql_addon.save.open_transaction.app_error",
+    "translation": "Unable to open transaction"
+  },
+  {
+    "id": "store.sql_addon.save.previously.app_error",
+    "translation": "An addon with that Name was previously created"
+  },
+  {
+    "id": "store.sql_addon.uninstall.app_error",
+    "translation": "We couldn't uninstall the existing addon"
   },
   {
     "id": "store.sql_audit.get.finding.app_error",
@@ -3048,6 +3380,10 @@
     "translation": "We encountered an error while finding user profiles"
   },
   {
+    "id": "store.sql_user.get_system_bot.app_error",
+    "translation": "We couldn't find the existing account"
+  },
+  {
     "id": "store.sql_user.get_total_active_users_count.app_error",
     "translation": "We could not count the users"
   },
@@ -3154,6 +3490,14 @@
   {
     "id": "store.sql_webhooks.delete_outgoing.app_error",
     "translation": "We couldn't delete the webhook"
+  },
+  {
+    "id": "store.sql_webhooks.enable_incoming.app_error",
+    "translation": "We couldn't enable the incoming webhook"
+  },
+  {
+    "id": "store.sql_webhooks.enable_outgoing.app_error",
+    "translation": "We couldn't enable the outgoing webhook"
   },
   {
     "id": "store.sql_webhooks.get_incoming.app_error",

@@ -629,6 +629,6 @@ COMMANDS:
         Example:
             platform -permanent_delete_team -team_name="name"
 
-    -version                          Display the current of the Mattermost platform 
+    -version                          Display the current of the Mattermost platform
 
     -help                             Displays this help page`

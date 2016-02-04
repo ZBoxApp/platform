@@ -41,6 +41,7 @@ type Store interface {
 	Preference() PreferenceStore
 	License() LicenseStore
 	MarkSystemRanUnitTests()
+	Addon() AddonStore
 	Close()
 }
 
@@ -186,6 +187,21 @@ type WebhookStore interface {
 	UpdateOutgoing(hook *model.OutgoingWebhook) StoreChannel
 	AnalyticsIncomingCount(teamId string) StoreChannel
 	AnalyticsOutgoingCount(teamId string) StoreChannel
+
+	DeleteIncomingByAddon(addonId string, time int64) StoreChannel
+	DeleteIncomingByTeamAddon(teamId, addonId string, time int64) StoreChannel
+	EnableIncomingByAddon(addonId string, time int64) StoreChannel
+	PermanentDeleteIncomingByAddon(addonId string) StoreChannel
+	PermanentDeleteIncomingByTeamAddon(teamId, addonId string) StoreChannel
+	GetIncomingByAddon(addonId string) StoreChannel
+	GetIncomingByTeamAddon(teamId, addonId string) StoreChannel
+	GetOutgoingByAddon(addonId string) StoreChannel
+	GetOutgoingByTeamAddon(teamId, addonId string) StoreChannel
+	DeleteOutgoingByAddon(addonId string, time int64) StoreChannel
+	DeleteOutgoingByTeamAddon(teamId, addonId string, time int64) StoreChannel
+	EnableOutgoingByAddon(addonId string, time int64) StoreChannel
+	PermanentDeleteOutgoingByAddon(addonId string) StoreChannel
+	PermanentDeleteOutgoingByTeamAddon(teamId, addonId string) StoreChannel
 }
 
 type CommandStore interface {
@@ -209,4 +225,25 @@ type PreferenceStore interface {
 type LicenseStore interface {
 	Save(license *model.LicenseRecord) StoreChannel
 	Get(id string) StoreChannel
+}
+
+type AddonStore interface {
+	Save(descriptor *model.AddonDescriptor) StoreChannel
+	GetAddons() StoreChannel
+	GetAddonById(addonId string) StoreChannel
+	GetAddonByName(name string) StoreChannel
+	GetAddonWebooks(addonId string) StoreChannel
+	GetAddonCompacts(addonId string) StoreChannel
+	GetAddonWebpanels(addonId string) StoreChannel
+	GetAddonDialogs(addonId string) StoreChannel
+	GetAddonActions(addonId string) StoreChannel
+	GetDisabledAddons() StoreChannel
+	GetInstalled(teamId string) StoreChannel
+	IsInstalled(teamId, addonId string) StoreChannel
+	InstallAddon(teamAddon *model.TeamAddon) StoreChannel
+	UninstallAddon(teamAddon *model.TeamAddon) StoreChannel
+	EnableAddon(addonId string, time int64) StoreChannel
+	DisableAddon(addonId string, time int64) StoreChannel
+	DeleteAddon(addonId string, time int64) StoreChannel
+	PermanentDeleteAddon(addonId string) StoreChannel
 }

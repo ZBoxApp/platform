@@ -15,6 +15,8 @@ const (
 	OAUTH_ACTION_LOGIN        = "login"
 	OAUTH_ACTION_EMAIL_TO_SSO = "email_to_sso"
 	OAUTH_ACTION_SSO_TO_EMAIL = "sso_to_email"
+	OAUTH_APP_USER            = "user"
+	OAUTH_APP_ADDON           = "addon"
 )
 
 type OAuthApp struct {
@@ -27,6 +29,7 @@ type OAuthApp struct {
 	Description  string      `json:"description"`
 	CallbackUrls StringArray `json:"callback_urls"`
 	Homepage     string      `json:"homepage"`
+	Type         string      `json:"type,omitempty"`
 }
 
 // IsValid validates the app and returns an error if it isn't configured
@@ -88,6 +91,10 @@ func (a *OAuthApp) PreSave() {
 
 	if len(a.ClientSecret) > 0 {
 		a.ClientSecret = HashPassword(a.ClientSecret)
+	}
+
+	if a.Type == "" {
+		a.Type = OAUTH_APP_USER
 	}
 }
 
