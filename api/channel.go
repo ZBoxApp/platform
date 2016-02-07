@@ -23,6 +23,7 @@ func InitChannel(r *mux.Router) {
 
 	sr := r.PathPrefix("/channels").Subrouter()
 	sr.Handle("/", ApiUserRequiredActivity(getChannels, false)).Methods("GET")
+	sr.Handle("/all", ApiUserRequired(getAllChannels)).Methods("GET")
 	sr.Handle("/more", ApiUserRequired(getMoreChannels)).Methods("GET")
 	sr.Handle("/counts", ApiUserRequiredActivity(getChannelCounts, false)).Methods("GET")
 	sr.Handle("/create", ApiUserRequired(createChannel)).Methods("POST")
@@ -393,6 +394,21 @@ func getMoreChannels(c *Context, w http.ResponseWriter, r *http.Request) {
 	// user is already in the team
 
 	if result := <-Srv.Store.Channel().GetMoreChannels(c.Session.TeamId, c.Session.UserId); result.Err != nil {
+		c.Err = result.Err
+		return
+	} else if HandleEtag(result.Data.(*model.ChannelList).Etag(), w, r) {
+		return
+	} else {
+		data := result.Data.(*model.ChannelList)
+		w.Header().Set(model.HEADER_ETAG_SERVER, data.Etag())
+		w.Write([]byte(data.ToJson()))
+	}
+}
+
+func getAllChannels(c *Context, w http.ResponseWriter, r *http.Request) {
+	// user is already in the team
+
+	if result := <-Srv.Store.Channel().GetAllChannels(c.Session.TeamId); result.Err != nil {
 		c.Err = result.Err
 		return
 	} else if HandleEtag(result.Data.(*model.ChannelList).Etag(), w, r) {

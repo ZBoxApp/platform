@@ -86,6 +86,8 @@ type ChannelStore interface {
 	UpdateLastViewedAt(channelId string, userId string) StoreChannel
 	IncrementMentionCount(channelId string, userId string) StoreChannel
 	AnalyticsTypeCount(teamId string, channelType string) StoreChannel
+
+	GetAllChannels(teamId string) StoreChannel
 }
 
 type PostStore interface {

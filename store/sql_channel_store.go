@@ -393,6 +393,38 @@ func (s SqlChannelStore) GetMoreChannels(teamId string, userId string) StoreChan
 	return storeChannel
 }
 
+func (s SqlChannelStore) GetAllChannels(teamId string) StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		var data []*model.Channel
+		_, err := s.GetReplica().Select(&data,
+			`SELECT
+			    *
+			FROM
+			    Channels
+			WHERE
+			    TeamId = :TeamId
+					AND Type != 'D'
+					AND DeleteAt = 0
+			ORDER BY DisplayName`,
+			map[string]interface{}{"TeamId": teamId})
+
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlChannelStore.GetAllChannels", "store.sql_channel.get_channels.get.app_error", nil, "teamId="+teamId+", err="+err.Error())
+		} else {
+			result.Data = &model.ChannelList{data, make(map[string]*model.ChannelMember)}
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
 type channelIdWithCountAndUpdateAt struct {
 	Id            string
 	TotalMsgCount int64
