@@ -1215,24 +1215,28 @@ func getAddonToken(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	grantType := r.FormValue("grant_type")
 	if grantType != model.ACCESS_CLIENT_GRANT_TYPE {
 		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.bad_grant.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
 		return
 	}
 
 	clientId := r.FormValue("client_id")
 	if len(clientId) != 26 {
 		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.bad_client_id.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
 		return
 	}
 
 	secret := r.FormValue("client_secret")
 	if len(secret) == 0 {
 		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.bad_client_secret.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
 		return
 	}
 
 	teamName := r.FormValue("team_name")
 	if len(teamName) == 0 {
 		c.Err = model.NewLocAppError("getAddonToken", "web.get_addon_token.missing_team.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
 		return
 	}
 
@@ -1242,6 +1246,7 @@ func getAddonToken(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	var app *model.OAuthApp
 	if result := <-achan; result.Err != nil {
 		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.credentials.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
 		return
 	} else {
 		app = result.Data.(*model.OAuthApp)
@@ -1250,6 +1255,7 @@ func getAddonToken(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	if !model.ComparePassword(app.ClientSecret, secret) {
 		c.LogAudit("fail - invalid client credentials")
 		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.credentials.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
 		return
 	}
 
@@ -1257,6 +1263,7 @@ func getAddonToken(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	if result := <-tchan; result.Err != nil {
 		c.LogAudit("fail - invalid team name")
 		c.Err = model.NewLocAppError("getAddonToken", "web.get_addon_token.invalid_team.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
 		return
 	} else {
 		team = result.Data.(*model.Team)
@@ -1266,6 +1273,7 @@ func getAddonToken(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	if result := <-adchan; result.Err == nil {
 		c.Err = model.NewLocAppError("getAddonToken", "web.get_addon_token.not_installed.app_error",
 			map[string]interface{}{"Team": teamName}, "")
+		c.Err.StatusCode = http.StatusUnauthorized
 		return
 	}
 
