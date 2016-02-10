@@ -36,7 +36,7 @@ func TestLoadTestHelpCommands(t *testing.T) {
 	channel = Client.Must(Client.CreateChannel(channel)).Data.(*model.Channel)
 
 	rs := Client.Must(Client.Command(channel.Id, "/loadtest help", false)).Data.(*model.CommandResponse)
-	if !strings.Contains(rs.Text, "Mattermost load testing commands to help") {
+	if !strings.Contains(rs.Text, "ZBox NOW! load testing commands to help") {
 		t.Fatal(rs.Text)
 	}
 

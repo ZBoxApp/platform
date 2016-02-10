@@ -65,11 +65,11 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "<br/><br/><br/>Parece que tu correo electrónico para Mattermost fue configurado correctamente!"
+    "translation": "<br/><br/><br/>Parece que tu correo electrónico para ZBox NOW! fue configurado correctamente!"
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Configuración de pruebas de correo"
+    "translation": "ZBox NOW! - Configuración de pruebas de correo"
   },
   {
     "id": "api.api.init.parsing_templates.debug",
@@ -353,7 +353,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Salir de Mattermost"
+    "translation": "Salir de ZBox NOW!"
   },
   {
     "id": "api.command_logout.name",
@@ -957,7 +957,7 @@
   },
   {
     "id": "api.slackimport.slack_import.log",
-    "translation": "Mattermost Registros de importación de Slack\r\n"
+    "translation": "ZBox NOW! Registros de importación de Slack\r\n"
   },
   {
     "id": "api.slackimport.slack_import.note1",
@@ -1157,7 +1157,7 @@
   },
   {
     "id": "api.templates.invite_body.extra_info",
-    "translation": "Mattermost te permite compartir mensajes y archivos de tu Computador o teléfono, incluyendo busquedas instantáneas. Una vez que te hayas unido a <strong>{{.TeamDisplayName}}</strong>, Podrás iniciar sesión en tu nuevo equipo y utilizar todas las características en cualquier momento desde la dirección web:<br/><br/><a href=\"{{.TeamURL}}\">{{.TeamURL}}</a>"
+    "translation": "ZBox NOW! te permite compartir mensajes y archivos de tu Computador o teléfono, incluyendo busquedas instantáneas. Una vez que te hayas unido a <strong>{{.TeamDisplayName}}</strong>, Podrás iniciar sesión en tu nuevo equipo y utilizar todas las características en cualquier momento desde la dirección web:<br/><br/><a href=\"{{.TeamURL}}\">{{.TeamURL}}</a>"
   },
   {
     "id": "api.templates.invite_body.info",
@@ -1273,7 +1273,7 @@
   },
   {
     "id": "api.templates.welcome_body.info3",
-    "translation": "Mattermost te permite compartir mensajes y archivos desde un computador o teléfono desde donde te encuentres."
+    "translation": "ZBox NOW! te permite compartir mensajes y archivos desde un computador o teléfono desde donde te encuentres."
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -1769,7 +1769,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Boletín de Seguridad Mattermost"
+    "translation": "Boletín de Seguridad ZBox NOW!"
   },
   {
     "id": "mattermost.config_file",
@@ -1797,11 +1797,11 @@
   },
   {
     "id": "mattermost.security_checks.debug",
-    "translation": "Consultando si existen actualizaciones de seguridad para Mattermost"
+    "translation": "Consultando si existen actualizaciones de seguridad para ZBox NOW!"
   },
   {
     "id": "mattermost.security_info.error",
-    "translation": "Falla al obtener información sobre actualizaciones de seguridad para Mattermost."
+    "translation": "Falla al obtener información sobre actualizaciones de seguridad para ZBox NOW!."
   },
   {
     "id": "mattermost.send_bulletin.info",
@@ -1809,7 +1809,7 @@
   },
   {
     "id": "mattermost.system_admins.error",
-    "translation": "Falla al obtener los administradores de sistema que reciben información referente a las actualizaciones de seguridade de Mattermost."
+    "translation": "Falla al obtener los administradores de sistema que reciben información referente a las actualizaciones de seguridade de ZBox NOW!."
   },
   {
     "id": "mattermost.working_dir",
@@ -3673,7 +3673,7 @@
   },
   {
     "id": "web.addons.title",
-    "translation": "Adminitrar Complementos de ZBox Now!"
+    "translation": "Adminitrar Complementos de ZBox NOW!"
   },
   {
     "id": "web.admin_console.title",

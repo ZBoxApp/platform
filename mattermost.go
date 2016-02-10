@@ -566,7 +566,7 @@ func flushLogAndExit(code int) {
 	os.Exit(code)
 }
 
-var usage = `Mattermost commands to help configure the system
+var usage = `ZBox NOW! commands to help configure the system
 
 NAME: 
     platform -- platform configuation tool
@@ -629,6 +629,6 @@ COMMANDS:
         Example:
             platform -permanent_delete_team -team_name="name"
 
-    -version                          Display the current of the Mattermost platform
+    -version                          Display the current of the ZBox NOW! platform
 
     -help                             Displays this help page`

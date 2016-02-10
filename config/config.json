@@ -21,7 +21,7 @@
         "SessionCacheInMinutes": 10
     },
     "TeamSettings": {
-        "SiteName": "Mattermost",
+        "SiteName": "ZBox NOW!",
         "MaxUsersPerTeam": 50,
         "EnableTeamCreation": true,
         "EnableUserCreation": true,
