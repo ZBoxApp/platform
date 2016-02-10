@@ -1848,8 +1848,12 @@
     "translation": "Create at must be a valid time"
   },
   {
+    "id": "model.addon.invalid_category.app_error",
+    "translation": "Invalid category"
+  },
+  {
     "id": "model.addon.invalid_description.app_error",
-    "translation": "Invalid description"
+    "translation": "Invalid description. Must have a maximum of 400 characters"
   },
   {
     "id": "model.addon.invalid_id.app_error",
@@ -3654,6 +3658,14 @@
   {
     "id": "utils.mail.test.configured.error",
     "translation": "SMTP server settings do not appear to be configured properly err=%v details=%v"
+  },
+  {
+    "id": "web.addons.admin.app_error",
+    "translation": "Unauthorize Access. You have to be a Team or System Admin to Manage Addons"
+  },
+  {
+    "id": "web.addons.title",
+    "translation": "Manage ZBox Now! Addons"
   },
   {
     "id": "web.admin_console.title",

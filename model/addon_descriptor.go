@@ -91,6 +91,7 @@ type AddonDescriptor struct {
 	Key         string                     `json:"key"`
 	Name        string                     `json:"name"`
 	Description string                     `json:"description,omitempty"`
+	Category    string                     `json:"category"`
 	Vendor      AddonDescriptorVendor      `json:"vendor"`
 	Price       AddonDescriptorPrice       `json:"price"`
 	Links       AddonDescriptorLinks       `json:"links"`

@@ -13,6 +13,7 @@ type Addon struct {
 	DeleteAt              int64   `json:"delete_at"`
 	Key                   string  `json:"key"`
 	Name                  string  `json:"name"`
+	Category              string  `json:"category"`
 	IconURL               string  `json:"icon_url"`
 	Description           string  `json:"description"`
 	DescriptorURL         string  `json:"descriptor_url"`
@@ -51,7 +52,11 @@ func (a *Addon) IsValid() *AppError {
 		return NewLocAppError("Addon.IsValid", "model.addon.invalid_name.app_error", nil, "addon_id="+a.Id)
 	}
 
-	if len(a.Description) > 1024 {
+	if len(a.Category) == 0 {
+		return NewLocAppError("Addon.IsValid", "model.addon.invalid_category.app_error", nil, "addon_id="+a.Id)
+	}
+
+	if len(a.Description) > 400 {
 		return NewLocAppError("Addon.IsValid", "model.addon.invalid_description.app_error", nil, "addon_id="+a.Id)
 	}
 

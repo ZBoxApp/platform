@@ -223,7 +223,7 @@ export function getProfiles() {
 
             var removeId;
             for (var i in data) {
-                if (data[i].username == 'systembot') {
+                if (data[i].username === 'systembot') {
                     removeId = i;
                     break;
                 }

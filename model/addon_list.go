@@ -8,7 +8,9 @@ type AvailableAddon struct {
 	Id          string  `json:"id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
+	Category    string  `json:"category"`
 	IconURL     string  `json:"icon_url"`
+	ConfigURL   string  `json:"config_url"`
 	Currency    string  `json:"currency"`
 	Price       float64 `json:"price"`
 	Installed   bool    `json:"installed"`

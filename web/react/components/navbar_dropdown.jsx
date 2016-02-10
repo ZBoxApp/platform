@@ -82,6 +82,7 @@ export default class NavbarDropdown extends React.Component {
         var teamLink = '';
         var inviteLink = '';
         var manageLink = '';
+        var manageAddons = '';
         var sysAdminLink = '';
         var adminDivider = '';
         var currentUser = UserStore.getCurrentUser();
@@ -148,6 +149,17 @@ export default class NavbarDropdown extends React.Component {
                         <FormattedMessage
                             id='navbar_dropdown.teamSettings'
                             defaultMessage='Team Settings'
+                        />
+                    </a>
+                </li>
+            );
+
+            manageAddons = (
+                <li>
+                    <a href='/addons'>
+                        <FormattedMessage
+                            id='navbar_dropdown.addons'
+                            defaultMessage='Team Addons'
                         />
                     </a>
                 </li>
@@ -295,6 +307,7 @@ export default class NavbarDropdown extends React.Component {
                         </li>
                         {adminDivider}
                         {teamSettings}
+                        {manageAddons}
                         {manageLink}
                         {sysAdminLink}
                         {teams}

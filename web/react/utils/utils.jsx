@@ -1409,3 +1409,21 @@ export function languages() {
 export function isPostEphemeral(post) {
     return post.type === Constants.POST_TYPE_EPHEMERAL || post.state === Constants.POST_DELETED;
 }
+
+export function sortByKey(array, key) {
+    if (array.length <= 1) {
+        return array;
+    }
+
+    return array.sort((a, b) => {
+        let x = a[key];
+        let y = b[key];
+
+        if (typeof x == 'string') {
+            x = x.toLowerCase();
+            y = y.toLowerCase();
+        }
+
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0)); //eslint-disable-line no-nested-ternary
+    });
+}

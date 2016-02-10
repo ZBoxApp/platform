@@ -97,6 +97,10 @@ func InitWeb() {
 
 	mainrouter.Handle("/docs/{doc:[A-Za-z0-9]+}", api.AppHandlerIndependent(docs)).Methods("GET")
 
+	mainrouter.Handle("/addons", api.UserRequired(addons)).Methods("GET")
+	mainrouter.Handle("/addons/", api.UserRequired(addons)).Methods("GET")
+	mainrouter.Handle("/addons/{category:[A-Za-z0-9-_]+}", api.UserRequired(addons)).Methods("GET")
+
 	// ----------------------------------------------------------------------------------------------
 	// *ANYTHING* team specific should go below this line
 	// ----------------------------------------------------------------------------------------------
@@ -1329,4 +1333,42 @@ func getAddonToken(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	c.LogAuditWithUserId(user.Id, "success")
 
 	w.Write([]byte(accessRsp.ToJson()))
+}
+
+func addons(c *api.Context, w http.ResponseWriter, r *http.Request) {
+
+	if !c.IsTeamAdmin() {
+		c.Err = model.NewLocAppError("addons", "web.addons.admin.app_error", nil, "")
+		c.Err.StatusCode = http.StatusForbidden
+		return
+	}
+
+	teamChan := api.Srv.Store.Team().Get(c.Session.TeamId)
+	userChan := api.Srv.Store.User().Get(c.Session.UserId)
+
+	var team *model.Team
+	if tr := <-teamChan; tr.Err != nil {
+		c.Err = tr.Err
+		return
+	} else {
+		team = tr.Data.(*model.Team)
+
+	}
+
+	var user *model.User
+	if ur := <-userChan; ur.Err != nil {
+		c.Err = ur.Err
+		return
+	} else {
+		user = ur.Data.(*model.User)
+	}
+
+	params := mux.Vars(r)
+	category := params["category"]
+
+	page := NewHtmlTemplatePage("addons", c.T("web.addons.title"), c.Locale)
+	page.User = user
+	page.Team = team
+	page.Props["Category"] = category
+	page.Render(c, w)
 }

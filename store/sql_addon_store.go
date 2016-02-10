@@ -18,7 +18,8 @@ func NewSqlAddonStore(sqlStore *SqlStore) AddonStore {
 		table.ColMap("Key").SetMaxSize(64)
 		table.ColMap("Name").SetMaxSize(64).SetUnique(true)
 		table.ColMap("IconURL").SetMaxSize(255)
-		table.ColMap("Description").SetMaxSize(1024)
+		table.ColMap("Category").SetMaxSize(64)
+		table.ColMap("Description").SetMaxSize(4000)
 		table.ColMap("PublishedURL").SetMaxSize(255)
 		table.ColMap("DescriptorURL").SetMaxSize(255)
 		table.ColMap("HomepageURL").SetMaxSize(255)
@@ -122,6 +123,7 @@ func (s SqlAddonStore) Save(descriptor *model.AddonDescriptor) StoreChannel {
 				Key:                   descriptor.Key,
 				Name:                  descriptor.Name,
 				IconURL:               descriptor.Vendor.IconURL,
+				Category:              descriptor.Category,
 				Description:           descriptor.Description,
 				DescriptorURL:         descriptor.Links.DescriptorURL,
 				HomepageURL:           descriptor.Links.HomepageURL,

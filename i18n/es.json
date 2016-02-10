@@ -53,7 +53,7 @@
   },
   {
     "id": "api.addon.uninstall.no_installed.app_error",
-    "translation": "Este addon no está instalado en este equipo"
+    "translation": "Este complemento no está instalado en este equipo"
   },
   {
     "id": "api.admin.file_read_error",
@@ -1848,8 +1848,12 @@
     "translation": "La fecha de creación es inválida"
   },
   {
+    "id": "model.addon.invalid_category.app_error",
+    "translation": "Categoría inválida"
+  },
+  {
     "id": "model.addon.invalid_description.app_error",
-    "translation": "Descripción inválida"
+    "translation": "Descripción inválida. No debe superar los 400 caracteres"
   },
   {
     "id": "model.addon.invalid_id.app_error",
@@ -1877,7 +1881,7 @@
   },
   {
     "id": "model.addon_action.addon_id.app_error",
-    "translation": "Id del addon inválido"
+    "translation": "Id del complemento inválido"
   },
   {
     "id": "model.addon_action.invalid_id.app_error",
@@ -1897,7 +1901,7 @@
   },
   {
     "id": "model.addon_compact.addon_id.app_error",
-    "translation": "Id del addon inválido"
+    "translation": "Id del complemento inválido"
   },
   {
     "id": "model.addon_compact.icon_url.app_error",
@@ -1925,7 +1929,7 @@
   },
   {
     "id": "model.addon_dialog.addon_id.app_error",
-    "translation": "Id del addon inválido"
+    "translation": "Id del complemento inválido"
   },
   {
     "id": "model.addon_dialog.invalid_id.app_error",
@@ -1961,7 +1965,7 @@
   },
   {
     "id": "model.addon_webhook.addon_id.app_error",
-    "translation": "Id del addon inválido"
+    "translation": "Id del complemento inválido"
   },
   {
     "id": "model.addon_webhook.callbacks.app_error",
@@ -1985,7 +1989,7 @@
   },
   {
     "id": "model.addon_webpanel.addon_id.app_error",
-    "translation": "Id del addon inválido"
+    "translation": "Id del complemento inválido"
   },
   {
     "id": "model.addon_webpanel.invalid_id.app_error",
@@ -2449,7 +2453,7 @@
   },
   {
     "id": "model.team_addon.addon_id.app_error",
-    "translation": "Id del addon inválido"
+    "translation": "Id del complemento inválido"
   },
   {
     "id": "model.team_addon.installed.app_error",
@@ -2457,7 +2461,7 @@
   },
   {
     "id": "model.team_addon.team_addon_id.app_error",
-    "translation": "Id del addon del equipo inválido"
+    "translation": "Id del complemento del equipo inválido"
   },
   {
     "id": "model.team_addon.team_id.app_error",
@@ -2649,99 +2653,99 @@
   },
   {
     "id": "store.sql_addon.delete.addon.app_error",
-    "translation": "No pudimos eliminar el addon"
+    "translation": "No pudimos eliminar el complemento"
   },
   {
     "id": "store.sql_addon.delete.addon_actions.app_error",
-    "translation": "No pudimos eliminar las actions del addon"
+    "translation": "No pudimos eliminar las acciones del complemento"
   },
   {
     "id": "store.sql_addon.delete.addon_compacts.app_error",
-    "translation": "No pudimos eliminar los compacts del addon"
+    "translation": "No pudimos eliminar los compactos del complemento"
   },
   {
     "id": "store.sql_addon.delete.addon_dialogs.app_error",
-    "translation": "No pudimos eliminar los dialgs del addon"
+    "translation": "No pudimos eliminar los dialgos del complemento"
   },
   {
     "id": "store.sql_addon.delete.addon_hooks.app_error",
-    "translation": "No pudimos eliminar los webhooks del addon"
+    "translation": "No pudimos eliminar los webhooks del complemento"
   },
   {
     "id": "store.sql_addon.delete.addon_webpanels.app_error",
-    "translation": "No pudimos eliminar los web panels del addon"
+    "translation": "No pudimos eliminar los paneles web del complemento"
   },
   {
     "id": "store.sql_addon.disable.app_error",
-    "translation": "No pudimos deshabilitar el addon"
+    "translation": "No pudimos deshabilitar el complemento"
   },
   {
     "id": "store.sql_addon.enable.app_error",
-    "translation": "No pudimos habilitar el addon"
+    "translation": "No pudimos habilitar el complemento"
   },
   {
     "id": "store.sql_addon.get.addon.app_error",
-    "translation": "No pudimos obtener el addon"
+    "translation": "No pudimos obtener el complemento"
   },
   {
     "id": "store.sql_addon.get.addon_actions.app_error",
-    "translation": "No pudimos obtener las actions del addon"
+    "translation": "No pudimos obtener las acciones del complemento"
   },
   {
     "id": "store.sql_addon.get.addon_compacts.app_error",
-    "translation": "No pudimos obtener los compacts del addon"
+    "translation": "No pudimos obtener los compactos del complemento"
   },
   {
     "id": "store.sql_addon.get.addon_dialogs.app_error",
-    "translation": "No pudimos obtener los dialogs del addon"
+    "translation": "No pudimos obtener los dialogs del complemento"
   },
   {
     "id": "store.sql_addon.get.addon_hooks.app_error",
-    "translation": "No pudimos obtener los webhooks del addon"
+    "translation": "No pudimos obtener los webhooks del complemento"
   },
   {
     "id": "store.sql_addon.get.addon_webpanels.app_error",
-    "translation": "No pudimos obtener los web panels del addon"
+    "translation": "No pudimos obtener los paneles web del complemento"
   },
   {
     "id": "store.sql_addon.get.addons.app_error",
-    "translation": "No pudimos obtener los addons"
+    "translation": "No pudimos obtener los complementos"
   },
   {
     "id": "store.sql_addon.install.app_error",
-    "translation": "No pudimos instalar el addon."
+    "translation": "No pudimos instalar el complemento."
   },
   {
     "id": "store.sql_addon.installed.already.app_error",
-    "translation": "Este equipo ya tiene instalado este addon"
+    "translation": "Este equipo ya tiene instalado este complemento"
   },
   {
     "id": "store.sql_addon.save.addon_action.app_error",
-    "translation": "No pudimos guardar el addon action"
+    "translation": "No pudimos guardar la acción del complemento"
   },
   {
     "id": "store.sql_addon.save.addon_compact.app_error",
-    "translation": "No pudimos guardar el addon compact"
+    "translation": "No pudimos guardar el compacto del complemento"
   },
   {
     "id": "store.sql_addon.save.addon_dialog.app_error",
-    "translation": "No pudimos guardar el addon dialog"
+    "translation": "No pudimos guardar el dialogo del complemento"
   },
   {
     "id": "store.sql_addon.save.addon_hook.app_error",
-    "translation": "No pudimos guardar el addon webhook"
+    "translation": "No pudimos guardar el webhook del complemento"
   },
   {
     "id": "store.sql_addon.save.addon_webpanel.app_error",
-    "translation": "No pudimos guardar el addon Web panel"
+    "translation": "No pudimos guardar el panel Web del complemento"
   },
   {
     "id": "store.sql_addon.save.already_exists.app_error",
-    "translation": "Un addon con ese Nombre ya existe"
+    "translation": "Un complemento con ese Nombre ya existe"
   },
   {
     "id": "store.sql_addon.save.app_error",
-    "translation": "No pudimos guardar el addon"
+    "translation": "No pudimos guardar el complemento"
   },
   {
     "id": "store.sql_addon.save.commit_transaction.app_error",
@@ -2749,27 +2753,27 @@
   },
   {
     "id": "store.sql_addon.save.existing_addon.app_error",
-    "translation": "Se debe llamar a la función de actualizar para un addon existente"
+    "translation": "Se debe llamar a la función de actualizar para un complemento existente"
   },
   {
     "id": "store.sql_addon.save.existing_addon_action.app_error",
-    "translation": "Se debe llamar a la función de actualizar para un addon action existente"
+    "translation": "Se debe llamar a la función de actualizar para un acción existente de un complemento"
   },
   {
     "id": "store.sql_addon.save.existing_addon_compact.app_error",
-    "translation": "Se debe llamar a la función de actualizar para un addon compact existente"
+    "translation": "Se debe llamar a la función de actualizar para un compacto existente de un complemento"
   },
   {
     "id": "store.sql_addon.save.existing_addon_dialog.app_error",
-    "translation": "Se debe llamar a la función de actualizar para un addon dialog existente"
+    "translation": "Se debe llamar a la función de actualizar para un dialogo existente de un complemento"
   },
   {
     "id": "store.sql_addon.save.existing_addon_hook.app_error",
-    "translation": "Se debe llamar a la función de actualizar para un addon webhook existente"
+    "translation": "Se debe llamar a la función de actualizar para un webhook existente de un complemento"
   },
   {
     "id": "store.sql_addon.save.existing_addon_webpanel.app_error",
-    "translation": "Se debe llamar a la función de actualizar para un addon Web Panelexistente"
+    "translation": "Se debe llamar a la función de actualizar para un panel web existente de un complemento"
   },
   {
     "id": "store.sql_addon.save.open_transaction.app_error",
@@ -2777,11 +2781,11 @@
   },
   {
     "id": "store.sql_addon.save.previously.app_error",
-    "translation": "Un addon con ese Nombre fue creado previamente"
+    "translation": "Un complemento con ese Nombre fue creado previamente"
   },
   {
     "id": "store.sql_addon.uninstall.app_error",
-    "translation": "No pudimos desinstalar el addon"
+    "translation": "No pudimos desinstalar el complemento"
   },
   {
     "id": "store.sql_audit.get.finding.app_error",
@@ -2793,7 +2797,7 @@
   },
   {
     "id": "store.sql_audit.permanent_delete_by_user.app_error",
-    "translation": "Encontramos un error al eliminar los audits"
+    "translation": "Encontramos un error al eliminar las auditorias"
   },
   {
     "id": "store.sql_audit.save.saving.app_error",
@@ -3656,6 +3660,14 @@
     "translation": "El servidor SMTP parece no estar configurado apropiadamente err=%v details=%v"
   },
   {
+    "id": "web.addons.admin.app_error",
+    "translation": "Acceso no Authorizado. Debes ser un Administrador de Equipo o del Sistema para administrar los Complementos"
+  },
+  {
+    "id": "web.addons.title",
+    "translation": "Adminitrar Complementos de ZBox Now!"
+  },
+  {
     "id": "web.admin_console.title",
     "translation": "Consola de Administración"
   },
@@ -3793,7 +3805,7 @@
   },
   {
     "id": "web.get_addon_token.not_installed.app_error",
-    "translation": "cliente inválido: Este addon no esta instalado para el equipo={{.Team}}"
+    "translation": "cliente inválido: Este complemento no esta instalado para el equipo={{.Team}}"
   },
   {
     "id": "web.incoming_webhook.channel.app_error",

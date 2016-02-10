@@ -41,6 +41,7 @@ func publishAddon(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	m := model.MapFromJson(r.Body)
 	url := m["url"]
+	category := m["category"]
 
 	if len(url) == 0 || !model.IsValidHttpUrl(url) {
 		c.Err = model.NewLocAppError("publishAddon", "model.addon.descriptor_url.app_error", nil, "")
@@ -55,6 +56,7 @@ func publishAddon(c *Context, w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			descriptor := model.AddonDescriptorFromJson(resp.Body)
+			descriptor.Category = category
 			handlePublish(c, w, descriptor)
 		}
 	}
@@ -119,8 +121,8 @@ func availableAddon(c *Context, w http.ResponseWriter, r *http.Request) {
 				status = true
 			}
 			available[i] = &model.AvailableAddon{
-				Id: a.Id, Name: a.Name, Description: a.Description, IconURL: a.IconURL,
-				Currency: a.Currency, Price: a.Price, Installed: status}
+				Id: a.Id, Name: a.Name, Description: a.Description, IconURL: a.IconURL, Category: a.Category,
+				Currency: a.Currency, Price: a.Price, Installed: status, ConfigURL: a.ConfigURL}
 		}
 
 		w.Write([]byte(available.ToJson()))
