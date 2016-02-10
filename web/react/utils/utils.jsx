@@ -144,6 +144,10 @@ export function getCookie(name) {
     }
 }
 
+export function isZBox() {
+    return navigator.userAgent.indexOf('ZBox') === -1;
+}
+
 var requestedNotificationPermission = false;
 
 export function notifyMe(title, body, channel) {
@@ -159,8 +163,13 @@ export function notifyMe(title, body, channel) {
                 Notification.permission = permission;
             }
 
+            var icon = '';
+            if (isZBox()) {
+                icon = '/static/images/icon50x50.png';
+            }
+
             if (permission === 'granted') {
-                var notification = new Notification(title, {body, tag: body, icon: '/static/images/icon50x50.png'});
+                var notification = new Notification(title, {body, tag: body, icon: icon});
                 notification.onclick = () => {
                     window.focus();
                     if (channel) {
@@ -168,6 +177,7 @@ export function notifyMe(title, body, channel) {
                     } else {
                         window.location.href = TeamStore.getCurrentTeamUrl() + '/channels/town-square';
                     }
+                    console.log('notification'); //eslint-disable-line no-console
                 };
                 setTimeout(() => {
                     notification.close();
