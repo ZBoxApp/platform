@@ -1,4 +1,4 @@
-.PHONY: all dist dist-local dist-travis start-docker build-server package build-client test travis-init build-container stop-docker clean-docker clean nuke run stop setup-mac cleandb docker-build docker-run
+.PHONY: all dist dist-local dist-travis start-docker build-server package build-client test travis-init build-container stop-docker clean-docker clean nuke run stop setup-mac cleandb docker-build docker-run zbox zbox-dev zbox-test zbox-prod
 
 GOPATH ?= $(GOPATH:)
 GOFLAGS ?= $(GOFLAGS:)
@@ -23,12 +23,12 @@ else
 endif
 
 DIST_ROOT=dist
-DIST_PATH=$(DIST_ROOT)/mattermost
+DIST_PATH=$(DIST_ROOT)/zboxnow
 
 TESTS=.
 
-DOCKERNAME ?= mm-dev
-DOCKER_CONTAINER_NAME ?= mm-test
+DOCKERNAME ?= zboxnow-dev
+DOCKER_CONTAINER_NAME ?= zboxnow-test
 
 all: dist-local
 
@@ -46,28 +46,28 @@ dist-travis: | travis-init build-container
 start-docker:
 	@echo Starting docker containers
 
-	@if [ $(shell docker ps -a | grep -ci mattermost-mysql) -eq 0 ]; then \
-		echo starting mattermost-mysql; \
-		docker run --name mattermost-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mostest \
-		-e MYSQL_USER=mmuser -e MYSQL_PASSWORD=mostest -e MYSQL_DATABASE=mattermost_test -d mysql:5.7 > /dev/null; \
-	elif [ $(shell docker ps | grep -ci mattermost-mysql) -eq 0 ]; then \
-		echo restarting mattermost-mysql; \
-		docker start mattermost-mysql > /dev/null; \
+	@if [ $(shell docker ps -a | grep -ci zbox-mysql) -eq 0 ]; then \
+		echo starting zbox-mysql; \
+		docker run --name zbox-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=zbtest_root \
+		-e MYSQL_USER=zbuser -e MYSQL_PASSWORD=zbtest -e MYSQL_DATABASE=zboxnow_test -d mysql:5.7 > /dev/null; \
+	elif [ $(shell docker ps | grep -ci zbox-mysql) -eq 0 ]; then \
+		echo restarting zbox-mysql; \
+		docker start zbox-mysql > /dev/null; \
 	fi
 
-	@if [ $(shell docker ps -a | grep -ci mattermost-postgres) -eq 0 ]; then \
-		echo starting mattermost-postgres; \
-		docker run --name mattermost-postgres -p 5432:5432 -e POSTGRES_USER=mmuser -e POSTGRES_PASSWORD=mostest \
+	@if [ $(shell docker ps -a | grep -ci zbox-postgres) -eq 0 ]; then \
+		echo starting zbox-postgres; \
+		docker run --name zbox-postgres -p 5432:5432 -e POSTGRES_USER=zbuser -e POSTGRES_PASSWORD=zbtest \
 		-d postgres:9.4 > /dev/null; \
 		sleep 10; \
-	elif [ $(shell docker ps | grep -ci mattermost-postgres) -eq 0 ]; then \
-		echo restarting mattermost-postgres; \
-		docker start mattermost-postgres > /dev/null; \
+	elif [ $(shell docker ps | grep -ci zbox-postgres) -eq 0 ]; then \
+		echo restarting zbox-postgres; \
+		docker start zbox-postgres > /dev/null; \
 		sleep 10; \
 	fi
 
 build-server:
-	@echo Building mattermost server
+	@echo Building zboxnow server
 
 	rm -Rf $(DIST_ROOT)
 	$(GO) clean $(GOFLAGS) -i ./...
@@ -104,7 +104,7 @@ build-server:
 	$(GO) install $(GOFLAGS) ./...
 
 package:
-	@ echo Packaging mattermost
+	@ echo Packaging zboxnow
 
 	mkdir -p $(DIST_PATH)/bin
 	cp $(GOPATH)/bin/platform $(DIST_PATH)/bin
@@ -154,10 +154,10 @@ package:
 
 	sudo mv -f $(DIST_PATH)/config/config.json.bak $(DIST_PATH)/config/config.json || echo 'nomv'
 
-	tar -C dist -czf $(DIST_PATH).tar.gz mattermost
+	tar -C dist -czf $(DIST_PATH).tar.gz zboxnow
 
 build-client:
-	@echo Building mattermost web client
+	@echo Building zboxnow web client
 
 	cd web/react/ && npm install
 
@@ -187,44 +187,44 @@ travis-init:
 
 	if [ "$(TRAVIS_DB)" = "postgres" ]; then \
 		sed -i'.bak' 's|mysql|postgres|g' config/config.json; \
-		sed -i'.bak2' 's|mmuser:mostest@tcp(dockerhost:3306)/mattermost_test?charset=utf8mb4,utf8|postgres://mmuser:mostest@postgres:5432/mattermost_test?sslmode=disable\&connect_timeout=10|g' config/config.json; \
+		sed -i'.bak2' 's|zbuser:zbtest@tcp(dockerhost:3306)/zboxnow_test?charset=utf8mb4,utf8|postgres://zbuser:zbtest@postgres:5432/zboxnow_test?sslmode=disable\&connect_timeout=10|g' config/config.json; \
 	fi
 
 	if [ "$(TRAVIS_DB)" = "mysql" ]; then \
-		sed -i'.bak' 's|mmuser:mostest@tcp(dockerhost:3306)/mattermost_test?charset=utf8mb4,utf8|mmuser:mostest@tcp(mysql:3306)/mattermost_test?charset=utf8mb4,utf8|g' config/config.json; \
+		sed -i'.bak' 's|zbuser:zbtest@tcp(dockerhost:3306)/zboxnow_test?charset=utf8mb4,utf8|zbuser:zbtest@tcp(mysql:3306)/zboxnow_test?charset=utf8mb4,utf8|g' config/config.json; \
 	fi
 
 build-container:
 	@echo Building in container
 
-	cd .. && docker run -e TRAVIS_BUILD_NUMBER=$(TRAVIS_BUILD_NUMBER) --link mattermost-mysql:mysql --link mattermost-postgres:postgres -v `pwd`:/go/src/github.com/mattermost mattermost/builder:latest
+	cd .. && docker run -e TRAVIS_BUILD_NUMBER=$(TRAVIS_BUILD_NUMBER) --link zbox-mysql:mysql --link zbox-postgres:postgres -v `pwd`:/go/src/github.com/mattermost mattermost/builder:latest
 
 stop-docker:
 	@echo Stopping docker containers
 
-	@if [ $(shell docker ps -a | grep -ci mattermost-mysql) -eq 1 ]; then \
-		echo stopping mattermost-mysql; \
-		docker stop mattermost-mysql > /dev/null; \
+	@if [ $(shell docker ps -a | grep -ci zbox-mysql) -eq 1 ]; then \
+		echo stopping zbox-mysql; \
+		docker stop zbox-mysql > /dev/null; \
 	fi
 
-	@if [ $(shell docker ps -a | grep -ci mattermost-postgres) -eq 1 ]; then \
-		echo stopping mattermost-postgres; \
-		docker stop mattermost-postgres > /dev/null; \
+	@if [ $(shell docker ps -a | grep -ci zbox-postgres) -eq 1 ]; then \
+		echo stopping zbox-postgres; \
+		docker stop zbox-postgres > /dev/null; \
 	fi
 
 clean-docker:
 	@echo Removing docker containers
 
-	@if [ $(shell docker ps -a | grep -ci mattermost-mysql) -eq 1 ]; then \
-		echo stopping mattermost-mysql; \
-		docker stop mattermost-mysql > /dev/null; \
-		docker rm -v mattermost-mysql > /dev/null; \
+	@if [ $(shell docker ps -a | grep -ci zbox-mysql) -eq 1 ]; then \
+		echo stopping zbox-mysql; \
+		docker stop zbox-mysql > /dev/null; \
+		docker rm -v zbox-mysql > /dev/null; \
 	fi
 
-	@if [ $(shell docker ps -a | grep -ci mattermost-postgres) -eq 1 ]; then \
-		echo stopping mattermost-postgres; \
-		docker stop mattermost-postgres > /dev/null; \
-		docker rm -v mattermost-postgres > /dev/null; \
+	@if [ $(shell docker ps -a | grep -ci zbox-postgres) -eq 1 ]; then \
+		echo stopping zbox-postgres; \
+		docker stop zbox-postgres > /dev/null; \
+		docker rm -v zbox-postgres > /dev/null; \
 	fi
 
 clean: stop-docker
@@ -243,7 +243,7 @@ clean: stop-docker
 
 	rm -rf Godeps/_workspace/pkg/
 
-	rm -f mattermost.log
+	rm -f zboxnow.log
 	rm -f .prepare-go .prepare-jsx
 
 nuke: | clean clean-docker
@@ -296,7 +296,7 @@ stop:
 		kill $$PID; \
 	done
 
-	@for PID in $$(ps -ef | grep [m]atterm | grep -v VirtualBox | awk '{ print $$2 }'); do \
+	@for PID in $$(ps -ef | grep [z]box | grep -v VirtualBox | awk '{ print $$2 }'); do \
 		echo stopping go web $$PID; \
 		kill $$PID; \
 	done
@@ -317,9 +317,9 @@ setup-mac:
 	echo $$(boot2docker ip 2> /dev/null) dockerhost | sudo tee -a /etc/hosts
 
 cleandb:
-	@if [ $(shell docker ps -a | grep -ci mattermost-mysql) -eq 1 ]; then \
-		docker stop mattermost-mysql > /dev/null; \
-		docker rm -v mattermost-mysql > /dev/null; \
+	@if [ $(shell docker ps -a | grep -ci zbox-mysql) -eq 1 ]; then \
+		docker stop zbox-mysql > /dev/null; \
+		docker rm -v zbox-mysql > /dev/null; \
 	fi
 
 docker-build: stop
@@ -328,3 +328,96 @@ docker-build: stop
 docker-run: docker-build
 	docker run --name ${DOCKER_CONTAINER_NAME} -d --publish 8065:80 ${DOCKERNAME}
 
+zbox: build-client
+ifeq ($(BUILD_NUMBER), dev)
+	$(eval BUILD_NUMBER := $(shell read -p "Enter the version number:" version; echo $$version))
+endif
+	@echo setting version
+	cp ./model/version.go ./model/version.go.bak
+	sed -i'.make_mac_work' 's|_BUILD_NUMBER_|$(BUILD_NUMBER)|g' ./model/version.go
+	sed -i'.make_mac_work' 's|_BUILD_DATE_|$(BUILD_DATE)|g' ./model/version.go
+	sed -i'.make_mac_work' 's|_BUILD_HASH_|$(BUILD_HASH)|g' ./model/version.go
+
+	@if [ "$(BUILD_ENTERPRISE)" = "true" ] && [ -d "$(ENTERPRISE_DIR)" ]; then \
+		cp ./config/config.json ./config/config.json.bak; \
+		jq -s '.[0] * .[1]' ./config/config.json $(ENTERPRISE_DIR)/config/enterprise-config-additions.json > config.json.tmp; \
+		mv config.json.tmp ./config/config.json; \
+		sed -e '/\/\/ENTERPRISE_IMPORTS/ {' -e 'r $(ENTERPRISE_DIR)/imports' -e 'd' -e '}' -i'.bak' mattermost.go; \
+		sed -i'.make_mac_work' 's|_BUILD_ENTERPRISE_READY_|true|g' ./model/version.go; \
+	else \
+		sed -i'.make_mac_work' 's|_BUILD_ENTERPRISE_READY_|false|g' ./model/version.go; \
+	fi
+
+	rm ./model/version.go.make_mac_work
+
+	@echo Cleaning up
+	@rm -Rf $(DIST_ROOT)
+	@$(GO) clean $(GOFLAGS) -i ./...
+
+	@echo Building zboxnow for linux
+	@env GOOS=linux GOARCH=amd64 $(GO) build $(GOFLAGS) -i ./...
+	@env GOOS=linux GOARCH=amd64 $(GO) install $(GOFLAGS) ./...
+
+	@mkdir -p $(DIST_PATH)/bin
+	@cp $(GOPATH)/bin/linux_amd64/platform $(DIST_PATH)/bin
+
+	@cp -RL config $(DIST_PATH)/config
+	@touch $(DIST_PATH)/config/build.txt
+	@echo $(BUILD_NUMBER) | tee -a $(DIST_PATH)/config/build.txt
+
+	@mkdir -p $(DIST_PATH)/logs
+
+	@echo Copying templates and scripts
+	@mkdir -p $(DIST_PATH)/web/static/js
+	@cp -L web/static/js/*.min.js $(DIST_PATH)/web/static/js/
+	@cp -L web/static/js/*.min.js.map $(DIST_PATH)/web/static/js/
+	@cp -RL web/static/js/intl-1.0.0 $(DIST_PATH)/web/static/js/
+	@cp -RL web/static/js/react-intl-2.0.0-beta-2 $(DIST_PATH)/web/static/js/
+	@cp -RL web/static/i18n $(DIST_PATH)/web/static
+	@cp -RL web/static/config $(DIST_PATH)/web/static
+	@cp -RL web/static/css $(DIST_PATH)/web/static
+	@cp -RL web/static/fonts $(DIST_PATH)/web/static
+	@cp -RL web/static/help $(DIST_PATH)/web/static
+	@cp -RL web/static/images $(DIST_PATH)/web/static
+	@cp -RL web/static/js/jquery-dragster $(DIST_PATH)/web/static/js/
+	@cp -RL web/templates $(DIST_PATH)/web
+
+	@mkdir -p $(DIST_PATH)/api
+	@cp -RL api/templates $(DIST_PATH)/api
+	@cp -RL i18n $(DIST_PATH)
+
+	@mv $(DIST_PATH)/web/static/js/bundle.min.js $(DIST_PATH)/web/static/js/bundle-$(BUILD_NUMBER).min.js
+	@mv $(DIST_PATH)/web/static/js/libs.min.js $(DIST_PATH)/web/static/js/libs-$(BUILD_NUMBER).min.js
+
+	@echo Setting versions
+	@sed -i'.bak' 's|react-0.14.3.js|react-0.14.3.min.js|g' $(DIST_PATH)/web/templates/head.html
+	@sed -i'.bak' 's|react-dom-0.14.3.js|react-dom-0.14.3.min.js|g' $(DIST_PATH)/web/templates/head.html
+	@sed -i'.bak' 's|Intl.js|Intl.min.js|g' $(DIST_PATH)/web/templates/head.html
+	@sed -i'.bak' 's|react-intl.js|react-intl.min.js|g' $(DIST_PATH)/web/templates/head.html
+	@sed -i'.bak' 's|jquery-2.1.4.js|jquery-2.1.4.min.js|g' $(DIST_PATH)/web/templates/head.html
+	@sed -i'.bak' 's|bootstrap-3.3.5.js|bootstrap-3.3.5.min.js|g' $(DIST_PATH)/web/templates/head.html
+	@sed -i'.bak' 's|react-bootstrap-0.28.1.js|react-bootstrap-0.28.1.min.js|g' $(DIST_PATH)/web/templates/head.html
+	@sed -i'.bak' 's|perfect-scrollbar-0.6.7.jquery.js|perfect-scrollbar-0.6.7.jquery.min.js|g' $(DIST_PATH)/web/templates/head.html
+	@sed -i'.bak' 's|bundle.js|bundle-$(BUILD_NUMBER).min.js|g' $(DIST_PATH)/web/templates/head.html
+	@sed -i'.bak' 's|libs.min.js|libs-$(BUILD_NUMBER).min.js|g' $(DIST_PATH)/web/templates/head.html
+	@rm $(DIST_PATH)/web/templates/*.bak
+
+	@mv -f $(DIST_PATH)/config/config.json.bak $(DIST_PATH)/config/config.json || echo 'nomv'
+	@mv ./model/version.go.bak ./model/version.go
+	@echo Done building ZBox NOW!
+
+zbox-dev: zbox
+	@echo Building DEV Docker Image
+	@docker build -t ${DOCKERNAME}:dev -f docker/test/Dockerfile .
+	@rm -rf $(DIST_PATH)
+
+zbox-test: zbox
+	@echo Building TEST Docker Image
+	@docker build -t ${DOCKERNAME}:test -f docker/test/Dockerfile .
+	@rm -rf $(DIST_PATH)
+
+zbox-prod: zbox
+	@echo Building PRODUCTION Docker Image
+	@docker build -t ${DOCKERNAME}:$(BUILD_NUMBER) -f docker/prod/Dockerfile .
+	@rm -rf $(DIST_PATH)
+	@docker tag -f ${DOCKERNAME}:$(BUILD_NUMBER) ${DOCKERNAME}:latest; \
