@@ -260,6 +260,6 @@ type GuestStore interface {
 	GetByInviteId(inviteId string) StoreChannel
 	Delete(channelId string, time int64) StoreChannel
 	GetMembers(channelId string) StoreChannel
-	RemoveMembers(channelId string, members *[]model.GuestMember) StoreChannel
+	RemoveMembers(channelId string, members []*model.GuestMember) StoreChannel
 	RemoveUsers(usersIds []string) StoreChannel
 }

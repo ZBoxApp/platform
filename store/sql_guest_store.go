@@ -120,8 +120,9 @@ func (s SqlGuestStore) GetByChannelId(channelId string) StoreChannel {
 
 		guest := model.Guest{}
 
-		if err := s.GetReplica().SelectOne(&guest, "SELECT * FROM Guest ChannelId = :ChannelId AND DeleteAt = 0", map[string]interface{}{"ChannelId": channelId}); err != nil {
+		if err := s.GetReplica().SelectOne(&guest, "SELECT * FROM Guests WHERE ChannelId = :ChannelId AND DeleteAt = 0", map[string]interface{}{"ChannelId": channelId}); err != nil {
 			result.Err = model.NewLocAppError("SqlGuestStore.GetByInviteId", "store.sql_guest.get_by_channel_id.finding.app_error", nil, "channelId="+channelId+", "+err.Error())
+
 		}
 
 		result.Data = &guest
@@ -140,7 +141,7 @@ func (s SqlGuestStore) GetByInviteId(inviteId string) StoreChannel {
 
 		guest := model.Guest{}
 
-		if err := s.GetReplica().SelectOne(&guest, "SELECT * FROM Guest InviteId = :InviteId", map[string]interface{}{"InviteId": inviteId}); err != nil {
+		if err := s.GetReplica().SelectOne(&guest, "SELECT * FROM Guests WHERE InviteId = :InviteId AND DeleteAt = 0", map[string]interface{}{"InviteId": inviteId}); err != nil {
 			result.Err = model.NewLocAppError("SqlGuestStore.GetByInviteId", "store.sql_guest.get_by_invite_id.finding.app_error", nil, "inviteId="+inviteId+", "+err.Error())
 		}
 
@@ -163,7 +164,7 @@ func (s SqlGuestStore) Delete(channelId string, time int64) StoreChannel {
 	go func() {
 		result := StoreResult{}
 
-		_, err := s.GetMaster().Exec("Update Channels SET DeleteAt = :Time, UpdateAt = :Time WHERE ChannelId = :ChannelId", map[string]interface{}{"Time": time, "ChannelId": channelId})
+		_, err := s.GetMaster().Exec("Update Guests SET DeleteAt = :Time, UpdateAt = :Time WHERE ChannelId = :ChannelId", map[string]interface{}{"Time": time, "ChannelId": channelId})
 		if err != nil {
 			result.Err = model.NewLocAppError("SqlGuestStore.Delete", "store.sql_guest.delete.invite.app_error", nil, "id="+channelId+", err="+err.Error())
 		}
@@ -184,10 +185,10 @@ func (s SqlGuestStore) GetMembers(channelId string) StoreChannel {
 		var members []*model.GuestMember
 		_, err := s.GetReplica().Select(&members, `SELECT cm.ChannelId, cm.UserId, u.Roles, COUNT(m.UserId) as ChannelsCount
 		FROM ChannelMembers cm
-		INNER JOIN Users u ON u.Roles LIKE '%:Guest%' AND u.Id = cm.UserId AND cm.ChannelId = :ChannelId
+		INNER JOIN Users u ON u.Roles LIKE '%guest%' AND u.Id = cm.UserId AND cm.ChannelId = :ChannelId
 		LEFT OUTER JOIN ChannelMembers m ON cm.UserId=m.UserId
-		GROUP BY cm.UserId;
-		`, map[string]interface{}{"ChannelId": channelId, "Guest": model.ROLE_GUEST_USER})
+		GROUP BY cm.UserId, cm.ChannelId, u.Roles
+		`, map[string]interface{}{"ChannelId": channelId})
 
 		if err != nil {
 			result.Err = model.NewLocAppError("SqlGuestStore.GetMembers", "store.sql_guest.get_members.app_error", nil, "channel_id="+channelId+err.Error())
@@ -202,7 +203,7 @@ func (s SqlGuestStore) GetMembers(channelId string) StoreChannel {
 	return storeChannel
 }
 
-func (s SqlGuestStore) RemoveMembers(channelId string, members *[]model.GuestMember) StoreChannel {
+func (s SqlGuestStore) RemoveMembers(channelId string, members []*model.GuestMember) StoreChannel {
 	storeChannel := make(StoreChannel)
 
 	go func() {
@@ -214,7 +215,7 @@ func (s SqlGuestStore) RemoveMembers(channelId string, members *[]model.GuestMem
 		}
 
 		var args []interface{}
-		for _, member := range *members {
+		for _, member := range members {
 			args = append(args, member.UserId)
 		}
 
@@ -231,8 +232,6 @@ func (s SqlGuestStore) RemoveMembers(channelId string, members *[]model.GuestMem
 			if _, err := s.GetMaster().Exec(query, queryParams); err != nil {
 				result.Err = model.NewLocAppError("SqlUserStore.RemoveMembers", "store.sql_guest.remove_members.app_error", nil, "channelId="+channelId+", "+err.Error())
 			}
-		} else {
-			result.Err = model.NewLocAppError("SqlUserStore.RemoveMembers", "store.sql_guest.remove_members.no_members.app_error", nil, "channelId="+channelId)
 		}
 
 		storeChannel <- result
@@ -264,8 +263,6 @@ func (s SqlGuestStore) RemoveUsers(usersIds []string) StoreChannel {
 			if _, err := s.GetMaster().Exec(query, queryParams); err != nil {
 				result.Err = model.NewLocAppError("SqlUserStore.RemoveMembers", "store.sql_guest.remove_users.app_error", nil, err.Error())
 			}
-		} else {
-			result.Err = model.NewLocAppError("SqlUserStore.RemoveMembers", "store.sql_guest.remove_members.no_users.app_error", nil, "")
 		}
 
 		storeChannel <- result

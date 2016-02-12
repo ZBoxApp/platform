@@ -31,6 +31,7 @@ func getInvitation(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	if result := <-gchan; result.Err != nil {
 		c.Err = result.Err
+		c.Err.StatusCode = http.StatusNoContent
 		return
 	} else {
 		data := result.Data.(*model.Guest)
@@ -111,7 +112,7 @@ func removeInvitation(c *Context, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		scm := Srv.Store.Channel().GetMember(id, c.Session.UserId)
+		scm := Srv.Store.Channel().GetMember(guest.ChannelId, c.Session.UserId)
 		if scmresult := <-scm; scmresult.Err != nil {
 			c.Err = scmresult.Err
 			return
@@ -130,25 +131,25 @@ func removeInvitation(c *Context, w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			guestMembers := Srv.Store.Guest().GetMembers(id)
+			guestMembers := Srv.Store.Guest().GetMembers(guest.ChannelId)
 
 			if gmresults := <-guestMembers; gmresults.Err != nil {
 				c.Err = gmresults.Err
 				return
 			} else {
-				members := gmresults.Data.(*[]model.GuestMember)
-				<-Srv.Store.Guest().RemoveMembers(id, members)
+				members := gmresults.Data.([]*model.GuestMember)
+				<-Srv.Store.Guest().RemoveMembers(guest.ChannelId, members)
 
-				userIds := make([]string, len(*members))
+				userIds := make([]string, len(members))
 
-				for _, member := range *members {
+				for _, member := range members {
 					if model.IsInRole(member.Roles, model.ROLE_GUEST_USER) {
 						userIds = append(userIds, member.UserId)
 					}
 				}
 				<-Srv.Store.Guest().RemoveUsers(userIds)
 
-				if result := <-Srv.Store.Guest().Delete(id, model.GetMillis()); result.Err != nil {
+				if result := <-Srv.Store.Guest().Delete(guest.ChannelId, model.GetMillis()); result.Err != nil {
 					c.Err = result.Err
 					return
 				} else {
