@@ -117,7 +117,9 @@ export default class Sidebar extends React.Component {
 
         directChannels.sort(this.sortChannelsByDisplayName);
 
-        const hiddenDirectChannelCount = UserStore.getActiveOnlyProfileList(true).length - directChannels.length;
+        const hiddenDirectChannelCount = UserStore.getActiveOnlyProfileList(true).filter((user) => {
+            return !Utils.isGuest(user.roles);
+        }).length - directChannels.length;
 
         const tutorialStep = PreferenceStore.getInt(Preferences.TUTORIAL_STEP, UserStore.getCurrentId(), 999);
 

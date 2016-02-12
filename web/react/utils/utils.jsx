@@ -122,6 +122,10 @@ export function isSystemAdmin(roles) {
     return false;
 }
 
+export function isGuest(roles) {
+    return isInRole(roles, 'guest');
+}
+
 export function getDomainWithOutSub() {
     var parts = window.location.host.split('.');
 

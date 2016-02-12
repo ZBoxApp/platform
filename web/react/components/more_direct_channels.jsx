@@ -201,7 +201,12 @@ class MoreDirectChannels extends React.Component {
             return null;
         }
 
-        let users = this.state.users;
+        let users = this.state.users.filter((user) => {
+            return !Utils.isGuest(user.roles);
+        });
+
+        const totalUsers = users.length;
+
         if (this.state.filter) {
             const filter = this.state.filter.toLowerCase();
 
@@ -231,7 +236,7 @@ class MoreDirectChannels extends React.Component {
         }
 
         let count;
-        if (users.length === this.state.users.length) {
+        if (users.length === totalUsers) {
             count = (
                 <FormattedMessage
                     id='more_direct_channels.count'
@@ -250,7 +255,7 @@ class MoreDirectChannels extends React.Component {
                     values={{
                         count: users.length,
                         member: memberString,
-                        total: this.state.users.length
+                        total: totalUsers
                     }}
                 />
             );

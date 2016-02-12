@@ -2,6 +2,7 @@
 // See License.txt for license information.
 
 import MemberListItem from './member_list_item.jsx';
+import {isGuest} from '../utils/utils.jsx';
 
 export default class MemberList extends React.Component {
     constructor(props) {
@@ -12,7 +13,9 @@ export default class MemberList extends React.Component {
         var members = [];
 
         if (this.props.memberList !== null) {
-            members = this.props.memberList;
+            members = this.props.memberList.filter((m) => {
+                return !isGuest(m.roles);
+            });
         }
 
         var message = null;
