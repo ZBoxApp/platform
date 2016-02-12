@@ -8,6 +8,18 @@ import {FormattedMessage} from 'mm-intl';
 export default class AddonItem extends React.Component {
     constructor(props) {
         super(props);
+        this.handleInstall = this.handleInstall.bind(this);
+        this.handleUninstall = this.handleUninstall.bind(this);
+    }
+
+    handleInstall(e) {
+        e.preventDefault();
+        EventHelpers.showUninstallAddonModal(this.props.addon);
+    }
+
+    handleUninstall(e) {
+        e.preventDefault();
+        EventHelpers.showInstallAddonModal(this.props.addon);
     }
 
     render() {
@@ -19,7 +31,7 @@ export default class AddonItem extends React.Component {
                 <a
                     href='#'
                     className='btn btn-danger btn-emboss'
-                    onClick={() => EventHelpers.showUninstallAddonModal(this.props.addon)}
+                    onClick={this.handleUninstall}
                 >
                     <FormattedMessage
                         id='addon.item.uninstall'
@@ -32,7 +44,7 @@ export default class AddonItem extends React.Component {
                 <a
                     href='#'
                     className='btn btn-primary btn-emboss'
-                    onClick={() => EventHelpers.showInstallAddonModal(this.props.addon)}
+                    onClick={this.handleInstall}
                 >
                     <FormattedMessage
                         id='addon.item.install'
