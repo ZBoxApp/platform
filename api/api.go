@@ -60,6 +60,7 @@ func InitApi() {
 	InitPreference(r)
 	InitLicense(r)
 	InitAddon(r)
+	InitGuest(r)
 
 	templatesDir := utils.FindDir("api/templates")
 	l4g.Debug(utils.T("api.api.init.parsing_templates.debug"), templatesDir)

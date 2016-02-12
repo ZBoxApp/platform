@@ -42,6 +42,7 @@ type Store interface {
 	License() LicenseStore
 	MarkSystemRanUnitTests()
 	Addon() AddonStore
+	Guest() GuestStore
 	Close()
 }
 
@@ -250,4 +251,15 @@ type AddonStore interface {
 	DisableAddon(addonId string, time int64) StoreChannel
 	DeleteAddon(addonId string, time int64) StoreChannel
 	PermanentDeleteAddon(addonId string) StoreChannel
+}
+
+type GuestStore interface {
+	Save(guest *model.Guest) StoreChannel
+	Update(guest *model.Guest) StoreChannel
+	GetByChannelId(channelId string) StoreChannel
+	GetByInviteId(inviteId string) StoreChannel
+	Delete(channelId string, time int64) StoreChannel
+	GetMembers(channelId string) StoreChannel
+	RemoveMembers(channelId string, members *[]model.GuestMember) StoreChannel
+	RemoveUsers(usersIds []string) StoreChannel
 }

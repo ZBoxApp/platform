@@ -16,7 +16,7 @@ import (
 )
 
 func InitAddon(r *mux.Router) {
-	l4g.Debug(utils.T("Initializing addons api routes"))
+	l4g.Debug(utils.T("api.addon.init.debug"))
 
 	sr := r.PathPrefix("/addon").Subrouter()
 	sr.Handle("/publish", ApiUserRequired(publishAddon)).Methods("POST")
