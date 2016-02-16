@@ -236,12 +236,15 @@ class UserSettingsModal extends React.Component {
         const {formatMessage} = this.props.intl;
         var currentUser = UserStore.getCurrentUser();
         var isAdmin = Utils.isAdmin(currentUser.roles);
+        var isGuest = Utils.isGuest(currentUser.roles);
         var tabs = [];
 
         tabs.push({name: 'general', uiName: formatMessage(holders.general), icon: 'glyphicon glyphicon-cog'});
-        tabs.push({name: 'security', uiName: formatMessage(holders.security), icon: 'glyphicon glyphicon-lock'});
+        if (!isGuest) {
+            tabs.push({name: 'security', uiName: formatMessage(holders.security), icon: 'glyphicon glyphicon-lock'});
+        }
         tabs.push({name: 'notifications', uiName: formatMessage(holders.notifications), icon: 'glyphicon glyphicon-exclamation-sign'});
-        if (global.window.mm_config.EnableOAuthServiceProvider === 'true') {
+        if (global.window.mm_config.EnableOAuthServiceProvider === 'true' && !isGuest) {
             tabs.push({name: 'developer', uiName: formatMessage(holders.developer), icon: 'glyphicon glyphicon-th'});
         }
 
@@ -258,7 +261,9 @@ class UserSettingsModal extends React.Component {
         }
 
         tabs.push({name: 'display', uiName: formatMessage(holders.display), icon: 'glyphicon glyphicon-eye-open'});
-        tabs.push({name: 'advanced', uiName: formatMessage(holders.advanced), icon: 'glyphicon glyphicon-list-alt'});
+        if (!isGuest) {
+            tabs.push({name: 'advanced', uiName: formatMessage(holders.advanced), icon: 'glyphicon glyphicon-list-alt'});
+        }
 
         return (
             <Modal
