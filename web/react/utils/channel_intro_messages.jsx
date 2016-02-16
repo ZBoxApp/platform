@@ -93,8 +93,11 @@ export function createOffTopicIntroMessage(channel) {
 
 export function createDefaultIntroMessage(channel) {
     const team = TeamStore.getCurrent();
+    const currentMember = ChannelStore.getCurrentMember();
+    const isGuest = Utils.isGuest(currentMember.roles);
+
     let inviteModalLink;
-    if (team.type === Constants.INVITE_TEAM) {
+    if (team.type === Constants.INVITE_TEAM && !isGuest) {
         inviteModalLink = (
             <a
                 className='intro-links'
@@ -236,36 +239,45 @@ export function createStandardIntroMessage(channel) {
 }
 
 function createInviteChannelMemberButton(channel, uiType) {
-    return (
-        <ToggleModalButton
-            className='intro-links'
-            dialogType={ChannelInviteModal}
-            dialogProps={{channel}}
-        >
-            <i className='fa fa-user-plus'></i>
-            <FormattedMessage
-                id='intro_messages.invite'
-                defaultMessage='Invite others to this {type}'
-                values={{
-                    type: (uiType)
-                }}
-            />
-        </ToggleModalButton>
-    );
+    const currentMember = ChannelStore.getCurrentMember();
+    const isGuest = Utils.isGuest(currentMember.roles);
+
+    if (!isGuest) {
+        return (
+            <ToggleModalButton
+                className='intro-links'
+                dialogType={ChannelInviteModal}
+                dialogProps={{channel}}
+            >
+                <i className='fa fa-user-plus'></i>
+                <FormattedMessage
+                    id='intro_messages.invite'
+                    defaultMessage='Invite others to this {type}'
+                    values={{
+                        type: (uiType)
+                    }}
+                />
+            </ToggleModalButton>
+        );
+    }
 }
 
 function createSetHeaderButton(channel) {
-    return (
-        <ToggleModalButton
-            className='intro-links'
-            dialogType={EditChannelHeaderModal}
-            dialogProps={{channel}}
-        >
-            <i className='fa fa-pencil'></i>
-            <FormattedMessage
-                id='intro_messages.setHeader'
-                defaultMessage='Set a Header'
-            />
-        </ToggleModalButton>
-    );
+    const currentMember = ChannelStore.getCurrentMember();
+    const isGuest = Utils.isGuest(currentMember.roles);
+    if (!isGuest) {
+        return (
+            <ToggleModalButton
+                className='intro-links'
+                dialogType={EditChannelHeaderModal}
+                dialogProps={{channel}}
+            >
+                <i className='fa fa-pencil'></i>
+                <FormattedMessage
+                    id='intro_messages.setHeader'
+                    defaultMessage='Set a Header'
+                />
+            </ToggleModalButton>
+        );
+    }
 }

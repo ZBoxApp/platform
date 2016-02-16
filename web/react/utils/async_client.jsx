@@ -713,6 +713,32 @@ export function getStatuses() {
     );
 }
 
+export function getMemberStatuses(membersIds) {
+    if (isCallInProgress('getStatuses') || membersIds.length === 0) {
+        return;
+    }
+
+    callTracker.getStatuses = utils.getTimestamp();
+    client.getStatuses(membersIds,
+        (data, textStatus, xhr) => {
+            callTracker.getStatuses = 0;
+
+            if (xhr.status === 304 || !data) {
+                return;
+            }
+
+            AppDispatcher.handleServerAction({
+                type: ActionTypes.RECEIVED_STATUSES,
+                statuses: data
+            });
+        },
+        (err) => {
+            callTracker.getStatuses = 0;
+            dispatchError(err, 'getStatuses');
+        }
+    );
+}
+
 export function getMyTeam() {
     if (isCallInProgress('getMyTeam')) {
         return;
