@@ -161,7 +161,7 @@ class AddonController extends React.Component {
                 <div
                     className='sidebar--menu'
                     id='sidebar-menu'
-                />
+                ></div>
                 <AddonSidebar
                     categories={this.state.categories}
                     selected={this.state.selected}

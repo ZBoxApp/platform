@@ -4046,5 +4046,25 @@
   {
     "id": "web.watcher_fail.error",
     "translation": "Falla al agregar el directorio a ser vigilado %v"
-  }
+  },
+    {
+        "id": "api.guest.join_channel.post_and_forget",
+        "translation": "El invitado %v se ha unido al canal."
+    },
+    {
+        "id": "api.guest.create_guest_invitation.post_and_forget",
+        "translation": "%v ha habilitado el acceso de invitados a este canal."
+    },
+    {
+        "id": "api.guest.remove_guest_invitation.post_and_forget",
+        "translation": "%v ha deshabilitado el acceso de invitados a este canal. Todos los invitados han sido removidos."
+    },
+    {
+        "id": "web.get_guest_channel.no_member.app_error",
+        "translation": "No haz utilizado el enlace de invitación para entrar al canal {{.ChannelName}}. Por favor intenta de nuevo con el enlace que te asignaron."
+    },
+    {
+        "id": "web.get_guest_channel.only.app_error",
+        "translation": "Todavía no eres un Invitado del Canal {{.ChannelName}} del Equipo {{.TeamName}}. Por favor intenta de nuevo con el enlace que te asignaron."
+    }
 ]

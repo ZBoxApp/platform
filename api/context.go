@@ -580,3 +580,10 @@ func FindMultiSessionForTeamId(r *http.Request, teamId string) (int64, *model.Se
 func AddSessionToCache(session *model.Session) {
 	sessionCache.AddWithExpiresInSecs(session.Token, session, int64(*utils.Cfg.ServiceSettings.SessionCacheInMinutes*60))
 }
+
+func (c *Context) IsGuestUser() bool {
+	if model.IsInRole(c.Session.Roles, model.ROLE_GUEST_USER) {
+		return true
+	}
+	return false
+}

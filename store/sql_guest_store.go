@@ -183,11 +183,11 @@ func (s SqlGuestStore) GetMembers(channelId string) StoreChannel {
 		result := StoreResult{}
 
 		var members []*model.GuestMember
-		_, err := s.GetReplica().Select(&members, `SELECT cm.ChannelId, cm.UserId, u.Roles, COUNT(m.UserId) as ChannelsCount
+		_, err := s.GetReplica().Select(&members, `SELECT cm.ChannelId, cm.UserId, u.Username, u.Roles, COUNT(m.UserId) as ChannelsCount
 		FROM ChannelMembers cm
 		INNER JOIN Users u ON u.Roles LIKE '%guest%' AND u.Id = cm.UserId AND cm.ChannelId = :ChannelId
 		LEFT OUTER JOIN ChannelMembers m ON cm.UserId=m.UserId
-		GROUP BY cm.UserId, cm.ChannelId, u.Roles
+		GROUP BY cm.UserId, cm.ChannelId, u.Username, u.Roles
 		`, map[string]interface{}{"ChannelId": channelId})
 
 		if err != nil {
@@ -209,7 +209,6 @@ func (s SqlGuestStore) RemoveMembers(channelId string, members []*model.GuestMem
 	go func() {
 		result := StoreResult{}
 
-		query := "DELETE FROM ChannelMember WHERE ChannelId = :ChannelId AND UserId IN (MEMBERS_FILTER)"
 		queryParams := map[string]interface{}{
 			"ChannelId": channelId,
 		}
@@ -219,7 +218,7 @@ func (s SqlGuestStore) RemoveMembers(channelId string, members []*model.GuestMem
 			args = append(args, member.UserId)
 		}
 
-		if len(args) > 1 {
+		if len(args) > 0 {
 			inClause := ":Member0"
 			queryParams["Member0"] = args[0]
 
@@ -228,7 +227,7 @@ func (s SqlGuestStore) RemoveMembers(channelId string, members []*model.GuestMem
 				inClause += ", :" + paramName
 				queryParams[paramName] = args[i]
 			}
-			query = strings.Replace(query, "CHANNEL_FILTER", inClause, 1)
+			query := strings.Replace("DELETE FROM ChannelMembers WHERE ChannelId = :ChannelId AND UserId IN (MEMBERS_FILTER)", "MEMBERS_FILTER", inClause, 1)
 			if _, err := s.GetMaster().Exec(query, queryParams); err != nil {
 				result.Err = model.NewLocAppError("SqlUserStore.RemoveMembers", "store.sql_guest.remove_members.app_error", nil, "channelId="+channelId+", "+err.Error())
 			}
@@ -247,10 +246,9 @@ func (s SqlGuestStore) RemoveUsers(usersIds []string) StoreChannel {
 	go func() {
 		result := StoreResult{}
 
-		query := "DELETE FROM Users WHERE AND UserId IN (USERS_FILTER)"
 		queryParams := map[string]interface{}{}
 
-		if len(usersIds) > 1 {
+		if len(usersIds) > 0 {
 			inClause := ":User0"
 			queryParams["User0"] = usersIds[0]
 
@@ -259,7 +257,7 @@ func (s SqlGuestStore) RemoveUsers(usersIds []string) StoreChannel {
 				inClause += ", :" + paramName
 				queryParams[paramName] = usersIds[i]
 			}
-			query = strings.Replace(query, "CHANNEL_FILTER", inClause, 1)
+			query := strings.Replace("DELETE FROM Users WHERE Id IN (USERS_FILTER)", "USERS_FILTER", inClause, 1)
 			if _, err := s.GetMaster().Exec(query, queryParams); err != nil {
 				result.Err = model.NewLocAppError("SqlUserStore.RemoveMembers", "store.sql_guest.remove_users.app_error", nil, err.Error())
 			}

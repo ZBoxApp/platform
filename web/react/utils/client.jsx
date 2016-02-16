@@ -1606,3 +1606,79 @@ export function uninstallAddon(addonId, success, error) {
         }
     });
 }
+
+export function channelGuestInvite(channelId, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/' + channelId + '/',
+        type: 'GET',
+        cache: false,
+        dataType: 'json',
+        success,
+        error
+    });
+}
+
+export function addGuestInvite(guest, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/create',
+        type: 'POST',
+        data: JSON.stringify(guest),
+        contentType: 'application/json',
+        cache: false,
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('addGuestInvite', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function removeGuestInvite(inviteId, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/' + inviteId + '/remove',
+        type: 'POST',
+        cache: false,
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('removeGuestInvite', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function createGuest(user, data, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/new?d=' + encodeURIComponent(data),
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify(user),
+        success,
+        error: function onError(xhr, status, err) {
+            var e = handleError('createGuest', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function loginGuest(name, email, inviteId, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/login',
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify({name, email, inviteId}),
+        success: function onSuccess(data, textStatus, xhr) {
+            track('api', 'api_guest_login_success', data.invite_id, 'email', data.email);
+            sessionStorage.removeItem(data.id + '_last_error');
+            BrowserStore.signalLogin();
+            success(data, textStatus, xhr);
+        },
+        error: function onError(xhr, status, err) {
+            var e = handleError('loginGuest', xhr, status, err);
+            error(e);
+        }
+    });
+}

@@ -31,7 +31,7 @@ export default class AddonItem extends React.Component {
                 <a
                     href='#'
                     className='btn btn-danger btn-emboss'
-                    onClick={this.handleUninstall}
+                    onClick={this.handleInstall}
                 >
                     <FormattedMessage
                         id='addon.item.uninstall'
@@ -44,7 +44,7 @@ export default class AddonItem extends React.Component {
                 <a
                     href='#'
                     className='btn btn-primary btn-emboss'
-                    onClick={this.handleInstall}
+                    onClick={this.handleUninstall}
                 >
                     <FormattedMessage
                         id='addon.item.install'

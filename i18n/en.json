@@ -4046,5 +4046,25 @@
   {
     "id": "web.watcher_fail.error",
     "translation": "Failed to add directory to watcher %v"
-  }
+  },
+    {
+        "id": "api.guest.join_channel.post_and_forget",
+        "translation": "The guest %v has joined the channel."
+    },
+    {
+        "id": "api.guest.create_guest_invitation.post_and_forget",
+        "translation": "%v has enabled guests access to this channel."
+    },
+    {
+        "id": "api.guest.remove_guest_invitation.post_and_forget",
+        "translation": "%v has disabled guests access to this channel. All guests have been removed."
+    },
+    {
+        "id": "web.get_guest_channel.no_member.app_error",
+        "translation": "You haven't used the invitation link to access {{.ChannelName}} channel. Please try again using the provided link."
+    },
+    {
+        "id": "web.get_guest_channel.only.app_error",
+        "translation": "You are not a Guest of {{.TeamName}} Team for the {{.ChannelName}} channel yet. Please try again using the provided link."
+    }
 ]
