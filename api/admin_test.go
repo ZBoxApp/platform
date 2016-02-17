@@ -250,7 +250,7 @@ func TestGetTeamAnalyticsStandard(t *testing.T) {
 			t.Fatal()
 		}
 
-		if rows[3].Value != 1 {
+		if rows[3].Value != 2 {
 			t.Log(rows.ToJson())
 			t.Fatal()
 		}

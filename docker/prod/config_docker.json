@@ -4,16 +4,24 @@
         "MaximumLoginAttempts": 10,
         "SegmentDeveloperKey": "",
         "GoogleDeveloperKey": "",
-        "EnableOAuthServiceProvider": false,
+        "EnableOAuthServiceProvider": true,
         "EnableIncomingWebhooks": true,
         "EnableOutgoingWebhooks": true,
+        "EnableCommands": true,
+        "EnableOnlyAdminIntegrations": true,
         "EnablePostUsernameOverride": true,
         "EnablePostIconOverride": true,
         "EnableTesting": false,
-        "EnableSecurityFixAlert": true
+        "EnableDeveloper": false,
+        "EnableSecurityFixAlert": true,
+        "EnableInsecureOutgoingConnections": false,
+        "SessionLengthWebInDays": 30,
+        "SessionLengthMobileInDays": 30,
+        "SessionLengthSSOInDays": 30,
+        "SessionCacheInMinutes": 10
     },
     "TeamSettings": {
-        "SiteName": "ZBox NOW!",
+        "SiteName": "ZBox Now!",
         "MaxUsersPerTeam": 1500,
         "EnableTeamCreation": true,
         "EnableUserCreation": true,
@@ -53,12 +61,18 @@
         "AmazonS3AccessKeyId": "AKIAICGPXVUK4R5Q5YTA",
         "AmazonS3SecretAccessKey": "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",
         "AmazonS3Bucket": "zbox-chat",
-        "AmazonS3Region": "sa-east-1"
+        "AmazonS3Region": "sa-east-1",
+        "AmazonS3Endpoint": "",
+        "AmazonS3BucketEndpoint": "",
+        "AmazonS3LocationConstraint": false,
+        "AmazonS3LowercaseBucket": false
     },
     "EmailSettings": {
-        "EnableSignUpWithEmail": false,
+        "EnableSignUpWithEmail": true,
+        "EnableSignInWithEmail": true,
+        "EnableSignInWithUsername": false,
         "SendEmailNotifications": true,
-        "RequireEmailVerification": false,
+        "RequireEmailVerification": true,
         "FeedbackName": "ZBox Now!",
         "FeedbackEmail": "no-reply-chat@zboxapp.com",
         "SMTPUsername": "chat@zboxapp.com",
@@ -72,8 +86,8 @@
         "PushNotificationServer": ""
     },
     "RateLimitSettings": {
-        "EnableRateLimiter": false,
-        "PerSec": 10,
+        "EnableRateLimiter": true,
+        "PerSec": 20,
         "MemoryStoreSize": 10000,
         "VaryByRemoteAddr": true,
         "VaryByHeader": ""

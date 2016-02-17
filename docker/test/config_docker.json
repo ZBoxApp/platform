@@ -4,16 +4,24 @@
         "MaximumLoginAttempts": 10,
         "SegmentDeveloperKey": "",
         "GoogleDeveloperKey": "",
-        "EnableOAuthServiceProvider": false,
+        "EnableOAuthServiceProvider": true,
         "EnableIncomingWebhooks": true,
         "EnableOutgoingWebhooks": true,
+        "EnableCommands": true,
+        "EnableOnlyAdminIntegrations": true,
         "EnablePostUsernameOverride": true,
         "EnablePostIconOverride": true,
         "EnableTesting": false,
-        "EnableSecurityFixAlert": true
+        "EnableDeveloper": false,
+        "EnableSecurityFixAlert": true,
+        "EnableInsecureOutgoingConnections": false,
+        "SessionLengthWebInDays": 30,
+        "SessionLengthMobileInDays": 30,
+        "SessionLengthSSOInDays": 30,
+        "SessionCacheInMinutes": 10
     },
     "TeamSettings": {
-        "SiteName": "ZBox Now",
+        "SiteName": "ZBox Now!",
         "MaxUsersPerTeam": 50,
         "EnableTeamCreation": true,
         "EnableUserCreation": true,
@@ -34,7 +42,7 @@
         "EnableConsole": true,
         "ConsoleLevel": "DEBUG",
         "EnableFile": true,
-        "FileLevel": "INFO",
+        "FileLevel": "DEBUG",
         "FileFormat": "",
         "FileLocation": ""
     },
@@ -53,12 +61,18 @@
         "AmazonS3AccessKeyId": "",
         "AmazonS3SecretAccessKey": "",
         "AmazonS3Bucket": "",
-        "AmazonS3Region": ""
+        "AmazonS3Region": "",
+        "AmazonS3Endpoint": "",
+        "AmazonS3BucketEndpoint": "",
+        "AmazonS3LocationConstraint": false,
+        "AmazonS3LowercaseBucket": false
     },
     "EmailSettings": {
         "EnableSignUpWithEmail": true,
-        "SendEmailNotifications": false,
-        "RequireEmailVerification": false,
+        "EnableSignInWithEmail": true,
+        "EnableSignInWithUsername": true,
+        "SendEmailNotifications": true,
+        "RequireEmailVerification": true,
         "FeedbackName": "ZBox Now Test",
         "FeedbackEmail": "no-reply-chat@zboxapp.dev",
         "SMTPUsername": "admin@zboxapp.dev",
@@ -72,7 +86,7 @@
         "PushNotificationServer": ""
     },
     "RateLimitSettings": {
-        "EnableRateLimiter": true,
+        "EnableRateLimiter": false,
         "PerSec": 10,
         "MemoryStoreSize": 10000,
         "VaryByRemoteAddr": true,

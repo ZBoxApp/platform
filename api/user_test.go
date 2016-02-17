@@ -49,21 +49,21 @@ func TestCreateUser(t *testing.T) {
 
 	ruser.Data.(*model.User).Id = ""
 	if _, err := Client.CreateUser(ruser.Data.(*model.User), ""); err != nil {
-		if err.Message != "An account with that email already exists." {
+		if err.Id != "store.sql_user.save.email_exists.app_error" {
 			t.Fatal(err)
 		}
 	}
 
 	ruser.Data.(*model.User).Email = "test2@nowhere.com"
 	if _, err := Client.CreateUser(ruser.Data.(*model.User), ""); err != nil {
-		if err.Message != "An account with that username already exists." {
+		if err.Id != "store.sql_user.save.username_exists.app_error" {
 			t.Fatal(err)
 		}
 	}
 
 	ruser.Data.(*model.User).Email = ""
 	if _, err := Client.CreateUser(ruser.Data.(*model.User), ""); err != nil {
-		if err.Message != "Invalid email" {
+		if err.Id != "model.user.is_valid.email.app_error" {
 			t.Fatal(err)
 		}
 	}
@@ -317,8 +317,8 @@ func TestGetUser(t *testing.T) {
 
 	if userMap, err := Client.GetProfiles(rteam.Data.(*model.Team).Id, ""); err != nil {
 		t.Fatal(err)
-	} else if len(userMap.Data.(map[string]*model.User)) != 2 {
-		t.Fatal("should have been 2")
+	} else if len(userMap.Data.(map[string]*model.User)) != 3 {
+		t.Fatal("should have been 3")
 	} else if userMap.Data.(map[string]*model.User)[rId].Id != rId {
 		t.Fatal("should have been valid")
 	} else {

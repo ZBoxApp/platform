@@ -21,7 +21,7 @@
         "SessionCacheInMinutes": 10
     },
     "TeamSettings": {
-        "SiteName": "ZBox NOW!",
+        "SiteName": "ZBox Now!",
         "MaxUsersPerTeam": 50,
         "EnableTeamCreation": true,
         "EnableUserCreation": true,
@@ -31,7 +31,7 @@
     },
     "SqlSettings": {
         "DriverName": "mysql",
-        "DataSource": "mmuser:mostest@tcp(dockerhost:3306)/zboxnow?charset=utf8mb4,utf8",
+        "DataSource": "zbuser:zbtest@tcp(dockerhost:3306)/zboxnow?charset=utf8mb4,utf8",
         "DataSourceReplicas": [],
         "MaxIdleConns": 10,
         "MaxOpenConns": 10,
