@@ -173,19 +173,23 @@ export function notifyMe(title, body, channel) {
             }
 
             if (permission === 'granted') {
-                var notification = new Notification(title, {body, tag: body, icon: icon});
-                notification.onclick = () => {
-                    window.focus();
-                    if (channel) {
-                        switchChannel(channel);
-                    } else {
-                        window.location.href = TeamStore.getCurrentTeamUrl() + '/channels/town-square';
-                    }
-                    console.log('notification'); //eslint-disable-line no-console
-                };
-                setTimeout(() => {
-                    notification.close();
-                }, 5000);
+                try {
+                    var notification = new Notification(title, {body, tag: body, icon: icon});
+                    notification.onclick = () => {
+                        window.focus();
+                        if (channel) {
+                            switchChannel(channel);
+                        } else {
+                            window.location.href = TeamStore.getCurrentTeamUrl() + '/channels/town-square';
+                        }
+                        console.log('notification'); //eslint-disable-line no-console
+                    };
+                    setTimeout(() => {
+                        notification.close();
+                    }, 5000);
+                } catch (e) {
+                    console.error(e); //eslint-disable-line no-console
+                }
             }
         });
     }
