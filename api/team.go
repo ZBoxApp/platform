@@ -281,10 +281,11 @@ func CreateTeam(c *Context, team *model.Team) *model.Team {
 			return nil
 		}
 
-		client := model.NewClient(c.GetSiteURL())
+		newuser := &model.User{TeamId: rteam.Id, Email: model.SYSTEM_BOT_EMAIL, Username: model.SYSTEM_BOT_NAME, Nickname: model.SYSTEM_BOT_NICKNAME, Password: model.SYSTEM_BOT_PASSWORD}
 
-		if err := CreateSystemUser(client, rteam.Id); err != nil {
-			c.Err = model.NewLocAppError("createTeam", "api.team.create_team.system_boot.app_error", nil, "err="+err.Error())
+		_, err := CreateUser(team, newuser)
+		if err != nil {
+			c.Err = err
 			return nil
 		}
 

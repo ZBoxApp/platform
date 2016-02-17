@@ -3,54 +3,33 @@ sudo: required
 services:
 - docker
 env:
-- TRAVIS_DB=mysql
-- TRAVIS_DB=postgres
+  matrix:
+  - TRAVIS_DB=mysql
+  - TRAVIS_DB=postgres
+  - ZBOXNOW_VERSION=2.0
+  - DOCKERNAME=zboxapp/zboxnow
+  global:
+  - secure: GiWXIeqOY/g3pLsQw0AE1CtL7oW6wp8NSTB+qoQ6OC8+IT02PFdPghyBxEBVveNxMFWtprZoLWuWCiAJtMvOaQsnS7q5ygclry515H8nELwN9TbSEKhMNo32wTMIIvwtpFtrhf0M/QeU/CyML4kj+9o7Ck/Umg7NnzaqKvLH6Z8bRQwOXOF/rT0MIc+I/I+n9n2cPv95C19pb6JJ2diYRIi3DE5fNWyTHGEWUvw4v7Z6BmwUePewXIaIjkaMJV9B8lHLAC6FKS9BoTzdn9phrQ/pnBGLF2pw6e6+TPpLvfF8PhdKiAipRjLX9Q4XTQkK42TNr7R9j5lHkfMZXYCDk9rYizy6Z+4bpsBPA64pmso2GQRs5TJg3pPnBAIQkvwKlez1urWYpe0ACBuXG8k3A8jj8sQIJo0SeWBt4MbpawwFM2X/dZ4h1qn/Vi01LDkP0pNWpZ7o3Fea8pWUvLw2UVxuP0Lg8aovypuzS/W2PDhxm4UzKPLwIMkU/JSF3zB6f0nm1iDcPVePyujGPEWsM6d5UbvBHbda46Lzp5OgHhUvj85Qrlayz1btlhDwpKPZU90mLoro9W6pPSxvWvJpZBymKUxPuXGrlZhhZ2AQXOOIUyU5uFIEub8n3uidwwZ83qMGpnoLEyqADO0eh6y3PyWya4k0GothD0vloXFPmec=
+  - secure: ZwYbdQf6uF8e8FCaO1XtBR2zl1pS8jkaK+uJU0YeiK37G1MMRR6M1No/uV5I6pfp7/Gwb+hW957+8pIZzRvwNMADuaIN0LTsYK3Tc17fIoGaPX+Ky08F3JJst4i7jx0WkNY95N/elLE7XGJheLeS30Z+BV9kNFkG3bO6os9xJ0JDezH9c4JudHu4zlObCMQrQSYN9zTns5OGitt9iKrKuKOdQBaP+1vLV4D/UuoMN5lCTnsId7jmR/z1rOmS2weQd79cue/7SXPdskyh7SgFoboXUicKYXlvRGsSK/jor69zsafa/VCNI73BXSNI0PmueZwN+VBsW3Y6LYTV7P+pIZnGpHNv9J80OLHw+0Af/JNTHY3qWpH+Ut1NpbtO8ZdeskTWqSvTPjJfwewcb95pOA93z9cZYZOusgn3YVwhWEunpYacXVl30d+f1GDyGOy9EjmlG+e36OxnX4A53w5BKR6DwvW3LQpH54l6EkDiSFpmRKDBaqdmJVRttjmnBS01IwdVzYabRxDMSpxoQOVGywtJfa/Zc5d21Z6OTXQ6gM8LbcLmjrtTwv9lOZ+PhWn5mR04Rc+Xoh4MS5mOMMq17MGXIPOgkwj4U6cvlzy0iVJT7Zw2ym6z4+aWjh11LvkFhVkvIk2nBqxDJWi/PXbpUa/nTARXTdTcVwTQlr+ke0Q=
+  - secure: ohdB6FAPQxfnvoESewhHFmTOxUgmmtLLkUiI7+8xOjON0ekV9PoxSuKa+J5fb6Y70pSZRwtyaO2zVXWTU9vceskPvzH54vnlZylaF0yHaIUS2IBAnJSnRsNAhzrG1maQzTA+HOruptiFRzJxXun32R3YrnS6y7DeLeWiXfNiKQzl+zkjpvtO4jtmsMi6rJNdhuw5BNHUBlU195lF/SZwIpy8wu8dkoDIUBdyAIvmHtijW9Tew69UQKT6X7F+38wXTqu5HTcVZCl6oOxbSWO3ZI8+nuhw5B1o7cQkbQAKb369jsyYPOGpdLbyIexCSK0sARthFdyeFxhqoO7FB7wzZZK84CLnCEFi7KxqI8mE4G/u0TOfFyGNPVwDSOqaUFp5Zrd8b/Ooo3AxYGUWibAjnEGzW6iBtJpBe8Bs0VwsWkn98mNW7p3s02NlzB9fyfU9CLIvnGnSppuTOCKloBF9RwzxB2pNl9zQzGN1KIzjGVzM/0FOHfko36Mg7LgaNiQCepXCKz9BbWzC7Ax+6lNim+aEqm/LbxX/Lqu7x46vWHPJtvDfAFlmQzJQILN0lc3IApnkHXhF/NP9LrHnTogT9v3q+R6zP+tp2Ta8jRiAbKPnTrL63XKyxpkP0eBrZN292qkIayrGzcGrtwWS12gr7iJDvYH2NKhjP1WmWvuB6i8=
 before_install:
-    - docker run --name mattermost-mysql -e MYSQL_ROOT_PASSWORD=mostest -e MYSQL_USER=mmuser -e MYSQL_PASSWORD=mostest -e MYSQL_DATABASE=mattermost_test -d mysql:5.7
-    - docker run --name mattermost-postgres -e POSTGRES_USER=mmuser -e POSTGRES_PASSWORD=mostest -d postgres:9.4
-    - sleep 10
-    - docker exec mattermost-postgres psql -c 'create database mattermost_test ;' -U postgres
-    - docker exec mattermost-postgres psql -c 'grant all privileges on database "mattermost_test" to mmuser ;' -U postgres
+- docker run --name zboxnow-mysql -e MYSQL_ROOT_PASSWORD=zbtest -e MYSQL_USER=zbuser
+  -e MYSQL_PASSWORD=zbtest -e MYSQL_DATABASE=zboxnow -d -p 3306:3306 mysql:5.7
+- docker run --name zboxnow-postgres -e POSTGRES_USER=zbuser -e POSTGRES_PASSWORD=zbtest
+  -d postgres:9.4
+- sleep 10
+- docker exec zboxnow-postgres psql -c 'create database zboxnow ;' -U postgres
+- docker exec zboxnow-postgres psql -c 'grant all privileges on database "zboxnow"
+  to zbuser ;' -U postgres
 script: make dist-travis
 addons:
   hosts:
   - 127.0.0.1 dockerhost
-after_success:
-    - sudo chown -R `whoami` dist
-    - sudo chmod -R 777 dist
-    - cd dist && curl -F "pr_number=$TRAVIS_PULL_REQUEST" -F "file=@mattermost.tar.gz" mattermod.mattermost.com:8087/upload_pr_build
-    - md5sum mattermost.tar.gz > mm.md5
-    - sha1sum mattermost.tar.gz > mm.sha1
-    - sha256sum mattermost.tar.gz > mm.sha256
-    - cat mm.md5 mm.sha1 mm.sha256
-    - cd ..
-before_deploy:
-    - sudo rm -rf dist/mattermost
-    - rvm 1.9.3 do gem install mime-types -v 2.6.2
 deploy:
-# Github releases, builds only on tags
- - provider: releases
-   api_key:
-     secure: ma8Y0oimU+LB6LTAh8to2E1/ghaDPhcsAFXBrODsHpd4JgxA6HYoEwSEBCJFHSpu/JteclsxSTfp9hcuzw/IOtlwlSAiVoBZ60s24MRKTIAQNtrJ4QrX5wyfAZi+Bcuk/E8NynmoIW5qpaElSAdjgocyjAJIQ5ChMEztglL0cAEBXQRWbWMqSZ0hVLPrKDCIkWIyv3pFxqdLOxktkzxW07r2dlT0hppXR3dCaPJo0nelArS2H3LdN/3Iv6cAddfS27RaZkqDj/PDh6OZr4EguC99TxlVNChIr7nPr3/OiAssbkvEnhlSLeABFO9+7KfutL2WhAjpFXTjtPVq6Qalc8UW0K0gxq//sVfhb1MzjenmdOf06uB2bilQ8kgwHo7dDdRZBqqAtxQ6Q0Ht3SFMj6v/1zVD3s+YX/kWCEbUTHm6r2G/eF794ozcJyU+6j1L8hm6mvf8Mr9XCqBfgpZy6FCLX+9OKdMvX2jY8reo3Xz1PA9R6yzhN08vjku+jW+fsoYrBLd0fY1UGK2uOuvBByCeJzXupd3YpBMjEyRupVxqEj7K0GWOJeml65mkqKSNsHdDSeSjMpb8mwneZyTbdjsxCFQRLcLgpAajFrkk4G2Yz3KfhXSo29XKEGX+EbY5NuP8KmDsBsguPI0zfwv/co0hAY8PIIcehxcdoR9Vb2c=
-   file: dist/mattermost.tar.gz
-   skip_cleanup: true
-   on:
-     repo: mattermost/platform
-     tags: true
-     condition: $TRAVIS_DB = mysql
-
-# S3 deploy for latest master
- - provider: s3
-   access_key_id: AKIAJCO3KJYEGWJIKDIQ
-   secret_access_key:
-     secure: p66X2tJBmKgtcVyPtGgkAwW29IiRojqGA39RjCJkIWNTJ0e/9JvBOiMS2c4a7I4aOads38rsthwdaigBWagDWNH7bGsEZN7B0TszZuFAuU+XGjU5A66MIOfFfzbUg8AnByysr+XG5/bknFIrP/XhM2fbRr6gbYrFUK7TNkpgjFs5u3BzUrz2iTAV8uOpSJqKSnaf0pTZk1EywOK/X8W8ViIjc7Di3FzQcqIW9K3D27N+3rVsv8SRT1hWASVlnG6aThqqebiM8FCGCzAYVgQb3h3Wu8JT5fIz7Qo7A6siVRwNBwWwzP8HkGoinEK32Wsj/fDXk27vjpFQO/+9sV0xfcTbIZA6MnuYWF4rHOT59KcshCWCD3V0FopX57p/dtOzM9+6lxIctAT++izxWoZit/5c5A4633iY1d+RMeTko1POix6MSlxPMRHZUFwSXROgFuWWRpyD6TlUTCST9/wTTd0WDPklAAiYcnuEPW3qCnw0r0xkrA4AwWUXqXdAIwDt5bA27KcjRyY4Fofv9NxH09BNuBTXNPrvnYPZMmaKrv+HOX3NFTreuV6+5LJdhYUxYSBvSWo1jeWIQ5Q9RUdTU0PqmKpMhJKbKey/S4gxCXHg2HR8DwLCcbIZcvneF9yPEAT71YA6zpLKoPVSwWwH97huKSzjpic/RUfFXQOcgCQ=
-   bucket: mattermost-travis-master
-   local_dir: dist
-   acl: public_read
-   region: us-east-1
-   skip_cleanup: true
-   detect_encoding: true
-   on:
-     repo: mattermost/platform
-     branch: master
-     condition: $TRAVIS_DB = mysql
+- provider: script
+  skip_cleanup: true
+  script: scripts/deploy.sh
+  on:
+    repo: ZBoxApp/platform
+    branch: zbox
+    condition: "$TRAVIS_DB = mysql"

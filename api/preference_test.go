@@ -48,7 +48,7 @@ func TestGetAllPreferences(t *testing.T) {
 
 	if result, err := Client.GetAllPreferences(); err != nil {
 		t.Fatal(err)
-	} else if data := result.Data.(model.Preferences); len(data) != 4 {
+	} else if data := result.Data.(model.Preferences); len(data) != 5 {
 		t.Fatal("received the wrong number of preferences")
 	}
 
@@ -57,7 +57,7 @@ func TestGetAllPreferences(t *testing.T) {
 	// note that user2 will automatically have a preference set for them to show user1 for direct messages
 	if result, err := Client.GetAllPreferences(); err != nil {
 		t.Fatal(err)
-	} else if data := result.Data.(model.Preferences); len(data) != 2 {
+	} else if data := result.Data.(model.Preferences); len(data) != 3 {
 		t.Fatal("received the wrong number of preferences")
 	}
 }
