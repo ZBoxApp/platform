@@ -1561,3 +1561,124 @@ export function removeLicenseFile(success, error) {
 
     track('api', 'api_license_upload');
 }
+
+export function listAddons(success, error) {
+    $.ajax({
+        url: '/api/v1/addon/available',
+        dataType: 'json',
+        type: 'GET',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('listAddons', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function installAddon(addonId, success, error) {
+    $.ajax({
+        url: '/api/v1/addon/install',
+        type: 'POST',
+        data: JSON.stringify({addon_id: addonId}),
+        cache: false,
+        contentType: 'application/json',
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('installAddon', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function uninstallAddon(addonId, success, error) {
+    $.ajax({
+        url: '/api/v1/addon/uninstall',
+        type: 'POST',
+        data: JSON.stringify({addon_id: addonId}),
+        cache: false,
+        contentType: 'application/json',
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('installAddon', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function channelGuestInvite(channelId, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/' + channelId + '/',
+        type: 'GET',
+        cache: false,
+        dataType: 'json',
+        success,
+        error
+    });
+}
+
+export function addGuestInvite(guest, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/create',
+        type: 'POST',
+        data: JSON.stringify(guest),
+        contentType: 'application/json',
+        cache: false,
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('addGuestInvite', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function removeGuestInvite(inviteId, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/' + inviteId + '/remove',
+        type: 'POST',
+        cache: false,
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('removeGuestInvite', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function createGuest(user, data, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/new?d=' + encodeURIComponent(data),
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify(user),
+        success,
+        error: function onError(xhr, status, err) {
+            var e = handleError('createGuest', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function loginGuest(name, email, inviteId, success, error) {
+    $.ajax({
+        url: '/api/v1/guest/login',
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify({name, email, inviteId}),
+        success: function onSuccess(data, textStatus, xhr) {
+            track('api', 'api_guest_login_success', data.invite_id, 'email', data.email);
+            sessionStorage.removeItem(data.id + '_last_error');
+            BrowserStore.signalLogin();
+            success(data, textStatus, xhr);
+        },
+        error: function onError(xhr, status, err) {
+            var e = handleError('loginGuest', xhr, status, err);
+            error(e);
+        }
+    });
+}

@@ -30,8 +30,8 @@ multi-line code block
 emoji that should not render in code block: :ice_cream:
 ` + "```" + `
 ` + "`monospace`" + `
-[Link to Mattermost](www.mattermost.com)
-Inline Image with link, alt text, and hover text: ![Build Status](https://travis-ci.org/mattermost/platform.svg?branch=master)](https://travis-ci.org/mattermost/platform)
+[Link to ZBox Now!](www.zboxnow.com)
+Inline Image with link, alt text, and hover text: ![Build Status](https://travis-ci.org/ZBoxApp/platform.svg?branch=zbox)](https://travis-ci.org/ZBoxApp/platform)
 
 Three types of lines:
 ***

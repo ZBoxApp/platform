@@ -25,7 +25,7 @@ export default class Login extends React.Component {
             loginMessage.push(
                     <a
                         className='btn btn-custom-login gitlab'
-                        key='gitlab'
+                        key={Constants.GITLAB_SERVICE}
                         href={'/' + teamName + '/login/gitlab'}
                     >
                         <span className='icon' />
@@ -43,7 +43,7 @@ export default class Login extends React.Component {
             loginMessage.push(
                     <a
                         className='btn btn-custom-login google'
-                        key='google'
+                        key={Constants.GOOGLE_SERVICE}
                         href={'/' + teamName + '/login/google'}
                     >
                         <span className='icon' />
@@ -55,6 +55,24 @@ export default class Login extends React.Component {
                         </span>
                     </a>
            );
+        }
+
+        if (global.window.mm_config.EnableSignUpWithZBox === 'true') {
+            loginMessage.push(
+                <a
+                    className='btn btn-custom-login zbox'
+                    key={Constants.ZBOX_SERVICE}
+                    href={'/' + teamName + '/login/zbox'}
+                >
+                    <span className='icon' />
+                    <span>
+                        <FormattedMessage
+                            id='login.zbox'
+                            defaultMessage='with ZBox'
+                        />
+                    </span>
+                </a>
+            );
         }
 
         const extraParam = Utils.getUrlParameter('extra');

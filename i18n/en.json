@@ -48,6 +48,14 @@
     "translation": "September"
   },
   {
+    "id": "api.addon.publish.descriptor_url.app_error",
+    "translation": "We couldn't get the descriptor from the specified Descriptor URL"
+  },
+  {
+    "id": "api.addon.uninstall.no_installed.app_error",
+    "translation": "This addon is not installed for this team"
+  },
+  {
     "id": "api.admin.file_read_error",
     "translation": "Error reading log file"
   },
@@ -57,11 +65,11 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "<br/><br/><br/>It appears your Mattermost email is setup correctly!"
+    "translation": "<br/><br/><br/>It appears your ZBox NOW! email is setup correctly!"
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Testing Email Settings"
+    "translation": "ZBox NOW! - Testing Email Settings"
   },
   {
     "id": "api.api.init.parsing_templates.debug",
@@ -345,7 +353,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Logout of Mattermost"
+    "translation": "Logout of ZBox NOW!"
   },
   {
     "id": "api.command_logout.name",
@@ -568,6 +576,22 @@
     "translation": "Encountered an error writing to local server storage"
   },
   {
+    "id": "api.guest.create_invitation.direct_channel.app_error",
+    "translation": "Invitations cannot be created in Direct Message Channels"
+  },
+  {
+    "id": "api.guest.create_invitation.permissions.app_error",
+    "translation": "You do not have the appropriate permissions"
+  },
+  {
+    "id": "api.guest.init.debug",
+    "translation": "Initializing guest api routes"
+  },
+  {
+    "id": "api.guest.remove_invitation.deleted.app_error",
+    "translation": "This invitation already has been removed"
+  },
+  {
     "id": "api.import.import_post.saving.debug",
     "translation": "Error saving post. user=%v, message=%v"
   },
@@ -618,6 +642,10 @@
   {
     "id": "api.license.add_license.unique_users.app_error",
     "translation": "This license only supports {{.Users}} users, when your system has {{.Count}} unique users. Unique users are counted distinctly by email address. You can see total user count under Site Reports -> View Statistics."
+  },
+  {
+    "id": "api.license.addon.debug",
+    "translation": "Initializing addons api routes"
   },
   {
     "id": "api.license.init.debug",
@@ -949,7 +977,7 @@
   },
   {
     "id": "api.slackimport.slack_import.log",
-    "translation": "Mattermost Slack Import Log\r\n"
+    "translation": "ZBox NOW! Slack Import Log\r\n"
   },
   {
     "id": "api.slackimport.slack_import.note1",
@@ -974,6 +1002,10 @@
   {
     "id": "api.team.create_team.email_disabled.app_error",
     "translation": "Team sign-up with email is disabled."
+  },
+  {
+    "id": "api.team.create_team.system_boot.app_error",
+    "translation": "We encountered an error while creating the System Bot User."
   },
   {
     "id": "api.team.create_team_from_signup.email_disabled.app_error",
@@ -1117,7 +1149,7 @@
   },
   {
     "id": "api.templates.error.link",
-    "translation": "Go back to Mattermost"
+    "translation": "Go back to ZBox NOW!"
   },
   {
     "id": "api.templates.error.title",
@@ -1145,7 +1177,7 @@
   },
   {
     "id": "api.templates.invite_body.extra_info",
-    "translation": "Mattermost lets you share messages and files from your PC or phone, with instant search and archiving. After you’ve joined <strong>{{.TeamDisplayName}}</strong>, you can sign-in to your new team and access these features anytime from the web address:<br/><br/><a href='{{.TeamURL}}'>{{.TeamURL}}</a>"
+    "translation": "ZBox NOW! lets you share messages and files from your PC or phone, with instant search and archiving. After you’ve joined <strong>{{.TeamDisplayName}}</strong>, you can sign-in to your new team and access these features anytime from the web address:<br/><br/><a href='{{.TeamURL}}'>{{.TeamURL}}</a>"
   },
   {
     "id": "api.templates.invite_body.info",
@@ -1261,7 +1293,7 @@
   },
   {
     "id": "api.templates.welcome_body.info3",
-    "translation": "Mattermost lets you share messages and files from your PC or phone, with instant search and archiving."
+    "translation": "ZBox NOW! lets you share messages and files from your PC or phone, with instant search and archiving."
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -1436,6 +1468,10 @@
     "translation": "Could not parse auth data out of {{.Service}} user object"
   },
   {
+    "id": "api.user.login_by_zbox.authorized.app_error",
+    "translation": "Your user is not authorized to use ZBox Now"
+  },
+  {
     "id": "api.user.login_ldap.blank_pwd.app_error",
     "translation": "Password field must not be blank"
   },
@@ -1608,6 +1644,10 @@
     "translation": "Couldn't upload profile image"
   },
   {
+    "id": "api.user.zbox_login.unathorized.app_error",
+    "translation": "Unauthorized"
+  },
+  {
     "id": "api.web_conn.new_web_conn.last_activity.error",
     "translation": "Failed to update LastActivityAt for user_id=%v and session_id=%v, err=%v"
   },
@@ -1749,7 +1789,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Mattermost Security Bulletin"
+    "translation": "ZBox NOW! Security Bulletin"
   },
   {
     "id": "mattermost.config_file",
@@ -1777,11 +1817,11 @@
   },
   {
     "id": "mattermost.security_checks.debug",
-    "translation": "Checking for security update from Mattermost"
+    "translation": "Checking for security update from ZBox NOW!"
   },
   {
     "id": "mattermost.security_info.error",
-    "translation": "Failed to get security update information from Mattermost."
+    "translation": "Failed to get security update information from ZBox NOW!."
   },
   {
     "id": "mattermost.send_bulletin.info",
@@ -1789,7 +1829,7 @@
   },
   {
     "id": "mattermost.system_admins.error",
-    "translation": "Failed to get system admins for security update information from Mattermost."
+    "translation": "Failed to get system admins for security update information from ZBox NOW!."
   },
   {
     "id": "mattermost.working_dir",
@@ -1810,6 +1850,190 @@
   {
     "id": "model.access.is_valid.refresh_token.app_error",
     "translation": "Invalid refresh token"
+  },
+  {
+    "id": "model.addon.config_url.app_error",
+    "translation": "Invalid Config URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.currency.app_error",
+    "translation": "Invalid Currency. Must be a valid ISO 4217 currency code"
+  },
+  {
+    "id": "model.addon.descriptor_url.app_error",
+    "translation": "Invalid Descriptor URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.icon_url.app_error",
+    "translation": "Invalid Icon URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.installed_url.app_error",
+    "translation": "Invalid Installed URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.invalid_category.app_error",
+    "translation": "Invalid category"
+  },
+  {
+    "id": "model.addon.invalid_create_at.app_error",
+    "translation": "Create at must be a valid time"
+  },
+  {
+    "id": "model.addon.invalid_description.app_error",
+    "translation": "Invalid description. Must have a maximum of 400 characters"
+  },
+  {
+    "id": "model.addon.invalid_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon.invalid_name.app_error",
+    "translation": "Invalid name"
+  },
+  {
+    "id": "model.addon.invalid_update_at.app_error",
+    "translation": "Update at must be a valid time"
+  },
+  {
+    "id": "model.addon.published_url.app_error",
+    "translation": "Invalid Published URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon.uninstalled_url.app_error",
+    "translation": "Invalid Uninstalled URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_action.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_action.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_action.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_action.invalid_name.app_error",
+    "translation": "Invalid name"
+  },
+  {
+    "id": "model.addon_action.invalid_target.app_error",
+    "translation": "Invalid target"
+  },
+  {
+    "id": "model.addon_compact.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_compact.icon_url.app_error",
+    "translation": "Invalid Icon URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_compact.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_compact.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_compact.invalid_name.app_error",
+    "translation": "Invalid name"
+  },
+  {
+    "id": "model.addon_compact.invalid_target.app_error",
+    "translation": "Invalid target"
+  },
+  {
+    "id": "model.addon_compact.query_url.app_error",
+    "translation": "Invalid Query URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_dialog.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_dialog.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_dialog.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_dialog.invalid_url.app_error",
+    "translation": "Invalid URL. Must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_dialog.primary_key.app_error",
+    "translation": "Invalid Primary action key"
+  },
+  {
+    "id": "model.addon_dialog.primary_name.app_error",
+    "translation": "Invalid Primary action name"
+  },
+  {
+    "id": "model.addon_dialog.secondary_key.app_error",
+    "translation": "Invalid Secondary action key"
+  },
+  {
+    "id": "model.addon_dialog.secondary_name.app_error",
+    "translation": "Invalid Secondary action name"
+  },
+  {
+    "id": "model.addon_dialog.title.app_error",
+    "translation": "Invalid title"
+  },
+  {
+    "id": "model.addon_webhook.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_webhook.callbacks.app_error",
+    "translation": "Invalid callback urls"
+  },
+  {
+    "id": "model.addon_webhook.callbacks_url.app_error",
+    "translation": "Invalid callback URLs. Each must be a valid URL and start with http:// or https://"
+  },
+  {
+    "id": "model.addon_webhook.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_webhook.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_webhook.trigger_words.app_error",
+    "translation": "Invalid trigger words"
+  },
+  {
+    "id": "model.addon_webpanel.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_key.app_error",
+    "translation": "Invalid key"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_name.app_error",
+    "translation": "Invalid name"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_url.app_error",
+    "translation": "Invalid URL. Must be a valid URL and start with http:// or https://"
   },
   {
     "id": "model.authorize.is_valid.auth_code.app_error",
@@ -2040,6 +2264,22 @@
     "translation": "Could not decode gif."
   },
   {
+    "id": "model.guest.is_valid.channel_id.app_error",
+    "translation": "Invalid channel_id"
+  },
+  {
+    "id": "model.guest.is_valid.create_at.app_error",
+    "translation": "Create at must be a valid time"
+  },
+  {
+    "id": "model.guest.is_valid.id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.guest.is_valid.update_at.app_error",
+    "translation": "Update at must be a valid time"
+  },
+  {
     "id": "model.incoming_hook.channel_id.app_error",
     "translation": "Invalid channel id"
   },
@@ -2256,6 +2496,22 @@
     "translation": "Invalid URL Identifier"
   },
   {
+    "id": "model.team_addon.addon_id.app_error",
+    "translation": "Invalid addon id"
+  },
+  {
+    "id": "model.team_addon.installed.app_error",
+    "translation": "Installed at must be a valid time"
+  },
+  {
+    "id": "model.team_addon.team_addon_id.app_error",
+    "translation": "Invalid team addon id"
+  },
+  {
+    "id": "model.team_addon.team_id.app_error",
+    "translation": "Invalid team id"
+  },
+  {
     "id": "model.user.is_valid.auth_data.app_error",
     "translation": "Invalid auth data"
   },
@@ -2438,6 +2694,142 @@
   {
     "id": "store.sql.upgraded.warn",
     "translation": "The database schema has been upgraded to version %v"
+  },
+  {
+    "id": "store.sql_addon.delete.addon.app_error",
+    "translation": "We couldn't delete the addon"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_actions.app_error",
+    "translation": "We couldn't delete the addon actions"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_compacts.app_error",
+    "translation": "We couldn't delete the addon compacts"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_dialogs.app_error",
+    "translation": "We couldn't delete the addon dialogs"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_hooks.app_error",
+    "translation": "We couldn't delete the addon webhooks"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_webpanels.app_error",
+    "translation": "We couldn't delete the addon web panels"
+  },
+  {
+    "id": "store.sql_addon.disable.app_error",
+    "translation": "We couldn't disable the addon"
+  },
+  {
+    "id": "store.sql_addon.enable.app_error",
+    "translation": "We couldn't enable the addon"
+  },
+  {
+    "id": "store.sql_addon.get.addon.app_error",
+    "translation": "We couldn't get the addon"
+  },
+  {
+    "id": "store.sql_addon.get.addon_actions.app_error",
+    "translation": "We couln't get the addon actions"
+  },
+  {
+    "id": "store.sql_addon.get.addon_compacts.app_error",
+    "translation": "We couln't get the addon compacts"
+  },
+  {
+    "id": "store.sql_addon.get.addon_dialogs.app_error",
+    "translation": "We couln't get the addon dialogs"
+  },
+  {
+    "id": "store.sql_addon.get.addon_hooks.app_error",
+    "translation": "We couln't get the addon webhooks"
+  },
+  {
+    "id": "store.sql_addon.get.addon_webpanels.app_error",
+    "translation": "We couln't get the addon web panels"
+  },
+  {
+    "id": "store.sql_addon.get.addons.app_error",
+    "translation": "We couldn't get the addons"
+  },
+  {
+    "id": "store.sql_addon.install.app_error",
+    "translation": "We couldn't install the addon."
+  },
+  {
+    "id": "store.sql_addon.installed.already.app_error",
+    "translation": "This addon is already installed for this team"
+  },
+  {
+    "id": "store.sql_addon.save.addon_action.app_error",
+    "translation": "We couldn't save the addon action"
+  },
+  {
+    "id": "store.sql_addon.save.addon_compact.app_error",
+    "translation": "We couldn't save the addon compact"
+  },
+  {
+    "id": "store.sql_addon.save.addon_dialog.app_error",
+    "translation": "We couldn't save the addon dialog"
+  },
+  {
+    "id": "store.sql_addon.save.addon_hook.app_error",
+    "translation": "We couldn't save the addon webhook"
+  },
+  {
+    "id": "store.sql_addon.save.addon_webpanel.app_error",
+    "translation": "We couldn't save the addon Web panel"
+  },
+  {
+    "id": "store.sql_addon.save.already_exists.app_error",
+    "translation": "An addon with that Name already exists"
+  },
+  {
+    "id": "store.sql_addon.save.app_error",
+    "translation": "We couldn't save the addon"
+  },
+  {
+    "id": "store.sql_addon.save.commit_transaction.app_error",
+    "translation": "Unable to commit transaction"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon.app_error",
+    "translation": "Must call update for exisiting addon"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_action.app_error",
+    "translation": "Must call update for exisiting addon action"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_compact.app_error",
+    "translation": "Must call update for exisiting addon compact"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_dialog.app_error",
+    "translation": "Must call update for exisiting addon dialog"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_hook.app_error",
+    "translation": "Must call update for exisiting addon webhook"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_webpanel.app_error",
+    "translation": "Must call update for exisiting addon Web panel"
+  },
+  {
+    "id": "store.sql_addon.save.open_transaction.app_error",
+    "translation": "Unable to open transaction"
+  },
+  {
+    "id": "store.sql_addon.save.previously.app_error",
+    "translation": "An addon with that Name was previously created"
+  },
+  {
+    "id": "store.sql_addon.uninstall.app_error",
+    "translation": "We couldn't uninstall the existing addon"
   },
   {
     "id": "store.sql_audit.get.finding.app_error",
@@ -2662,6 +3054,70 @@
   {
     "id": "store.sql_command.save.update.app_error",
     "translation": "We couldn't update the command"
+  },
+  {
+    "id": "store.sql_guest.delete.invite.app_error",
+    "translation": "We couldn't delete the guest invitation"
+  },
+  {
+    "id": "store.sql_guest.get_by_channel_id.finding.app_error",
+    "translation": "We couldn't get the guest invitation for the channel"
+  },
+  {
+    "id": "store.sql_guest.get_by_invite_id.expired.app_error",
+    "translation": "The guest invitation has expired"
+  },
+  {
+    "id": "store.sql_guest.get_by_invite_id.finding.app_error",
+    "translation": "We encountered an error finding the guest invitation"
+  },
+  {
+    "id": "store.sql_guest.get_members.app_error",
+    "translation": "We couldn't get the guest members"
+  },
+  {
+    "id": "store.sql_guest.remove_members.app_error",
+    "translation": "We encountered an error while removing the guest members from the channel"
+  },
+  {
+    "id": "store.sql_guest.remove_members.no_members.app_error",
+    "translation": "There are no guest members in the channel"
+  },
+  {
+    "id": "store.sql_guest.remove_members.no_users.app_error",
+    "translation": "There are no guest members users to remove"
+  },
+  {
+    "id": "store.sql_guest.remove_users.app_error",
+    "translation": "We encountered an error while deleting the guest members users"
+  },
+  {
+    "id": "store.sql_guest.save.already.app_error",
+    "translation": "This Channel already has a guest invitation"
+  },
+  {
+    "id": "store.sql_guest.save.app_error",
+    "translation": "An error while saving the channel guest invitation"
+  },
+  {
+    "id": "store.sql_guest.save.existing.app_error",
+    "translation": "You cannot update an existing guest invitation"
+  },
+  {
+    "id": "store.sql_guest.update.app_error",
+    "translation": "We couldn't update the guest invitation"
+  },
+  {
+    "id": "store.sql_guest.update.find.app_error",
+    "translation": "We couldn't find the existing guest invitation to update"
+  },
+  {
+    "id": "store.sql_guest.update.finding.app_error",
+    "translation": "We encountered an error finding the guest invitation"
+  },
+  {
+    "id": "store.sql_guest.update.updating.app_error",
+    "translation": "We encountered an error updating the guest invitation"
   },
   {
     "id": "store.sql_license.get.app_error",
@@ -3044,6 +3500,10 @@
     "translation": "We encountered an error while finding user profiles"
   },
   {
+    "id": "store.sql_user.get_system_bot.app_error",
+    "translation": "We couldn't find the existing account"
+  },
+  {
     "id": "store.sql_user.get_total_active_users_count.app_error",
     "translation": "We could not count the users"
   },
@@ -3150,6 +3610,14 @@
   {
     "id": "store.sql_webhooks.delete_outgoing.app_error",
     "translation": "We couldn't delete the webhook"
+  },
+  {
+    "id": "store.sql_webhooks.enable_incoming.app_error",
+    "translation": "We couldn't enable the incoming webhook"
+  },
+  {
+    "id": "store.sql_webhooks.enable_outgoing.app_error",
+    "translation": "We couldn't enable the outgoing webhook"
   },
   {
     "id": "store.sql_webhooks.get_incoming.app_error",
@@ -3300,6 +3768,14 @@
     "translation": "SMTP server settings do not appear to be configured properly err=%v details=%v"
   },
   {
+    "id": "web.addons.admin.app_error",
+    "translation": "Unauthorize Access. You have to be a Team or System Admin to Manage Addons"
+  },
+  {
+    "id": "web.addons.title",
+    "translation": "Manage ZBox NOW! Addons"
+  },
+  {
     "id": "web.admin_console.title",
     "translation": "Admin Console"
   },
@@ -3426,6 +3902,18 @@
   {
     "id": "web.get_access_token.revoking.error",
     "translation": "Encountered an error revoking an access token, err="
+  },
+  {
+    "id": "web.get_addon_token.invalid_team.app_error",
+    "translation": "invalid_client: Invalid team"
+  },
+  {
+    "id": "web.get_addon_token.missing_team.app_error",
+    "translation": "invalid_request: Missing team"
+  },
+  {
+    "id": "web.get_addon_token.not_installed.app_error",
+    "translation": "invalid_client: This addon is not installed for team={{.Team}}"
   },
   {
     "id": "web.incoming_webhook.channel.app_error",
@@ -3558,5 +4046,25 @@
   {
     "id": "web.watcher_fail.error",
     "translation": "Failed to add directory to watcher %v"
-  }
+  },
+    {
+        "id": "api.guest.join_channel.post_and_forget",
+        "translation": "The guest %v has joined the channel."
+    },
+    {
+        "id": "api.guest.create_guest_invitation.post_and_forget",
+        "translation": "%v has enabled guests access to this channel."
+    },
+    {
+        "id": "api.guest.remove_guest_invitation.post_and_forget",
+        "translation": "%v has disabled guests access to this channel. All guests have been removed."
+    },
+    {
+        "id": "web.get_guest_channel.no_member.app_error",
+        "translation": "You haven't used the invitation link to access {{.ChannelName}} channel. Please try again using the provided link."
+    },
+    {
+        "id": "web.get_guest_channel.only.app_error",
+        "translation": "You are not a Guest of {{.TeamName}} Team for the {{.ChannelName}} channel yet. Please try again using the provided link."
+    }
 ]

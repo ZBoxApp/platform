@@ -69,3 +69,5 @@ api/data/*
 tags
 
 model/version.go.bak
+.idea
+*zboxnow.log

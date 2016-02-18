@@ -58,6 +58,12 @@ export default {
         TOGGLE_GET_TEAM_INVITE_LINK_MODAL: null,
         TOGGLE_REGISTER_APP_MODAL: null,
 
+        ADDON_INSTALLED: null,
+        ADDON_UNINSTALLED: null,
+        TOGGLE_ADDON_INSTALL_MODAL: null,
+        TOGGLE_ADDON_UNINSTALL_MODAL: null,
+        TOGGLE_ADDON_CONFIG_MODAL: null,
+
         SUGGESTION_PRETEXT_CHANGED: null,
         SUGGESTION_RECEIVED_SUGGESTIONS: null,
         SUGGESTION_CLEAR_SUGGESTIONS: null,
@@ -120,6 +126,7 @@ export default {
     OFFTOPIC_CHANNEL: 'off-topic',
     GITLAB_SERVICE: 'gitlab',
     GOOGLE_SERVICE: 'google',
+    ZBOX_SERVICE: 'zbox',
     EMAIL_SERVICE: 'email',
     SIGNIN_CHANGE: 'signin_change',
     SIGNIN_VERIFIED: 'verified',

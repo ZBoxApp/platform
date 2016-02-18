@@ -1,0 +1,12 @@
+{{define "addons"}}
+<!DOCTYPE html>
+<html>
+{{template "head" . }}
+<body>
+<div id='addons'></div>
+<script>
+    window.setup_addons_page({{ .Props }});
+</script>
+</body>
+</html>
+{{end}}

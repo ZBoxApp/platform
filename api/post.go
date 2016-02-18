@@ -350,9 +350,9 @@ func handleWebhookEventsAndForget(c *Context, post *model.Post, team *model.Team
 			return
 		}
 
-		if channel.Type != model.CHANNEL_OPEN {
-			return
-		}
+		//if channel.Type != model.CHANNEL_OPEN {
+		//	return
+		//}
 
 		hchan := Srv.Store.Webhook().GetOutgoingByTeam(c.Session.TeamId)
 

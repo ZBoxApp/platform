@@ -1,0 +1,26 @@
+{{define "guest_signup"}}
+<!DOCTYPE html>
+<html>
+{{template "head" . }}
+<body class="white">
+<div class="container-fluid">
+    <div class="inner__wrap">
+        <div class="row content">
+            <div class="col-sm-12">
+                <div class="signup-team__container padding--less">
+                    <div id="guest-signup"></div>
+                </div>
+            </div>
+            <div class="footer-push"></div>
+        </div>
+        <div class="row footer">
+            {{template "footer" . }}
+        </div>
+    </div>
+</div>
+<script>
+    window.setup_guest_signup_page({{ .Props }});
+</script>
+</body>
+</html>
+{{end}}

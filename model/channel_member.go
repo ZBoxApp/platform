@@ -61,7 +61,7 @@ func (o *ChannelMember) IsValid() *AppError {
 	}
 
 	for _, role := range strings.Split(o.Roles, " ") {
-		if !(role == "" || role == CHANNEL_ROLE_ADMIN) {
+		if !(role == "" || role == CHANNEL_ROLE_ADMIN || role == ROLE_GUEST_USER) {
 			return NewLocAppError("ChannelMember.IsValid", "model.channel_member.is_valid.role.app_error", nil, "role="+role)
 		}
 	}

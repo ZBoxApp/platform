@@ -283,6 +283,24 @@ class SignupUserComplete extends React.Component {
            );
         }
 
+        if (global.window.mm_config.EnableSignUpWithZBox === 'true') {
+            signupMessage.push(
+                <a
+                    className='btn btn-custom-login zbox'
+                    key='zbox'
+                    href={'/' + this.props.teamName + '/signup/zbox' + window.location.search}
+                >
+                    <span className='icon' />
+                    <span>
+                        <FormattedMessage
+                            id='signup_user_completed.zbox'
+                            defaultMessage='with ZBox'
+                        />
+                    </span>
+                </a>
+            );
+        }
+
         var emailSignup;
         if (global.window.mm_config.EnableSignUpWithEmail === 'true') {
             emailSignup = (

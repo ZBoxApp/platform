@@ -17,6 +17,7 @@ import (
 const (
 	ROLE_TEAM_ADMIN      = "admin"
 	ROLE_SYSTEM_ADMIN    = "system_admin"
+	ROLE_GUEST_USER      = "guest"
 	USER_AWAY_TIMEOUT    = 5 * 60 * 1000 // 5 minutes
 	USER_OFFLINE_TIMEOUT = 1 * 60 * 1000 // 1 minute
 	USER_OFFLINE         = "offline"
@@ -25,7 +26,7 @@ const (
 	USER_NOTIFY_ALL      = "all"
 	USER_NOTIFY_MENTION  = "mention"
 	USER_NOTIFY_NONE     = "none"
-	DEFAULT_LOCALE       = "en"
+	DEFAULT_LOCALE       = "es"
 )
 
 type User struct {
@@ -321,6 +322,10 @@ func isValidRole(role string) bool {
 		return true
 	}
 
+	if role == ROLE_GUEST_USER {
+		return true
+	}
+
 	return false
 }
 
@@ -463,6 +468,12 @@ func CleanUsername(s string) string {
 	if !IsValidUsername(s) {
 		s = "a" + NewId()
 	}
+
+	return s
+}
+
+func SetUsernameFromEmail(s string) string {
+	s = strings.Split(s, "@")[0]
 
 	return s
 }

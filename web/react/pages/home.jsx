@@ -4,8 +4,8 @@
 import TeamStore from '../stores/team_store.jsx';
 import Constants from '../utils/constants.jsx';
 
-function setupHomePage() {
-    var last = null;
+function setupHomePage(props) {
+    var last = props.Last;
     if (last == null || last.length === 0) {
         window.location = TeamStore.getCurrentTeamUrl() + '/channels/' + Constants.DEFAULT_CHANNEL;
     } else {

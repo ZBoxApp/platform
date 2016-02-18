@@ -73,10 +73,13 @@ func InitWeb() {
 	l4g.Debug("Using static directory at %v", staticDir)
 	mainrouter.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
 
+	mainrouter.Handle("/", api.AppHandlerIndependent(ping)).Methods("HEAD")
 	mainrouter.Handle("/", api.AppHandlerIndependent(root)).Methods("GET")
 	mainrouter.Handle("/oauth/authorize", api.UserRequired(authorizeOAuth)).Methods("GET")
 	mainrouter.Handle("/oauth/access_token", api.ApiAppHandler(getAccessToken)).Methods("POST")
+	mainrouter.Handle("/oauth/client_token", api.ApiAppHandler(getAddonToken)).Methods("POST")
 
+	mainrouter.Handle("/zimbra_login", api.AppHandler(zimbra)).Methods("GET")
 	mainrouter.Handle("/signup_team_complete/", api.AppHandlerIndependent(signupTeamComplete)).Methods("GET")
 	mainrouter.Handle("/signup_user_complete/", api.AppHandlerIndependent(signupUserComplete)).Methods("GET")
 	mainrouter.Handle("/signup_team_confirm/", api.AppHandlerIndependent(signupTeamConfirm)).Methods("GET")
@@ -96,6 +99,12 @@ func InitWeb() {
 
 	mainrouter.Handle("/docs/{doc:[A-Za-z0-9]+}", api.AppHandlerIndependent(docs)).Methods("GET")
 
+	mainrouter.Handle("/addons", api.UserRequired(addons)).Methods("GET")
+	mainrouter.Handle("/addons/", api.UserRequired(addons)).Methods("GET")
+	mainrouter.Handle("/addons/{category:[A-Za-z0-9-_]+}", api.UserRequired(addons)).Methods("GET")
+
+	mainrouter.Handle("/guest_signup/", api.AppHandlerIndependent(guestSignup)).Methods("GET")
+
 	// ----------------------------------------------------------------------------------------------
 	// *ANYTHING* team specific should go below this line
 	// ----------------------------------------------------------------------------------------------
@@ -109,6 +118,7 @@ func InitWeb() {
 	mainrouter.Handle("/{team}/pl/{postid}", api.AppHandler(postPermalink)).Methods("GET")         // Bug in gorilla.mux prevents us from using regex here.
 	mainrouter.Handle("/{team}/login/{service}", api.AppHandler(loginWithOAuth)).Methods("GET")    // Bug in gorilla.mux prevents us from using regex here.
 	mainrouter.Handle("/{team}/channels/{channelname}", api.AppHandler(getChannel)).Methods("GET") // Bug in gorilla.mux prevents us from using regex here.
+	mainrouter.Handle("/{team}/guest/{channelname}", api.AppHandler(getGuestChannel)).Methods("GET") // Bug in gorilla.mux prevents us from using regex here.
 	mainrouter.Handle("/{team}/signup/{service}", api.AppHandler(signupWithOAuth)).Methods("GET")  // Bug in gorilla.mux prevents us from using regex here.
 
 	watchAndParseTemplates()
@@ -170,6 +180,10 @@ func CheckBrowserCompatability(c *api.Context, r *http.Request) bool {
 
 }
 
+func ping(c *api.Context, w http.ResponseWriter, r *http.Request) {
+
+}
+
 func root(c *api.Context, w http.ResponseWriter, r *http.Request) {
 
 	if !CheckBrowserCompatability(c, r) {
@@ -197,6 +211,12 @@ func root(c *api.Context, w http.ResponseWriter, r *http.Request) {
 
 		page.Render(c, w)
 	} else {
+		if c.IsGuestUser() {
+			c.Err = model.NewLocAppError("root", "web.root.guest_not_allowed.app_error", nil, "")
+			c.Err.StatusCode = http.StatusForbidden
+			return
+		}
+
 		teamChan := api.Srv.Store.Team().Get(c.Session.TeamId)
 		userChan := api.Srv.Store.User().Get(c.Session.UserId)
 
@@ -217,9 +237,17 @@ func root(c *api.Context, w http.ResponseWriter, r *http.Request) {
 			user = ur.Data.(*model.User)
 		}
 
+		lastViewChannelName := model.DEFAULT_CHANNEL
+		if lastViewResult := <-api.Srv.Store.Preference().Get(c.Session.UserId, model.PREFERENCE_CATEGORY_LAST, model.PREFERENCE_NAME_LAST_CHANNEL); lastViewResult.Err == nil {
+			if lastViewChannelResult := <-api.Srv.Store.Channel().Get(lastViewResult.Data.(model.Preference).Value); lastViewChannelResult.Err == nil {
+				lastViewChannelName = lastViewChannelResult.Data.(*model.Channel).Name
+			}
+		}
+
 		page := NewHtmlTemplatePage("home", c.T("web.root.home_title"), c.Locale)
 		page.Team = team
 		page.User = user
+		page.Props["Last"] = lastViewChannelName
 		page.Render(c, w)
 	}
 }
@@ -261,9 +289,15 @@ func login(c *api.Context, w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		http.Redirect(w, r, c.GetSiteURL()+"/"+team.Name+"/channels/"+lastViewChannelName, http.StatusTemporaryRedirect)
+		if model.IsInRole(session.Roles, model.ROLE_GUEST_USER) {
+			c.Err = model.NewLocAppError("root", "web.root.guest_not_allowed.app_error", nil, "")
+			c.Err.StatusCode = http.StatusForbidden
+		} else {
+			http.Redirect(w, r, c.GetSiteURL() + "/" + team.Name + "/channels/" + lastViewChannelName, http.StatusTemporaryRedirect)
+		}
 		return
 	}
+
 
 	page := NewHtmlTemplatePage("login", c.T("web.login.login_title"), c.Locale)
 	page.Props["TeamDisplayName"] = team.DisplayName
@@ -418,6 +452,12 @@ func getChannel(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	name := params["channelname"]
 	teamName := params["team"]
+
+	if c.IsGuestUser() {
+		c.Err = model.NewLocAppError("root", "web.root.guest_not_allowed.app_error", nil, "")
+		c.Err.StatusCode = http.StatusForbidden
+		return
+	}
 
 	team := checkSessionSwitch(c, w, r, teamName)
 	if team == nil {
@@ -1131,7 +1171,7 @@ func incomingWebhook(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	// create a mock session
 	c.Session = model.Session{UserId: hook.UserId, TeamId: hook.TeamId, IsOAuth: false}
 
-	if !c.HasPermissionsToChannel(pchan, "createIncomingHook") && channel.Type != model.CHANNEL_OPEN {
+	if !c.HasPermissionsToChannel(pchan, "createIncomingHook") && channel.Type == model.CHANNEL_DIRECT {
 		c.Err = model.NewLocAppError("incomingWebhook", "web.incoming_webhook.permissions.app_error", nil, "")
 		return
 	}
@@ -1198,4 +1238,307 @@ func claimAccount(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	page.Props["TeamName"] = team.Name
 
 	page.Render(c, w)
+}
+
+func zimbra(c *api.Context, w http.ResponseWriter, r *http.Request) {
+	params := r.URL.Query()
+	email := params.Get("email")
+
+	if err := api.Zimbra(c, w, r, email); err != nil {
+		c.Err = err
+	} else {
+		root(c, w, r)
+	}
+}
+
+func getAddonToken(c *api.Context, w http.ResponseWriter, r *http.Request) {
+	if !utils.Cfg.ServiceSettings.EnableOAuthServiceProvider {
+		c.Err = model.NewLocAppError("getAccessToken", "web.authorize_oauth.disabled.app_error", nil, "")
+		c.Err.StatusCode = http.StatusNotImplemented
+		return
+	}
+
+	c.LogAudit("attempt")
+
+	r.ParseForm()
+
+	grantType := r.FormValue("grant_type")
+	if grantType != model.ACCESS_CLIENT_GRANT_TYPE {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.bad_grant.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	clientId := r.FormValue("client_id")
+	if len(clientId) != 26 {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.bad_client_id.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	secret := r.FormValue("client_secret")
+	if len(secret) == 0 {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.bad_client_secret.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	teamName := r.FormValue("team_name")
+	if len(teamName) == 0 {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_addon_token.missing_team.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	achan := api.Srv.Store.OAuth().GetApp(clientId)
+	tchan := api.Srv.Store.Team().GetByName(teamName)
+
+	var app *model.OAuthApp
+	if result := <-achan; result.Err != nil {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.credentials.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	} else {
+		app = result.Data.(*model.OAuthApp)
+	}
+
+	if !model.ComparePassword(app.ClientSecret, secret) {
+		c.LogAudit("fail - invalid client credentials")
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.credentials.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	var team *model.Team
+	if result := <-tchan; result.Err != nil {
+		c.LogAudit("fail - invalid team name")
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_addon_token.invalid_team.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	} else {
+		team = result.Data.(*model.Team)
+	}
+
+	adchan := api.Srv.Store.Addon().IsInstalled(team.Id, app.CreatorId)
+	if result := <-adchan; result.Err == nil {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_addon_token.not_installed.app_error",
+			map[string]interface{}{"Team": teamName}, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	var user *model.User
+	uchan := api.Srv.Store.User().GetByUsername(team.Id, model.SYSTEM_BOT_NAME)
+	if result := <-uchan; result.Err != nil {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.internal_user.app_error", nil, "")
+		return
+	} else {
+		user = result.Data.(*model.User)
+	}
+
+	token := ""
+	authHeader := r.Header.Get(model.HEADER_AUTH)
+	if len(authHeader) > 6 && strings.ToUpper(authHeader[0:6]) == model.HEADER_BEARER {
+		// Default session token
+		token = authHeader[7:]
+
+	} else if len(authHeader) > 5 && strings.ToLower(authHeader[0:5]) == model.HEADER_TOKEN {
+		// OAuth token
+		token = authHeader[6:]
+	}
+
+	var session *model.Session
+	if len(token) != 0 {
+		schan := api.Srv.Store.Session().Get(token)
+
+		if result := <-schan; result.Err == nil {
+			session = result.Data.(*model.Session)
+
+		}
+	}
+
+	if session == nil || session.IsExpired() {
+		session = &model.Session{UserId: user.Id, TeamId: user.TeamId, Roles: user.Roles, IsOAuth: true}
+		session.SetExpireInDays(*utils.Cfg.ServiceSettings.SessionLengthSSOInDays)
+
+		if result := <-api.Srv.Store.Session().Save(session); result.Err != nil {
+			c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.internal_session.app_error", nil, "")
+			return
+		} else {
+			session = result.Data.(*model.Session)
+			api.AddSessionToCache(session)
+		}
+	}
+
+	accessRsp := &model.AccessResponse{AccessToken: session.Token, TokenType: model.ACCESS_CLIENT_GRANT_TYPE, ExpiresIn: int32((session.ExpiresAt - model.GetMillis()) / 1000)}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-store")
+	w.Header().Set("Pragma", "no-cache")
+
+	c.LogAuditWithUserId(user.Id, "success")
+
+	w.Write([]byte(accessRsp.ToJson()))
+}
+
+func addons(c *api.Context, w http.ResponseWriter, r *http.Request) {
+
+	if !c.IsTeamAdmin() {
+		c.Err = model.NewLocAppError("addons", "web.addons.admin.app_error", nil, "")
+		c.Err.StatusCode = http.StatusForbidden
+		return
+	}
+
+	teamChan := api.Srv.Store.Team().Get(c.Session.TeamId)
+	userChan := api.Srv.Store.User().Get(c.Session.UserId)
+
+	var team *model.Team
+	if tr := <-teamChan; tr.Err != nil {
+		c.Err = tr.Err
+		return
+	} else {
+		team = tr.Data.(*model.Team)
+
+	}
+
+	var user *model.User
+	if ur := <-userChan; ur.Err != nil {
+		c.Err = ur.Err
+		return
+	} else {
+		user = ur.Data.(*model.User)
+	}
+
+	params := mux.Vars(r)
+	category := params["category"]
+
+	page := NewHtmlTemplatePage("addons", c.T("web.addons.title"), c.Locale)
+	page.User = user
+	page.Team = team
+	page.Props["Category"] = category
+	page.Render(c, w)
+}
+
+func guestSignup(c *api.Context, w http.ResponseWriter, r *http.Request) {
+
+	id := r.FormValue("id")
+	data := r.FormValue("d")
+	hash := r.FormValue("h")
+	var props map[string]string
+
+	if len(id) > 0 {
+		props = make(map[string]string)
+
+		var guest *model.Guest
+		var channel *model.Channel
+		var team *model.Team
+
+		if result := <-api.Srv.Store.Guest().GetByInviteId(id); result.Err != nil {
+			c.Err = result.Err
+			return
+		} else {
+			guest = result.Data.(*model.Guest)
+		}
+
+		if result := <-api.Srv.Store.Channel().Get(guest.ChannelId); result.Err != nil {
+			c.Err = result.Err
+			return
+		} else {
+			channel = result.Data.(*model.Channel)
+		}
+
+		if result := <-api.Srv.Store.Team().Get(channel.TeamId); result.Err != nil {
+			c.Err = result.Err
+			return
+		} else {
+			team = result.Data.(*model.Team)
+		}
+
+		if len(c.Session.UserId) == 0 {
+			props["email"] = ""
+			props["guest_id"] = guest.Id
+			props["invite_id"] = guest.InviteId
+			props["channel_id"] = channel.Id
+			props["channel_name"] = channel.Name
+			props["display_name"] = team.DisplayName
+			props["name"] = team.Name
+			props["id"] = team.Id
+			data = model.MapToJson(props)
+			hash = ""
+		}
+
+		if c.IsGuestUser() {
+			if result := <-api.Srv.Store.Channel().GetMember(channel.Id, c.Session.UserId); result.Err == nil {
+				http.Redirect(w, r, c.GetSiteURL() + "/" + team.Name + "/guest/" + channel.Name, http.StatusTemporaryRedirect)
+				return
+			}
+		} else if len(c.Session.UserId) != 0{
+			root(c, w, r)
+			return
+		}
+	} else {
+
+		if !model.ComparePassword(hash, fmt.Sprintf("%v:%v", data, utils.Cfg.EmailSettings.InviteSalt)) {
+			c.Err = model.NewLocAppError("guestSignup", "web.signup_user_complete.link_invalid.app_error", nil, "")
+			return
+		}
+
+		props = model.MapFromJson(strings.NewReader(data))
+	}
+
+	page := NewHtmlTemplatePage("guest_signup", c.T("web.signup_user_complete.title"), c.Locale)
+	page.Props["Email"] = props["email"]
+	page.Props["TeamDisplayName"] = props["display_name"]
+	page.Props["TeamName"] = props["name"]
+	page.Props["TeamId"] = props["id"]
+	page.Props["Data"] = data
+	page.Props["Hash"] = hash
+	page.Render(c, w)
+}
+
+func getGuestChannel(c *api.Context, w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	name := params["channelname"]
+	teamName := params["team"]
+
+	var channel *model.Channel
+	var team *model.Team
+
+	if result := <-api.Srv.Store.Channel().CheckPermissionsToByName(c.Session.TeamId, name, c.Session.UserId); result.Err != nil {
+		c.Err = result.Err
+		return
+	} else {
+		channelId := result.Data.(string)
+		if len(channelId) == 0 {
+			c.Err = model.NewLocAppError("getGuestChannel", "web.get_guest_channel.no_member.app_error",
+				map[string]interface{}{"ChannelName": name}, "")
+			c.Err.StatusCode = http.StatusForbidden
+			return
+		} else {
+			if result := <-api.Srv.Store.Channel().Get(channelId); result.Err != nil {
+				c.Err = result.Err
+				c.Err.StatusCode = http.StatusForbidden
+				return
+			} else {
+				channel = result.Data.(*model.Channel)
+			}
+
+			if result := <-api.Srv.Store.Team().GetByName(teamName); result.Err != nil {
+				c.Err = result.Err
+				c.Err.StatusCode = http.StatusForbidden
+				return
+			} else {
+				team = result.Data.(*model.Team)
+			}
+		}
+	}
+
+	if c.IsGuestUser() {
+		doLoadChannel(c, w, r, team, channel, "")
+	} else {
+		c.Err = model.NewLocAppError("getGuestChannel", "web.get_guest_channel.only.app_error",
+			map[string]interface{}{"TeamName": team.DisplayName, "ChannelName": channel.DisplayName}, "")
+		c.Err.StatusCode = http.StatusForbidden
+		return
+	}
 }

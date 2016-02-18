@@ -21,6 +21,7 @@ const (
 
 	SERVICE_GITLAB = "gitlab"
 	SERVICE_GOOGLE = "google"
+	SERVICE_ZBOX   = "zbox"
 )
 
 type ServiceSettings struct {
@@ -55,6 +56,7 @@ type SSOSettings struct {
 	AuthEndpoint    string
 	TokenEndpoint   string
 	UserApiEndpoint string
+	LoginEndPoint   string
 }
 
 type SqlSettings struct {
@@ -181,6 +183,7 @@ type Config struct {
 	SupportSettings   SupportSettings
 	GitLabSettings    SSOSettings
 	GoogleSettings    SSOSettings
+	ZBoxSettings      SSOSettings
 	LdapSettings      LdapSettings
 }
 
@@ -199,6 +202,8 @@ func (o *Config) GetSSOService(service string) *SSOSettings {
 		return &o.GitLabSettings
 	case SERVICE_GOOGLE:
 		return &o.GoogleSettings
+	case SERVICE_ZBOX:
+		return &o.ZBoxSettings
 	}
 
 	return nil

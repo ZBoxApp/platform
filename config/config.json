@@ -4,13 +4,13 @@
         "MaximumLoginAttempts": 10,
         "SegmentDeveloperKey": "",
         "GoogleDeveloperKey": "",
-        "EnableOAuthServiceProvider": false,
-        "EnableIncomingWebhooks": false,
-        "EnableOutgoingWebhooks": false,
-        "EnableCommands": false,
+        "EnableOAuthServiceProvider": true,
+        "EnableIncomingWebhooks": true,
+        "EnableOutgoingWebhooks": true,
+        "EnableCommands": true,
         "EnableOnlyAdminIntegrations": true,
-        "EnablePostUsernameOverride": false,
-        "EnablePostIconOverride": false,
+        "EnablePostUsernameOverride": true,
+        "EnablePostIconOverride": true,
         "EnableTesting": false,
         "EnableDeveloper": false,
         "EnableSecurityFixAlert": true,
@@ -21,7 +21,7 @@
         "SessionCacheInMinutes": 10
     },
     "TeamSettings": {
-        "SiteName": "Mattermost",
+        "SiteName": "ZBox Now!",
         "MaxUsersPerTeam": 50,
         "EnableTeamCreation": true,
         "EnableUserCreation": true,
@@ -31,7 +31,7 @@
     },
     "SqlSettings": {
         "DriverName": "mysql",
-        "DataSource": "mmuser:mostest@tcp(dockerhost:3306)/mattermost_test?charset=utf8mb4,utf8",
+        "DataSource": "zbuser:zbtest@tcp(dockerhost:3306)/zboxnow?charset=utf8mb4,utf8",
         "DataSourceReplicas": [],
         "MaxIdleConns": 10,
         "MaxOpenConns": 10,
@@ -112,5 +112,15 @@
         "AuthEndpoint": "",
         "TokenEndpoint": "",
         "UserApiEndpoint": ""
+    },
+    "ZBoxSettings": {
+        "Enable": true,
+        "Secret": "RZqS6sS4Wv3X7Sex",
+        "Id": "YKk-3wF-UDb-3As",
+        "Scope": "",
+        "AuthEndpoint": "http://dockerhost:3000/oauth/authorize",
+        "TokenEndpoint": "http://dockerhost:3000/oauth/token",
+        "UserApiEndpoint": "http://dockerhost:3000/me",
+        "LoginEndPoint": "http://dockerhost:3000/login"
     }
 }

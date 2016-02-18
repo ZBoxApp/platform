@@ -130,6 +130,24 @@ class SSOSignUpPage extends React.Component {
                     </span>
                 </a>
             );
+        } else if (this.props.service === Constants.ZBOX_SERVICE) {
+            button = (
+                <a
+                    className='btn btn-custom-login zbox btn-full'
+                    key='zbox'
+                    href='#'
+                    onClick={this.handleSubmit}
+                    disabled={disabled}
+                >
+                    <span className='icon'/>
+                    <span>
+                        <FormattedMessage
+                            id='sso_signup.zbox'
+                            defaultMessage='Create team with ZBox Account'
+                        />
+                    </span>
+                </a>
+            );
         }
 
         return (

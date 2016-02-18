@@ -58,7 +58,7 @@ func TestCreateChannel(t *testing.T) {
 
 	rchannel.Data.(*model.Channel).Id = ""
 	if _, err := Client.CreateChannel(rchannel.Data.(*model.Channel)); err != nil {
-		if err.Message != "A channel with that URL already exists" {
+		if err.Id != "store.sql_channel.save_channel.exists.app_error" {
 			t.Fatal(err)
 		}
 	}
@@ -69,7 +69,7 @@ func TestCreateChannel(t *testing.T) {
 
 	Client.DeleteChannel(savedId)
 	if _, err := Client.CreateChannel(rchannel.Data.(*model.Channel)); err != nil {
-		if err.Message != "A channel with that URL was previously created" {
+		if err.Id != "store.sql_channel.save_channel.previously.app_error" {
 			t.Fatal(err)
 		}
 	}
