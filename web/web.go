@@ -559,6 +559,7 @@ func checkSessionSwitch(c *api.Context, w http.ResponseWriter, r *http.Request, 
 		}
 	}
 
+	c.SetTeamCookie(w, r, team.Name)
 	return team
 }
 
