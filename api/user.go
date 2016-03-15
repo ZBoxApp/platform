@@ -267,6 +267,13 @@ func CreateOAuthUser(c *Context, w http.ResponseWriter, r *http.Request, service
 		return nil
 	}
 
+	if service == model.SERVICE_ZBOX {
+		if user.DeleteAt > 0 || user.FailedAttempts > 0 {
+			c.Err = model.NewLocAppError("CreateOAuthUser", "api.user.login_by_zbox.authorized.app_error", nil, "")
+			return nil
+		}
+	}
+
 	suchan := Srv.Store.User().GetByAuth(team.Id, user.AuthData, service)
 	euchan := Srv.Store.User().GetByEmail(team.Id, user.Email)
 
@@ -505,8 +512,19 @@ func LoginByOAuth(c *Context, w http.ResponseWriter, r *http.Request, service st
 	}
 
 	var user *model.User
+
+	teamName := ""
+	if service == model.SERVICE_ZBOX {
+		user = provider.GetUserFromJson(bytes.NewReader(buf.Bytes()))
+		teamName = user.TeamId
+		if user.DeleteAt > 0 || user.FailedAttempts > 0 {
+			c.Err = model.NewLocAppError("LoginByOAuth", "api.user.login_by_zbox.authorized.app_error", nil, "")
+			return nil
+		}
+	}
+
 	if result := <-Srv.Store.User().GetByAuth(team.Id, authData, service); result.Err != nil {
-		if result.Err.Id == store.MISSING_AUTH_ACCOUNT_ERROR && team.AllowOpenInvite {
+		if result.Err.Id == store.MISSING_AUTH_ACCOUNT_ERROR && (team.AllowOpenInvite || teamName == team.Name) {
 			return CreateOAuthUser(c, w, r, service, bytes.NewReader(buf.Bytes()), team)
 		}
 		c.Err = result.Err
@@ -515,6 +533,94 @@ func LoginByOAuth(c *Context, w http.ResponseWriter, r *http.Request, service st
 		user = result.Data.(*model.User)
 		Login(c, w, r, user, "")
 		return user
+	}
+}
+
+func LoginByZBox(c *Context, w http.ResponseWriter, r *http.Request, email, password, deviceId string) *model.User {
+	var service = model.SERVICE_ZBOX
+
+	provider := einterfaces.GetOauthProvider(service)
+	sso := utils.Cfg.GetSSOService(service)
+
+	if sso == nil || !sso.Enable {
+		c.Err = model.NewLocAppError("LoginByZBox", "api.user.authorize_oauth_user.unsupported.app_error", nil, "service="+service)
+		return nil
+	}
+
+	if provider == nil {
+		c.Err = model.NewLocAppError("LoginByZBox", "api.user.login_by_oauth.not_available.app_error",
+			map[string]interface{}{"Service": service}, "")
+		return nil
+	} else {
+		if body, err := loginZBox(email, password, sso.LoginEndPoint); err != nil {
+			c.Err = err
+			return nil
+		} else {
+			var team *model.Team
+
+			buf := bytes.Buffer{}
+			buf.ReadFrom(body)
+
+			teamName := provider.GetUserFromJson(bytes.NewReader(buf.Bytes())).TeamId
+
+			if len(teamName) == 0 {
+				c.Err = model.NewLocAppError("LoginByZBox", "web.login_with_oauth.invalid_team.app_error", nil, "team_name="+teamName)
+				c.Err.StatusCode = http.StatusBadRequest
+				return nil
+			}
+
+			if result := <-Srv.Store.Team().GetByName(teamName); result.Err != nil {
+				c.Err = result.Err
+				return nil
+			} else {
+				team = result.Data.(*model.Team)
+			}
+
+			return LoginByOAuth(c, w, r, service, bytes.NewReader(buf.Bytes()), team)
+		}
+	}
+}
+
+func LoginByZimbra(c *Context, w http.ResponseWriter, r *http.Request, email string) (*model.AppError, *model.Team) {
+	var service = model.SERVICE_ZBOX
+
+	provider := einterfaces.GetOauthProvider(service)
+	sso := utils.Cfg.GetSSOService(service)
+
+	if sso == nil || !sso.Enable {
+		return model.NewLocAppError("LoginByZimbra", "api.user.authorize_oauth_user.unsupported.app_error", nil, "service="+service), nil
+	}
+
+	if provider == nil {
+		return model.NewLocAppError("LoginByZimbra", "api.user.login_by_oauth.not_available.app_error",
+			map[string]interface{}{"Service": service}, ""), nil
+	} else {
+		if body, err := loginZimbra(service, email, sso.UserApiEndpoint); err != nil {
+			return err, nil
+		} else {
+			var team *model.Team
+
+			buf := bytes.Buffer{}
+			buf.ReadFrom(body)
+
+			teamName := provider.GetUserFromJson(bytes.NewReader(buf.Bytes())).TeamId
+
+			if len(teamName) == 0 {
+				return model.NewLocAppError("LoginByZimbra", "web.login_with_oauth.invalid_team.app_error", nil, "team_name="+teamName), nil
+			}
+
+			if result := <-Srv.Store.Team().GetByName(teamName); result.Err != nil {
+				return result.Err, nil
+			} else {
+				team = result.Data.(*model.Team)
+			}
+
+			if user := LoginByOAuth(c, w, r, service, bytes.NewReader(buf.Bytes()), team); user == nil {
+				return c.Err, nil
+			}
+
+			return nil, team
+		}
 	}
 }
 
@@ -661,6 +767,8 @@ func login(c *Context, w http.ResponseWriter, r *http.Request) {
 	var user *model.User
 	if len(props["id"]) != 0 {
 		user = LoginById(c, w, r, props["id"], props["password"], props["device_id"])
+	} else if len(props["email"]) != 0 && len(props["zbox"]) != 0 {
+		user = LoginByZBox(c, w, r, props["email"], props["password"], props["device_id"])
 	} else if len(props["email"]) != 0 && len(props["name"]) != 0 {
 		user = LoginByEmail(c, w, r, props["email"], props["name"], props["password"], props["device_id"])
 	} else if len(props["username"]) != 0 && len(props["name"]) != 0 {
@@ -745,6 +853,45 @@ func loginLdap(c *Context, w http.ResponseWriter, r *http.Request) {
 		user = &model.User{}
 	}
 	w.Write([]byte(user.ToJson()))
+}
+
+func loginZBox(email, password, loginEndpoint string) (io.ReadCloser, *model.AppError) {
+	var jsonStr = []byte(fmt.Sprintf(`{"username":"%s", "password":"%s", "zbox":"true"}`, email, password))
+
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", loginEndpoint, bytes.NewBuffer(jsonStr))
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+
+	if resp, err := client.Do(req); err != nil {
+		return nil, model.NewLocAppError("loginZBox", "api.user.authorize_oauth_user.token_failed.app_error", nil, "service=zbox")
+	} else {
+		if resp.StatusCode != 200 {
+			return nil, model.NewLocAppError("loginZBox", "api.user.login_by_zbox.authorized.app_error", nil, "service=zbox")
+		}
+		return resp.Body, nil
+	}
+}
+
+func loginZimbra(service, email, userEndpoint string) (io.ReadCloser, *model.AppError) {
+	p := url.Values{}
+	p.Set("email", email)
+
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", userEndpoint, strings.NewReader(p.Encode()))
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Accept", "application/json")
+
+	if resp, err := client.Do(req); err != nil {
+		return nil, model.NewLocAppError("loginZimbra", "api.user.authorize_oauth_user.token_failed.app_error", nil, "service="+service)
+	} else {
+		if resp.StatusCode != 200 {
+			return nil, model.NewLocAppError("loginZimbra", "api.user.login_by_zbox.authorized.app_error", nil, "service="+service)
+		}
+		return resp.Body, nil
+	}
 }
 
 func revokeSession(c *Context, w http.ResponseWriter, r *http.Request) {

@@ -94,6 +94,24 @@ export default class Login extends React.Component {
             );
         }
 
+        if (global.window.mm_config.EnableSignUpWithZBox === 'true') {
+            loginMessage.push(
+                <a
+                    className='btn btn-custom-login zbox'
+                    key={Constants.ZBOX_SERVICE}
+                    href={'/api/v1/oauth/zbox/login?team=' + encodeURIComponent(teamName)}
+                >
+                    <span className='icon'/>
+                    <span>
+                        <FormattedMessage
+                            id='login.zbox'
+                            defaultMessage='with ZBox'
+                        />
+                    </span>
+                </a>
+            );
+        }
+
         const extraParam = Utils.getUrlParameter('extra');
         let extraBox = '';
         if (extraParam) {

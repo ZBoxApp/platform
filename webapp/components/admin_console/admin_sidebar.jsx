@@ -404,6 +404,18 @@ export default class AdminSidebar extends React.Component {
                                         />
                                     </a>
                                 </li>
+                                <li>
+                                    <a
+                                        href='#'
+                                        className={this.isSelected('zbox_settings')}
+                                        onClick={this.handleClick.bind(this, 'zbox_settings', null)}
+                                    >
+                                        <FormattedMessage
+                                            id='admin.sidebar.zbox'
+                                            defaultMessage='ZBox Settings'
+                                        />
+                                    </a>
+                                </li>
                                 {ldapSettings}
                                 {complianceSettings}
                                 <li>

@@ -29,7 +29,7 @@ export default class NotLoggedIn extends React.Component {
                             <span className='pull-right footer-site-name'>{global.window.mm_config.SiteName}</span>
                         </div>
                         <div className='col-xs-12'>
-                            <span className='pull-right footer-link copyright'>{'© 2015 Mattermost, Inc.'}</span>
+                            <span className='pull-right footer-link copyright'>{'© 2015 ZBox, Spa.'}</span>
                             <Link
                                 id='help_link'
                                 className='pull-right footer-link'

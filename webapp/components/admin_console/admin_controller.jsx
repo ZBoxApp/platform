@@ -26,6 +26,7 @@ import LdapSettingsTab from './ldap_settings.jsx';
 import ComplianceSettingsTab from './compliance_settings.jsx';
 import LicenseSettingsTab from './license_settings.jsx';
 import SystemAnalyticsTab from '../analytics/system_analytics.jsx';
+import ZBoxSettingsTab from './zbox_settings.jsx';
 
 import React from 'react';
 
@@ -150,6 +151,8 @@ export default class AdminController extends React.Component {
                 tab = <RateSettingsTab config={this.state.config}/>;
             } else if (this.state.selected === 'gitlab_settings') {
                 tab = <GitLabSettingsTab config={this.state.config}/>;
+            } else if (this.state.selected === 'zbox_settings') {
+                tab = <ZBoxSettingsTab config={this.state.config}/>;
             } else if (this.state.selected === 'sql_settings') {
                 tab = <SqlSettingsTab config={this.state.config}/>;
             } else if (this.state.selected === 'team_settings') {

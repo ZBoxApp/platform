@@ -21,6 +21,7 @@ const (
 
 	SERVICE_GITLAB = "gitlab"
 	SERVICE_GOOGLE = "google"
+	SERVICE_ZBOX   = "zbox"
 
 	WEBSERVER_MODE_REGULAR  = "regular"
 	WEBSERVER_MODE_GZIP     = "gzip"
@@ -64,6 +65,7 @@ type SSOSettings struct {
 	AuthEndpoint    string
 	TokenEndpoint   string
 	UserApiEndpoint string
+	LoginEndPoint   string
 }
 
 type SqlSettings struct {
@@ -199,6 +201,7 @@ type Config struct {
 	GoogleSettings     SSOSettings
 	LdapSettings       LdapSettings
 	ComplianceSettings ComplianceSettings
+	ZBoxSettings      SSOSettings
 }
 
 func (o *Config) ToJson() string {
@@ -216,6 +219,8 @@ func (o *Config) GetSSOService(service string) *SSOSettings {
 		return &o.GitLabSettings
 	case SERVICE_GOOGLE:
 		return &o.GoogleSettings
+	case SERVICE_ZBOX:
+		return &o.ZBoxSettings
 	}
 
 	return nil
