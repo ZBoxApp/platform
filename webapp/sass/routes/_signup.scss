@@ -215,6 +215,19 @@
                 }
             }
 
+            &.zbox {
+                background: #056998;
+                &:hover {
+                    background: darken(#056998, 10%);
+                }
+                span {
+                    vertical-align: middle;
+                }
+                .icon {
+				  	width: 36px;
+                    background-image: url("../images/zboxLogo.png");
+                }
+            }
             &.google {
                 background: #dd4b39;
 

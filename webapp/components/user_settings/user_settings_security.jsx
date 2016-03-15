@@ -606,6 +606,24 @@ class SecurityTab extends React.Component {
                 );
             }
 
+            let zboxOption;
+            if (global.window.mm_config.EnableSignUpWithZBox === 'true' && user.auth_service === '') {
+                zboxOption = (
+                    <div>
+                        <Link
+                            className='btn btn-primary'
+                            href={'/' + teamName + '/claim/email_to_oauth?email=' + encodeURIComponent(user.email) + '&old_type=' + user.auth_service + '&new_type=' + Constants.ZBOX_SERVICE}
+                        >
+                            <FormattedMessage
+                                id='user.settings.security.switchZBox'
+                                defaultMessage='Switch to using ZBox SSO'
+                            />
+                        </Link>
+                        <br/>
+                    </div>
+                );
+            }
+
             const inputs = [];
             inputs.push(
                 <div key='userSignInOption'>
@@ -614,6 +632,8 @@ class SecurityTab extends React.Component {
                    <br/>
                    {ldapOption}
                    {googleOption}
+                   <br/>
+                   {zboxOption}
                 </div>
             );
 
@@ -662,6 +682,15 @@ class SecurityTab extends React.Component {
             );
         }
 
+        if (this.props.user.auth_service === Constants.ZBOX_SERVICE) {
+            describe = (
+                <FormattedMessage
+                    id='user.settings.security.zbox'
+                    defaultMessage='ZBox SSO'
+                />
+            );
+        }
+
         return (
             <SettingItemMin
                 title={this.props.intl.formatMessage(holders.method)}
@@ -676,6 +705,7 @@ class SecurityTab extends React.Component {
         let numMethods = 0;
         numMethods = global.window.mm_config.EnableSignUpWithGitLab === 'true' ? numMethods + 1 : numMethods;
         numMethods = global.window.mm_config.EnableSignUpWithGoogle === 'true' ? numMethods + 1 : numMethods;
+        numMethods = global.window.mm_config.EnableSignUpWithZBox === 'true' ? numMethods + 1 : numMethods;
         numMethods = global.window.mm_config.EnableLdap === 'true' ? numMethods + 1 : numMethods;
 
         let signInSection;

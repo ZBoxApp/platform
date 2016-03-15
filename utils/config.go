@@ -109,7 +109,7 @@ func configureLog(s *model.LogSettings) {
 
 func GetLogFileLocation(fileLocation string) string {
 	if fileLocation == "" {
-		return FindDir("logs") + "mattermost.log"
+		return FindDir("logs") + "zboxnow.log"
 	} else {
 		return fileLocation
 	}
@@ -218,6 +218,7 @@ func getClientConfig(c *model.Config) map[string]string {
 
 	props["EnableSignUpWithGitLab"] = strconv.FormatBool(c.GitLabSettings.Enable)
 	props["EnableSignUpWithGoogle"] = strconv.FormatBool(c.GoogleSettings.Enable)
+	props["EnableSignUpWithZBox"] = strconv.FormatBool(c.ZBoxSettings.Enable)
 
 	props["ShowEmailAddress"] = strconv.FormatBool(c.PrivacySettings.ShowEmailAddress)
 

@@ -57,11 +57,11 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "<br/><br/><br/>It appears your Mattermost email is setup correctly!"
+    "translation": "<br/><br/><br/>It appears your ZBox Now! email is setup correctly!"
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Testing Email Settings"
+    "translation": "ZBox Now! - Testing Email Settings"
   },
   {
     "id": "api.api.init.parsing_templates.debug",
@@ -345,7 +345,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Logout of Mattermost"
+    "translation": "Logout of ZBox Now!"
   },
   {
     "id": "api.command_logout.name",
@@ -1001,7 +1001,7 @@
   },
   {
     "id": "api.slackimport.slack_import.log",
-    "translation": "Mattermost Slack Import Log\r\n"
+    "translation": "ZBox Now! Slack Import Log\r\n"
   },
   {
     "id": "api.slackimport.slack_import.note1",
@@ -1173,7 +1173,7 @@
   },
   {
     "id": "api.templates.error.link",
-    "translation": "Go back to Mattermost"
+    "translation": "Go back to ZBox Now!"
   },
   {
     "id": "api.templates.error.title",
@@ -1201,7 +1201,7 @@
   },
   {
     "id": "api.templates.invite_body.extra_info",
-    "translation": "Mattermost lets you share messages and files from your PC or phone, with instant search and archiving. After you’ve joined <strong>{{.TeamDisplayName}}</strong>, you can sign-in to your new team and access these features anytime from the web address:<br/><br/><a href='{{.TeamURL}}'>{{.TeamURL}}</a>"
+    "translation": "ZBox Now! lets you share messages and files from your PC or phone, with instant search and archiving. After you’ve joined <strong>{{.TeamDisplayName}}</strong>, you can sign-in to your new team and access these features anytime from the web address:<br/><br/><a href='{{.TeamURL}}'>{{.TeamURL}}</a>"
   },
   {
     "id": "api.templates.invite_body.info",
@@ -1317,7 +1317,7 @@
   },
   {
     "id": "api.templates.welcome_body.info3",
-    "translation": "Mattermost lets you share messages and files from your PC or phone, with instant search and archiving."
+    "translation": "ZBox Now! lets you share messages and files from your PC or phone, with instant search and archiving."
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -1514,6 +1514,10 @@
   {
     "id": "api.user.login_by_oauth.parse.app_error",
     "translation": "Could not parse auth data out of {{.Service}} user object"
+  },
+  {
+    "id": "api.user.login_by_zbox.authorized.app_error",
+    "translation": "Your user is not authorized to use ZBox Now!"
   },
   {
     "id": "api.user.login_ldap.blank_pwd.app_error",
@@ -1917,7 +1921,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Mattermost Security Bulletin"
+    "translation": "ZBox Now! Security Bulletin"
   },
   {
     "id": "mattermost.config_file",
@@ -1945,11 +1949,11 @@
   },
   {
     "id": "mattermost.security_checks.debug",
-    "translation": "Checking for security update from Mattermost"
+    "translation": "Checking for security update from ZBox Now!"
   },
   {
     "id": "mattermost.security_info.error",
-    "translation": "Failed to get security update information from Mattermost."
+    "translation": "Failed to get security update information from ZBox Now!."
   },
   {
     "id": "mattermost.send_bulletin.info",
@@ -1957,7 +1961,7 @@
   },
   {
     "id": "mattermost.system_admins.error",
-    "translation": "Failed to get system admins for security update information from Mattermost."
+    "translation": "Failed to get system admins for security update information from ZBox Now!."
   },
   {
     "id": "mattermost.working_dir",

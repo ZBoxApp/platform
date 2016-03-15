@@ -30,6 +30,7 @@ func InitOAuth(r *mux.Router) {
 	sr.Handle("/access_token", ApiAppHandler(getAccessToken)).Methods("POST")
 
 	mr := Srv.Router
+	mr.Handle("/zimbra_login", AppHandler(loginWithZimbraEmail)).Methods("GET")
 	mr.Handle("/authorize", ApiUserRequired(authorizeOAuth)).Methods("GET")
 	mr.Handle("/access_token", ApiAppHandler(getAccessToken)).Methods("POST")
 
@@ -503,5 +504,19 @@ func signupWithOAuth(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		http.Redirect(w, r, authUrl, http.StatusFound)
+	}
+}
+
+func loginWithZimbraEmail(c *Context, w http.ResponseWriter, r *http.Request) {
+	params := r.URL.Query()
+	email := params.Get("email")
+
+	if err, team := LoginByZimbra(c, w, r, email); err != nil {
+		c.Err = err
+		if c.Err.Id == "web.login_with_oauth.invalid_team.app_error" {
+			c.Err.StatusCode = http.StatusBadRequest
+		}
+	} else {
+		http.Redirect(w, r, c.GetSiteURL()+"/"+team.Name, http.StatusFound)
 	}
 }

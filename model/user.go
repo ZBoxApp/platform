@@ -25,7 +25,7 @@ const (
 	USER_NOTIFY_ALL            = "all"
 	USER_NOTIFY_MENTION        = "mention"
 	USER_NOTIFY_NONE           = "none"
-	DEFAULT_LOCALE             = "en"
+	DEFAULT_LOCALE             = "es"
 	USER_AUTH_SERVICE_EMAIL    = "email"
 	USER_AUTH_SERVICE_USERNAME = "username"
 )
@@ -476,6 +476,12 @@ func CleanUsername(s string) string {
 	if !IsValidUsername(s) {
 		s = "a" + NewId()
 	}
+
+	return s
+}
+
+func SetUsernameFromEmail(s string) string {
+	s = strings.Split(s, "@")[0]
 
 	return s
 }

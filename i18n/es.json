@@ -57,11 +57,11 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "<br/><br/><br/>Parece que tu correo electrónico para Mattermost fue configurado correctamente!"
+    "translation": "<br/><br/><br/>Parece que tu correo electrónico para ZBox Now! fue configurado correctamente!"
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Configuración de pruebas de correo"
+    "translation": "ZBox Now! - Configuración de pruebas de correo"
   },
   {
     "id": "api.api.init.parsing_templates.debug",
@@ -345,7 +345,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Salir de Mattermost"
+    "translation": "Salir de ZBox Now!"
   },
   {
     "id": "api.command_logout.name",
@@ -1001,7 +1001,7 @@
   },
   {
     "id": "api.slackimport.slack_import.log",
-    "translation": "Mattermost Registros de importación de Slack\r\n"
+    "translation": "ZBox Now! Registros de importación de Slack\r\n"
   },
   {
     "id": "api.slackimport.slack_import.note1",
@@ -1201,7 +1201,7 @@
   },
   {
     "id": "api.templates.invite_body.extra_info",
-    "translation": "Mattermost te permite compartir mensajes y archivos de tu Computador o teléfono, incluyendo busquedas instantáneas. Una vez que te hayas unido a <strong>{{.TeamDisplayName}}</strong>, Podrás iniciar sesión en tu nuevo equipo y utilizar todas las características en cualquier momento desde la dirección web:<br/><br/><a href=\"{{.TeamURL}}\">{{.TeamURL}}</a>"
+    "translation": "ZBox Now! te permite compartir mensajes y archivos de tu Computador o teléfono, incluyendo busquedas instantáneas. Una vez que te hayas unido a <strong>{{.TeamDisplayName}}</strong>, Podrás iniciar sesión en tu nuevo equipo y utilizar todas las características en cualquier momento desde la dirección web:<br/><br/><a href=\"{{.TeamURL}}\">{{.TeamURL}}</a>"
   },
   {
     "id": "api.templates.invite_body.info",
@@ -1317,7 +1317,7 @@
   },
   {
     "id": "api.templates.welcome_body.info3",
-    "translation": "Mattermost te permite compartir mensajes y archivos desde un computador o teléfono desde donde te encuentres."
+    "translation": "ZBox Now! te permite compartir mensajes y archivos desde un computador o teléfono desde donde te encuentres."
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -1514,6 +1514,10 @@
   {
     "id": "api.user.login_by_oauth.parse.app_error",
     "translation": "No se pudo obtener la data de autorización del objeto de {{.Service}}"
+  },
+  {
+    "id": "api.user.login_by_zbox.authorized.app_error",
+    "translation": "Tu usuario no está autorizado para usar ZBox Now!"
   },
   {
     "id": "api.user.login_ldap.blank_pwd.app_error",
@@ -1917,7 +1921,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Boletín de Seguridad Mattermost"
+    "translation": "Boletín de Seguridad ZBox Now!"
   },
   {
     "id": "mattermost.config_file",
@@ -1945,11 +1949,11 @@
   },
   {
     "id": "mattermost.security_checks.debug",
-    "translation": "Consultando si existen actualizaciones de seguridad para Mattermost"
+    "translation": "Consultando si existen actualizaciones de seguridad para ZBox Now!"
   },
   {
     "id": "mattermost.security_info.error",
-    "translation": "Falla al obtener información sobre actualizaciones de seguridad para Mattermost."
+    "translation": "Falla al obtener información sobre actualizaciones de seguridad para ZBox Now!."
   },
   {
     "id": "mattermost.send_bulletin.info",
@@ -1957,7 +1961,7 @@
   },
   {
     "id": "mattermost.system_admins.error",
-    "translation": "Falla al obtener los administradores de sistema que reciben información referente a las actualizaciones de seguridade de Mattermost."
+    "translation": "Falla al obtener los administradores de sistema que reciben información referente a las actualizaciones de seguridade de ZBox Now!."
   },
   {
     "id": "mattermost.working_dir",
@@ -2681,7 +2685,7 @@
   },
   {
     "id": "store.sql_audit.permanent_delete_by_user.app_error",
-    "translation": "Encontramos un error al eliminar los audits"
+    "translation": "Encontramos un error al eliminar las auditorias"
   },
   {
     "id": "store.sql_audit.save.saving.app_error",

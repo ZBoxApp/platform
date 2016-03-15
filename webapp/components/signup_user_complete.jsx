@@ -358,6 +358,24 @@ class SignupUserComplete extends React.Component {
            );
         }
 
+        if (global.window.mm_config.EnableSignUpWithZBox === 'true') {
+            signupMessage.push(
+                <a
+                    className='btn btn-custom-login zbox'
+                    key='zbox'
+                    href={'/api/v1/oauth/zbox/signup' + window.location.search + '&team=' + encodeURIComponent(this.state.teamName)}
+                >
+                    <span className='icon'/>
+                    <span>
+                        <FormattedMessage
+                            id='signup_user_completed.zbox'
+                            defaultMessage='with ZBox'
+                        />
+                    </span>
+                </a>
+            );
+        }
+
         let ldapSignup;
         if (global.window.mm_config.EnableLdap === 'true' && global.window.mm_license.IsLicensed === 'true' && global.window.mm_license.LDAP) {
             ldapSignup = (

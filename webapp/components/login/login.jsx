@@ -175,6 +175,7 @@ export default class Login extends React.Component {
         const ldapEnabled = global.window.mm_config.EnableLdap === 'true';
         const gitlabSigninEnabled = global.window.mm_config.EnableSignUpWithGitLab === 'true';
         const googleSigninEnabled = global.window.mm_config.EnableSignUpWithGoogle === 'true';
+        const zboxSigninEnabled = global.window.mm_config.EnableSignUpWithZBox === 'true';
         const usernameSigninEnabled = global.window.mm_config.EnableSignInWithUsername === 'true';
         const emailSigninEnabled = global.window.mm_config.EnableSignInWithEmail === 'true';
 
@@ -209,6 +210,24 @@ export default class Login extends React.Component {
                         <FormattedMessage
                             id='login.google'
                             defaultMessage='with Google Apps'
+                        />
+                    </span>
+                </Link>
+            );
+        }
+        
+        if (zboxSigninEnabled) {
+            oauthLogins.push(
+                <Link
+                    className='btn btn-custom-login zbox'
+                    key={Constants.ZBOX_SERVICE}
+                    href={'/api/v1/oauth/zbox/login?team=' + encodeURIComponent(teamName)}
+                >
+                    <span className='icon'/>
+                    <span>
+                        <FormattedMessage
+                            id='login.zbox'
+                            defaultMessage='with ZBox'
                         />
                     </span>
                 </Link>

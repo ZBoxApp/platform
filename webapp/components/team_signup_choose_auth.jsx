@@ -84,6 +84,30 @@ export default class ChooseAuthPage extends React.Component {
             );
         }
 
+        if (global.window.mm_config.EnableSignUpWithZBox === 'true') {
+            buttons.push(
+                <a
+                    className='btn btn-custom-login zbox btn-full'
+                    href='#'
+                    key='zbox'
+                    onClick={
+                            (e) => {
+                                e.preventDefault();
+                                this.props.updatePage('zbox');
+                            }
+                        }
+                >
+                    <span className='icon'/>
+                    <span>
+                        <FormattedMessage
+                            id='choose_auth_page.zboxCreate'
+                            defaultMessage='Create new team with ZBox Account'
+                        />
+                    </span>
+                </a>
+            );
+        }
+
         if (global.window.mm_config.EnableSignUpWithEmail === 'true') {
             buttons.push(
                     <a
