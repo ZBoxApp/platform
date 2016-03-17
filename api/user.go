@@ -61,6 +61,7 @@ func InitUser(r *mux.Router) {
 
 	sr.Handle("/me", ApiAppHandler(getMe)).Methods("GET")
 	sr.Handle("/me_logged_in", ApiAppHandler(getMeLoggedIn)).Methods("GET")
+	sr.Handle("/me_locale", ApiAppHandler(getMeLocale)).Methods("GET")
 	sr.Handle("/status", ApiUserRequiredActivity(getStatuses, false)).Methods("POST")
 	sr.Handle("/profiles", ApiUserRequired(getProfiles)).Methods("GET")
 	sr.Handle("/profiles/{id:[A-Za-z0-9]+}", ApiUserRequired(getProfiles)).Methods("GET")
@@ -1097,6 +1098,24 @@ func getMeLoggedIn(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 		data["logged_in"] = "true"
 		data["team_name"] = team.Name
+	}
+	w.Write([]byte(model.MapToJson(data)))
+}
+
+func getMeLocale(c *Context, w http.ResponseWriter, r *http.Request) {
+	data := make(map[string]string)
+	data["locale"] = c.Locale
+
+	if len(c.Session.UserId) != 0 {
+		userChan := Srv.Store.User().Get(c.Session.UserId)
+		var user *model.User
+		if ur := <-userChan; ur.Err != nil {
+			c.Err = ur.Err
+			return
+		} else {
+			user = ur.Data.(*model.User)
+		}
+		data["locale"] = user.Locale
 	}
 	w.Write([]byte(model.MapToJson(data)))
 }
