@@ -51,6 +51,7 @@ type SqlStore struct {
 	command    CommandStore
 	preference PreferenceStore
 	license    LicenseStore
+	guest      GuestStore
 }
 
 func NewSqlStore() Store {
@@ -107,6 +108,7 @@ func NewSqlStore() Store {
 	sqlStore.command = NewSqlCommandStore(sqlStore)
 	sqlStore.preference = NewSqlPreferenceStore(sqlStore)
 	sqlStore.license = NewSqlLicenseStore(sqlStore)
+	sqlStore.guest = NewSqlGuestStore(sqlStore)
 
 	err := sqlStore.master.CreateTablesIfNotExists()
 	if err != nil {
@@ -126,6 +128,7 @@ func NewSqlStore() Store {
 	sqlStore.command.(*SqlCommandStore).UpgradeSchemaIfNeeded()
 	sqlStore.preference.(*SqlPreferenceStore).UpgradeSchemaIfNeeded()
 	sqlStore.license.(*SqlLicenseStore).UpgradeSchemaIfNeeded()
+	sqlStore.guest.(*SqlGuestStore).UpgradeSchemaIfNeeded()
 
 	sqlStore.team.(*SqlTeamStore).CreateIndexesIfNotExists()
 	sqlStore.channel.(*SqlChannelStore).CreateIndexesIfNotExists()
@@ -140,6 +143,8 @@ func NewSqlStore() Store {
 	sqlStore.command.(*SqlCommandStore).CreateIndexesIfNotExists()
 	sqlStore.preference.(*SqlPreferenceStore).CreateIndexesIfNotExists()
 	sqlStore.license.(*SqlLicenseStore).CreateIndexesIfNotExists()
+
+	sqlStore.guest.(*SqlGuestStore).CreateIndexesIfNotExists()
 
 	sqlStore.preference.(*SqlPreferenceStore).DeleteUnusedFeatures()
 
@@ -621,6 +626,10 @@ func (ss SqlStore) Preference() PreferenceStore {
 
 func (ss SqlStore) License() LicenseStore {
 	return ss.license
+}
+
+func (ss SqlStore) Guest() GuestStore {
+	return ss.guest
 }
 
 type mattermConverter struct{}

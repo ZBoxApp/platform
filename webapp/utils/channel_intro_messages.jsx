@@ -93,19 +93,25 @@ export function createOffTopicIntroMessage(channel) {
 }
 
 export function createDefaultIntroMessage(channel) {
-    const inviteModalLink = (
-        <a
-            className='intro-links'
-            href='#'
-            onClick={GlobalActions.showGetTeamInviteLinkModal}
-        >
-            <i className='fa fa-user-plus'></i>
-            <FormattedMessage
-                id='intro_messages.inviteOthers'
-                defaultMessage='Invite others to this team'
-            />
-        </a>
-    );
+    const currentMember = ChannelStore.getCurrentMember();
+    const isGuest = Utils.isGuest(currentMember.roles);
+
+    let inviteModalLink;
+    if (!isGuest) {
+        inviteModalLink = (
+            <a
+                className='intro-links'
+                href='#'
+                onClick={GlobalActions.showGetTeamInviteLinkModal}
+            >
+                <i className='fa fa-user-plus'></i>
+                <FormattedMessage
+                    id='intro_messages.inviteOthers'
+                    defaultMessage='Invite others to this team'
+                />
+            </a>
+        );
+    }
 
     return (
         <div className='channel-intro'>
@@ -219,36 +225,49 @@ export function createStandardIntroMessage(channel) {
 }
 
 function createInviteChannelMemberButton(channel, uiType) {
-    return (
-        <ToggleModalButton
-            className='intro-links'
-            dialogType={ChannelInviteModal}
-            dialogProps={{channel}}
-        >
-            <i className='fa fa-user-plus'></i>
-            <FormattedMessage
-                id='intro_messages.invite'
-                defaultMessage='Invite others to this {type}'
-                values={{
-                    type: (uiType)
-                }}
-            />
-        </ToggleModalButton>
-    );
+    const currentMember = ChannelStore.getCurrentMember();
+    const isGuest = Utils.isGuest(currentMember.roles);
+
+    if (!isGuest) {
+        return (
+            <ToggleModalButton
+                className='intro-links'
+                dialogType={ChannelInviteModal}
+                dialogProps={{channel}}
+            >
+                <i className='fa fa-user-plus'></i>
+                <FormattedMessage
+                    id='intro_messages.invite'
+                    defaultMessage='Invite others to this {type}'
+                    values={{
+                        type: (uiType)
+                    }}
+                />
+            </ToggleModalButton>
+        );
+    }
+
+    return null;
 }
 
 function createSetHeaderButton(channel) {
-    return (
-        <ToggleModalButton
-            className='intro-links'
-            dialogType={EditChannelHeaderModal}
-            dialogProps={{channel}}
-        >
-            <i className='fa fa-pencil'></i>
-            <FormattedMessage
-                id='intro_messages.setHeader'
-                defaultMessage='Set a Header'
-            />
-        </ToggleModalButton>
-    );
+    const currentMember = ChannelStore.getCurrentMember();
+    const isGuest = Utils.isGuest(currentMember.roles);
+    if (!isGuest) {
+        return (
+            <ToggleModalButton
+                className='intro-links'
+                dialogType={EditChannelHeaderModal}
+                dialogProps={{channel}}
+            >
+                <i className='fa fa-pencil'></i>
+                <FormattedMessage
+                    id='intro_messages.setHeader'
+                    defaultMessage='Set a Header'
+                />
+            </ToggleModalButton>
+        );
+    }
+
+    return null;
 }

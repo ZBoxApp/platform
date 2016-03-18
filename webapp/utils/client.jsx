@@ -52,6 +52,8 @@ function handleError(methodName, xhr, status, err) {
     if (xhr.status === 401) {
         if (window.location.href.indexOf('/channels') === 0) {
             browserHistory.push('/login?extra=expired&redirect=' + encodeURIComponent(window.location.pathname + window.location.search));
+        } else if (window.location.href.indexOf('/guest') > 0) {
+            browserHistory.push('/guest_revoked');
         } else {
             var teamURL = window.location.pathname.split('/channels')[0];
             browserHistory.push(teamURL + '/login?extra=expired&redirect=' + encodeURIComponent(window.location.pathname + window.location.search));
@@ -1724,6 +1726,99 @@ export function resendVerification(success, error, teamName, email) {
             if (error) {
                 error(e);
             }
+        }
+    });
+}
+
+export function channelGuestInvite(channelId, success, error) {
+    return $.ajax({
+        url: '/api/v1/guest/' + channelId + '/',
+        type: 'GET',
+        cache: false,
+        dataType: 'json',
+        success,
+        error
+    });
+}
+
+export function addGuestInvite(guest, success, error) {
+    return $.ajax({
+        url: '/api/v1/guest/create',
+        type: 'POST',
+        data: JSON.stringify(guest),
+        contentType: 'application/json',
+        cache: false,
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('addGuestInvite', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function removeGuestInvite(inviteId, success, error) {
+    return $.ajax({
+        url: '/api/v1/guest/' + inviteId + '/remove',
+        type: 'POST',
+        cache: false,
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('removeGuestInvite', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function guestInviteInfo(success, error, id) {
+    $.ajax({
+        url: '/api/v1/guest/invite_info',
+        type: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({invite_id: id}),
+        success,
+        error: function onError(xhr, status, err) {
+            var e = handleError('getInviteInfo', xhr, status, err);
+            if (error) {
+                error(e);
+            }
+        }
+    });
+}
+
+export function createGuest(user, data, success, error) {
+    return $.ajax({
+        url: '/api/v1/guest/new?d=' + encodeURIComponent(data),
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify(user),
+        success,
+        error: function onError(xhr, status, err) {
+            var e = handleError('createGuest', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function loginGuest(name, email, inviteId, success, error) {
+    return $.ajax({
+        url: '/api/v1/guest/login',
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify({name, email, inviteId}),
+        success: function onSuccess(data, textStatus, xhr) {
+            track('api', 'api_guest_login_success', data.invite_id, 'email', data.email);
+            sessionStorage.removeItem(data.id + '_last_error');
+            BrowserStore.signalLogin();
+            success(data, textStatus, xhr);
+        },
+        error: function onError(xhr, status, err) {
+            var e = handleError('loginGuest', xhr, status, err);
+            error(e);
         }
     });
 }

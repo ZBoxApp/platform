@@ -31,27 +31,31 @@ export default class SidebarRightMenu extends React.Component {
         var currentUser = UserStore.getCurrentUser();
         var isAdmin = false;
         var isSystemAdmin = false;
+        var isGuest = false;
 
         if (currentUser != null) {
             isAdmin = Utils.isAdmin(currentUser.roles);
             isSystemAdmin = Utils.isSystemAdmin(currentUser.roles);
+            isGuest = Utils.isGuest(currentUser.roles);
 
-            inviteLink = (
-                <li>
-                    <a
-                        href='#'
-                        onClick={GlobalActions.showInviteMemberModal}
-                    >
-                        <i className='fa fa-user'></i>
-                        <FormattedMessage
-                            id='sidebar_right_menu.inviteNew'
-                            defaultMessage='Invite New Member'
-                        />
-                    </a>
-                </li>
-            );
+            if (!isGuest) {
+                inviteLink = (
+                    <li>
+                        <a
+                            href='#'
+                            onClick={GlobalActions.showInviteMemberModal}
+                        >
+                            <i className='fa fa-user'></i>
+                            <FormattedMessage
+                                id='sidebar_right_menu.inviteNew'
+                                defaultMessage='Invite New Member'
+                            />
+                        </a>
+                    </li>
+                );
+            }
 
-            if (this.props.teamType === 'O') {
+            if (this.props.teamType === 'O' && !isGuest) {
                 teamLink = (
                     <li>
                         <a

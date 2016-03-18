@@ -584,6 +584,34 @@
     "translation": "Se encontró un error al escribir en el almacenamiento del servidor local"
   },
   {
+    "id": "api.guest.create_guest_invitation.post_and_forget",
+    "translation": "%v ha habilitado el acceso de invitados a este canal."
+  },
+  {
+    "id": "api.guest.create_invitation.direct_channel.app_error",
+    "translation": "No se pueden crear invitaciónes en canales de Mensajes Directos"
+  },
+  {
+    "id": "api.guest.create_invitation.permissions.app_error",
+    "translation": "No tienes los permisos apropiados"
+  },
+  {
+    "id": "api.guest.init.debug",
+    "translation": "Inicializando rutas del API para las invitaciones"
+  },
+  {
+    "id": "api.guest.join_channel.post_and_forget",
+    "translation": "El invitado %v se ha unido al canal."
+  },
+  {
+    "id": "api.guest.remove_guest_invitation.post_and_forget",
+    "translation": "%v ha deshabilitado el acceso de invitados a este canal. Todos los invitados han sido removidos."
+  },
+  {
+    "id": "api.guest.remove_invitation.deleted.app_error",
+    "translation": "Esta invitación ya fue removida"
+  },
+  {
     "id": "api.import.import_post.saving.debug",
     "translation": "Error guardando el mensaje. user=%v, message=%v"
   },
@@ -2124,6 +2152,22 @@
     "translation": "No se pudo decodificar el gif."
   },
   {
+    "id": "model.guest.is_valid.channel_id.app_error",
+    "translation": "channel_id inválido"
+  },
+  {
+    "id": "model.guest.is_valid.create_at.app_error",
+    "translation": "Creado debe ser un tiempo válido"
+  },
+  {
+    "id": "model.guest.is_valid.id.app_error",
+    "translation": "Id inválido"
+  },
+  {
+    "id": "model.guest.is_valid.update_at.app_error",
+    "translation": "Actualizado debe ser un tiempo válido"
+  },
+  {
     "id": "model.incoming_hook.channel_id.app_error",
     "translation": "Channel id inválido"
   },
@@ -2774,6 +2818,70 @@
   {
     "id": "store.sql_compliance.save.saving.app_error",
     "translation": "Se ha detectado un error al guardar el informe de cumplimiento"
+  },
+  {
+    "id": "store.sql_guest.delete.invite.app_error",
+    "translation": "No pudimos eliminar la invitación abierta"
+  },
+  {
+    "id": "store.sql_guest.get_by_channel_id.finding.app_error",
+    "translation": "No pudimos obtener la invitación abierta para el canal"
+  },
+  {
+    "id": "store.sql_guest.get_by_invite_id.expired.app_error",
+    "translation": "La invitación abierta ha expirado"
+  },
+  {
+    "id": "store.sql_guest.get_by_invite_id.finding.app_error",
+    "translation": "Encontramos un error buscando la invitación abierta"
+  },
+  {
+    "id": "store.sql_guest.get_members.app_error",
+    "translation": "No pudimos obtener a los invitados"
+  },
+  {
+    "id": "store.sql_guest.remove_members.app_error",
+    "translation": "Encontramos un error mientras removiamos a los invitados del canal"
+  },
+  {
+    "id": "store.sql_guest.remove_members.no_members.app_error",
+    "translation": "No hay invitados en el canal"
+  },
+  {
+    "id": "store.sql_guest.remove_members.no_users.app_error",
+    "translation": "No hay usuarios de invitados que remover"
+  },
+  {
+    "id": "store.sql_guest.remove_users.app_error",
+    "translation": "Encontramos un error mientras eliminamos los usuarios de los invitados"
+  },
+  {
+    "id": "store.sql_guest.save.already.app_error",
+    "translation": "Este canal ya posee una invitación abierta"
+  },
+  {
+    "id": "store.sql_guest.save.app_error",
+    "translation": "Ocurrió un error mientras se guardaba la invitación abierta del canal"
+  },
+  {
+    "id": "store.sql_guest.save.existing.app_error",
+    "translation": "No puedes actualizar una invitación abierta existente"
+  },
+  {
+    "id": "store.sql_guest.update.app_error",
+    "translation": "No pudimos actualizar la invitación abierta"
+  },
+  {
+    "id": "store.sql_guest.update.find.app_error",
+    "translation": "No pudimos encotrar una invitación abierta existente"
+  },
+  {
+    "id": "store.sql_guest.update.finding.app_error",
+    "translation": "Entrontramos un error al buscar la invitación abierta"
+  },
+  {
+    "id": "store.sql_guest.update.updating.app_error",
+    "translation": "Encontramos un error al actualizar la invitación abierta"
   },
   {
     "id": "store.sql_license.get.app_error",
@@ -3544,6 +3652,14 @@
     "translation": "Se encontró un error al revocar el acceso del token, err="
   },
   {
+    "id": "web.get_guest_channel.no_member.app_error",
+    "translation": "No haz utilizado el enlace de invitación para entrar al canal {{.ChannelName}}. Por favor intenta de nuevo con el enlace que te asignaron."
+  },
+  {
+    "id": "web.get_guest_channel.only.app_error",
+    "translation": "Todavía no eres un Invitado del Canal {{.ChannelName}} del Equipo {{.TeamName}}. Por favor intenta de nuevo con el enlace que te asignaron."
+  },
+  {
     "id": "web.header.back",
     "translation": "Atrás"
   },
@@ -3614,6 +3730,10 @@
   {
     "id": "web.reset_password.invalid_link.app_error",
     "translation": "El enlace para restablecer la contraseña parece ser inválido"
+  },
+  {
+    "id": "web.root.guest_not_allowed.app_error",
+    "translation": "Tu usuario es un invitado, para entrar al canal al cual fuiste invitado, utiliza el enlace que se te suministró."
   },
   {
     "id": "web.root.home_title",

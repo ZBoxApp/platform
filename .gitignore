@@ -70,3 +70,8 @@ api/data/*
 .agignore
 .ctags
 tags
+
+# ZBox & IDE
+.idea
+zboxnow.log
+zbox_env.sh

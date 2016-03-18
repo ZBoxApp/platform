@@ -58,27 +58,31 @@ export default class NavbarDropdown extends React.Component {
         var currentUser = this.props.currentUser;
         var isAdmin = false;
         var isSystemAdmin = false;
+        var isGuest = false;
         var teamSettings = null;
 
         if (currentUser != null) {
             isAdmin = Utils.isAdmin(currentUser.roles);
             isSystemAdmin = Utils.isSystemAdmin(currentUser.roles);
+            isGuest = Utils.isGuest(currentUser.roles);
 
-            inviteLink = (
-                <li>
-                    <a
-                        href='#'
-                        onClick={GlobalActions.showInviteMemberModal}
-                    >
-                        <FormattedMessage
-                            id='navbar_dropdown.inviteMember'
-                            defaultMessage='Invite New Member'
-                        />
-                    </a>
-                </li>
-            );
+            if (!isGuest) {
+                inviteLink = (
+                    <li>
+                        <a
+                            href='#'
+                            onClick={GlobalActions.showInviteMemberModal}
+                        >
+                            <FormattedMessage
+                                id='navbar_dropdown.inviteMember'
+                                defaultMessage='Invite New Member'
+                            />
+                        </a>
+                    </li>
+                );
+            }
 
-            if (this.props.teamType === Constants.OPEN_TEAM && global.window.mm_config.EnableUserCreation === 'true') {
+            if (this.props.teamType === Constants.OPEN_TEAM && global.window.mm_config.EnableUserCreation === 'true' && !isGuest) {
                 teamLink = (
                     <li>
                         <a

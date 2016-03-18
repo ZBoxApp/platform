@@ -38,7 +38,20 @@ class AtMentionSuggestion extends React.Component {
             icon = <i className='mention__image fa fa-users fa-2x'/>;
         } else {
             username = item.username;
-            description = Utils.getFullName(item);
+
+            if (Utils.isGuest(item.roles)) {
+                description = (
+                    <FormattedMessage
+                        id='suggestion.mention.guest'
+                        defaultMessage='{username} ( guest )'
+                        values={{
+                            username: Utils.getFullName(item)
+                        }}
+                    />
+                );
+            } else {
+                description = Utils.getFullName(item);
+            }
             icon = (
                 <img
                     className='mention__image'

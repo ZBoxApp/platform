@@ -31,6 +31,7 @@ func InitTeam(r *mux.Router) {
 	sr.Handle("/signup", ApiAppHandler(signupTeam)).Methods("POST")
 	sr.Handle("/all", ApiAppHandler(getAll)).Methods("GET")
 	sr.Handle("/find_team_by_name", ApiAppHandler(findTeamByName)).Methods("POST")
+	sr.Handle("/find_teams", ApiAppHandler(findTeams)).Methods("POST")
 	sr.Handle("/invite_members", ApiUserRequired(inviteMembers)).Methods("POST")
 	sr.Handle("/update", ApiUserRequired(updateTeam)).Methods("POST")
 	sr.Handle("/me", ApiUserRequired(getMyTeam)).Methods("GET")
@@ -469,6 +470,32 @@ func FindTeamByName(c *Context, name string, all string) bool {
 	}
 
 	return false
+}
+
+func findTeams(c *Context, w http.ResponseWriter, r *http.Request) {
+
+	m := model.MapFromJson(r.Body)
+
+	email := strings.ToLower(strings.TrimSpace(m["email"]))
+
+	if email == "" {
+		c.SetInvalidParam("findTeam", "email")
+		return
+	}
+
+	if result := <-Srv.Store.Team().GetTeamsForEmail(email); result.Err != nil {
+		c.Err = result.Err
+		return
+	} else {
+		teams := result.Data.([]*model.Team)
+		m := make(map[string]*model.Team)
+		for _, v := range teams {
+			v.Sanitize()
+			m[v.Id] = v
+		}
+
+		w.Write([]byte(model.TeamMapToJson(m)))
+	}
 }
 
 func inviteMembers(c *Context, w http.ResponseWriter, r *http.Request) {

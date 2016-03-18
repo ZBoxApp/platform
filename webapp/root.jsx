@@ -56,6 +56,9 @@ import * as I18n from 'i18n/i18n.jsx';
 
 import Docs from 'help/docs.jsx';
 
+import GuestSignup from 'components/guest/guest_signup.jsx';
+import GuestRevoked from 'components/guest/guest_revoked.jsx';
+
 // This is for anything that needs to be done for ALL react components.
 // This runs before we start to render anything.
 function preRenderSetup(callwhendone) {
@@ -229,6 +232,14 @@ function renderRootComponent() {
                         }}
                     />
                     <Route
+                        path=':team/guest/:channel'
+                        onEnter={onChannelChange}
+                        components={{
+                            sidebar: Sidebar,
+                            center: ChannelView
+                        }}
+                    />
+                    <Route
                         path=':team/pl/:postid'
                         onEnter={onPermalinkEnter}
                         components={{
@@ -302,6 +313,14 @@ function renderRootComponent() {
                     <Route
                         path='do_verify_email'
                         component={DoVerifyEmail}
+                    />
+                    <Route
+                        path='guest_signup'
+                        component={GuestSignup}
+                    />
+                    <Route
+                        path='guest_revoked'
+                        component={GuestRevoked}
                     />
                     <Route
                         path=':team'
