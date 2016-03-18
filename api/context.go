@@ -371,6 +371,29 @@ func (c *Context) RemoveSessionCookie(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, cookie)
 }
 
+func (c *Context) SetTeamCookie(w http.ResponseWriter, r *http.Request, teamName string) {
+	maxAge := *utils.Cfg.ServiceSettings.SessionLengthWebInDays * 60 * 60 * 24
+	cookie := &http.Cookie{
+		Name:   model.SESSION_TEAM,
+		Value:  teamName,
+		Path:   "/",
+		MaxAge: maxAge,
+	}
+
+	http.SetCookie(w, cookie)
+}
+
+func (c *Context) RemoveTeamCookie(w http.ResponseWriter, r *http.Request) {
+	cookie := &http.Cookie{
+		Name:   model.SESSION_TEAM,
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	}
+
+	http.SetCookie(w, cookie)
+}
+
 func (c *Context) SetInvalidParam(where string, name string) {
 	c.Err = model.NewLocAppError(where, "api.context.invalid_param.app_error", map[string]interface{}{"Name": name}, "")
 	c.Err.StatusCode = http.StatusBadRequest
@@ -544,4 +567,11 @@ func GetSession(token string) *model.Session {
 
 func AddSessionToCache(session *model.Session) {
 	sessionCache.AddWithExpiresInSecs(session.Token, session, int64(*utils.Cfg.ServiceSettings.SessionCacheInMinutes*60))
+}
+
+func (c *Context) IsGuestUser() bool {
+	if model.IsInRole(c.Session.Roles, model.ROLE_GUEST_USER) {
+		return true
+	}
+	return false
 }

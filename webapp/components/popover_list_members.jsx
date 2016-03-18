@@ -66,7 +66,14 @@ export default class PopoverListMembers extends React.Component {
 
             members.forEach((m, i) => {
                 let button = '';
-                if (currentUserId !== m.id && this.props.channel.type !== 'D') {
+                if (Utils.isGuest(m.roles)) {
+                    button = (
+                        <FormattedMessage
+                            id='members_popover.guest'
+                            defaultMessage='Guest'
+                        />
+                    );
+                } else if (currentUserId !== m.id && this.props.channel.type !== 'D') {
                     button = (
                         <a
                             href='#'

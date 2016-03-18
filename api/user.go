@@ -56,6 +56,7 @@ func InitUser(r *mux.Router) {
 	sr.Handle("/mfa", ApiAppHandler(checkMfa)).Methods("POST")
 	sr.Handle("/generate_mfa_qr", ApiUserRequired(generateMfaQrCode)).Methods("GET")
 	sr.Handle("/update_mfa", ApiUserRequired(updateMfa)).Methods("POST")
+	sr.Handle("/locale", ApiAppHandler(getDefaultLocale)).Methods("POST")
 
 	sr.Handle("/newimage", ApiUserRequired(uploadProfileImage)).Methods("POST")
 
@@ -767,6 +768,15 @@ func Login(c *Context, w http.ResponseWriter, r *http.Request, user *model.User,
 		AddSessionToCache(session)
 	}
 
+	var team *model.Team
+	if result := <-Srv.Store.Team().Get(user.TeamId); result.Err != nil {
+		c.Err = result.Err
+		c.Err.StatusCode = http.StatusForbidden
+		return
+	} else {
+		team = result.Data.(*model.Team)
+	}
+
 	w.Header().Set(model.HEADER_TOKEN, session.Token)
 
 	expiresAt := time.Unix(model.GetMillis()/1000+int64(maxAge), 0)
@@ -780,6 +790,7 @@ func Login(c *Context, w http.ResponseWriter, r *http.Request, user *model.User,
 	}
 
 	http.SetCookie(w, sessionCookie)
+	c.SetTeamCookie(w, r, team.Name)
 
 	c.Session = *session
 	c.LogAuditWithUserId(user.Id, "success")
@@ -1055,6 +1066,7 @@ func logout(c *Context, w http.ResponseWriter, r *http.Request) {
 func Logout(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.LogAudit("")
 	c.RemoveSessionCookie(w, r)
+	c.RemoveTeamCookie(w, r)
 	if result := <-Srv.Store.Session().Remove(c.Session.Id); result.Err != nil {
 		c.Err = result.Err
 		return
@@ -2829,4 +2841,8 @@ func checkMfa(c *Context, w http.ResponseWriter, r *http.Request) {
 		rdata["mfa_required"] = strconv.FormatBool(result.Data.(*model.User).MfaActive)
 	}
 	w.Write([]byte(model.MapToJson(rdata)))
+}
+
+func getDefaultLocale(c *Context, w http.ResponseWriter, r *http.Request) {
+
 }

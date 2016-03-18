@@ -611,7 +611,11 @@ func sendNotifications(c *Context, post *model.Post, team *model.Team, channel *
 			bodyPage := utils.NewHTMLTemplate("post_body", profileMap[id].Locale)
 			bodyPage.Props["SiteURL"] = c.GetSiteURL()
 			bodyPage.Props["PostMessage"] = model.ClearMentionTags(post.Message)
-			bodyPage.Props["TeamLink"] = teamURL + "/channels/" + channel.Name
+			if model.IsInRole(profileMap[id].Roles, model.ROLE_GUEST_USER) {
+				bodyPage.Props["TeamLink"] = teamURL + "/guest/" + channel.Name
+			} else {
+				bodyPage.Props["TeamLink"] = teamURL + "/channels/" + channel.Name
+			}
 			bodyPage.Props["BodyText"] = bodyText
 			bodyPage.Props["Button"] = userLocale("api.templates.post_body.button")
 			bodyPage.Html["Info"] = template.HTML(userLocale("api.templates.post_body.info",

@@ -4,6 +4,7 @@
 import FilteredUserList from './filtered_user_list.jsx';
 import TeamMembersDropdown from './team_members_dropdown.jsx';
 import UserStore from 'stores/user_store.jsx';
+import {isGuest} from 'utils/utils.jsx';
 
 import React from 'react';
 
@@ -29,12 +30,15 @@ export default class MemberListTeam extends React.Component {
 
     getUsers() {
         const profiles = UserStore.getProfiles();
-        const users = [];
+        let users = [];
 
         for (const id of Object.keys(profiles)) {
             users.push(profiles[id]);
         }
 
+        users = users.filter((user) => {
+            return !isGuest(user.roles);
+        });
         users.sort((a, b) => a.username.localeCompare(b.username));
 
         return users;

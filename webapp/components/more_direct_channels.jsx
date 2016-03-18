@@ -34,7 +34,7 @@ export default class MoreDirectChannels extends React.Component {
         const users = [];
 
         for (const id in profiles) {
-            if (id !== currentId) {
+            if (id !== currentId && !Utils.isGuest(profiles[id].roles)) {
                 users.push(profiles[id]);
             }
         }

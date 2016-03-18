@@ -9,7 +9,11 @@ import {Link} from 'react-router';
 
 export default class NotLoggedIn extends React.Component {
     componentDidMount() {
-        $('body').attr('class', 'sticky');
+        if (this.props.location.pathname === '/guest_revoked') {
+            $('body').attr('class', 'sticky white');
+        } else {
+            $('body').attr('class', 'sticky');
+        }
         $('#root').attr('class', 'container-fluid');
     }
     componentWillUnmount() {
@@ -70,5 +74,6 @@ NotLoggedIn.defaultProps = {
 };
 
 NotLoggedIn.propTypes = {
-    children: React.PropTypes.object
+    children: React.PropTypes.object,
+    location: React.PropTypes.object
 };

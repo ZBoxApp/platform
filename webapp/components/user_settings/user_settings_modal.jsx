@@ -223,17 +223,22 @@ class UserSettingsModal extends React.Component {
         if (this.state.currentUser == null) {
             return (<div/>);
         }
+        var isGuest = Utils.isGuest(this.state.currentUser.roles);
         var tabs = [];
 
         tabs.push({name: 'general', uiName: formatMessage(holders.general), icon: 'glyphicon glyphicon-cog'});
-        tabs.push({name: 'security', uiName: formatMessage(holders.security), icon: 'glyphicon glyphicon-lock'});
+        if (!isGuest) {
+            tabs.push({name: 'security', uiName: formatMessage(holders.security), icon: 'glyphicon glyphicon-lock'});
+        }
         tabs.push({name: 'notifications', uiName: formatMessage(holders.notifications), icon: 'glyphicon glyphicon-exclamation-sign'});
-        if (global.window.mm_config.EnableOAuthServiceProvider === 'true') {
+        if (global.window.mm_config.EnableOAuthServiceProvider === 'true' && !isGuest) {
             tabs.push({name: 'developer', uiName: formatMessage(holders.developer), icon: 'glyphicon glyphicon-th'});
         }
 
         tabs.push({name: 'display', uiName: formatMessage(holders.display), icon: 'glyphicon glyphicon-eye-open'});
-        tabs.push({name: 'advanced', uiName: formatMessage(holders.advanced), icon: 'glyphicon glyphicon-list-alt'});
+        if (!isGuest) {
+            tabs.push({name: 'advanced', uiName: formatMessage(holders.advanced), icon: 'glyphicon glyphicon-list-alt'});
+        }
 
         return (
             <Modal

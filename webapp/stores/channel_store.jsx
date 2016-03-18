@@ -13,6 +13,7 @@ const CHANGE_EVENT = 'change';
 const LEAVE_EVENT = 'leave';
 const MORE_CHANGE_EVENT = 'change';
 const EXTRA_INFO_EVENT = 'extra_info';
+const GUEST_URL_CHANGE_EVENT = 'guest_url';
 
 class ChannelStoreClass extends EventEmitter {
     constructor(props) {
@@ -42,6 +43,12 @@ class ChannelStoreClass extends EventEmitter {
         this.setUnreadCounts = this.setUnreadCounts.bind(this);
         this.getUnreadCount = this.getUnreadCount.bind(this);
         this.getUnreadCounts = this.getUnreadCounts.bind(this);
+
+        this.emitGuestUrlChange = this.emitGuestUrlChange.bind(this);
+        this.addGuestUrlListener = this.addGuestUrlListener.bind(this);
+        this.removeGuestUrlListener = this.removeGuestUrlListener.bind(this);
+        this.getGuestUrl = this.getGuestUrl.bind(this);
+        this.setGuestUrl = this.setGuestUrl.bind(this);
 
         this.currentId = null;
         this.postMode = this.POST_MODE_CHANNEL;
@@ -93,6 +100,15 @@ class ChannelStoreClass extends EventEmitter {
     }
     removeLeaveListener(callback) {
         this.removeListener(LEAVE_EVENT, callback);
+    }
+    emitGuestUrlChange() {
+        this.emit(GUEST_URL_CHANGE_EVENT);
+    }
+    addGuestUrlListener(callback) {
+        this.on(GUEST_URL_CHANGE_EVENT, callback);
+    }
+    removeGuestUrlListener(callback) {
+        this.removeListener(GUEST_URL_CHANGE_EVENT, callback);
     }
     findFirstBy(field, value) {
         return this.doFindFirst(field, value, this.getChannels());
@@ -287,6 +303,15 @@ class ChannelStoreClass extends EventEmitter {
 
     getUnreadCounts() {
         return this.unreadCounts;
+    }
+
+    getGuestUrl() {
+        return this.guest_url;
+    }
+
+    setGuestUrl(url) {
+        this.guest_url = url;
+        this.emitGuestUrlChange();
     }
 }
 

@@ -10,6 +10,7 @@ import ChannelInfoModal from './channel_info_modal.jsx';
 import ChannelInviteModal from './channel_invite_modal.jsx';
 import ChannelMembersModal from './channel_members_modal.jsx';
 import ChannelNotificationsModal from './channel_notifications_modal.jsx';
+import ChannelGuestModal from './guest/channel_guest_modal.jsx';
 import DeleteChannelModal from './delete_channel_modal.jsx';
 import RenameChannelModal from './rename_channel_modal.jsx';
 import ToggleModalButton from './toggle_modal_button.jsx';
@@ -46,6 +47,7 @@ export default class Navbar extends React.Component {
         this.showRenameChannelModal = this.showRenameChannelModal.bind(this);
         this.hideRenameChannelModal = this.hideRenameChannelModal.bind(this);
         this.isStateValid = this.isStateValid.bind(this);
+        this.initialGuestUrl = this.initialGuestUrl.bind(this);
 
         this.createCollapseButtons = this.createCollapseButtons.bind(this);
         this.createDropdown = this.createDropdown.bind(this);
@@ -67,6 +69,17 @@ export default class Navbar extends React.Component {
     }
     isStateValid() {
         return this.state.channel && this.state.member && this.state.users && this.state.currentUser;
+    }
+    initialGuestUrl() {
+        Client.channelGuestInvite(ChannelStore.getCurrentId(),
+            (data) => {
+                let url = null;
+                if (data) {
+                    url = global.window.location.origin + '/guest_signup/?id=' + data.invite_id;
+                }
+                ChannelStore.setGuestUrl(url);
+            }
+        );
     }
     componentDidMount() {
         ChannelStore.addChangeListener(this.onChange);
@@ -150,7 +163,7 @@ export default class Navbar extends React.Component {
             showRenameChannelModal: false
         });
     }
-    createDropdown(channel, channelTitle, isAdmin, isDirect, popoverContent) {
+    createDropdown(channel, channelTitle, isAdmin, isDirect, isGuest, popoverContent) {
         if (channel) {
             var viewInfoOption = (
                 <li role='presentation'>
@@ -167,42 +180,45 @@ export default class Navbar extends React.Component {
                 </li>
             );
 
-            var setChannelHeaderOption = (
-                <li role='presentation'>
-                    <a
-                        role='menuitem'
-                        href='#'
-                        onClick={this.showEditChannelHeaderModal}
-                    >
-                        <FormattedMessage
-                            id='navbar.setHeader'
-                            defaultMessage='Set Channel Header...'
-                        />
-                    </a>
-                </li>
-            );
-
+            var setChannelHeaderOption = null;
             var setChannelPurposeOption = null;
-            if (!isDirect) {
-                setChannelPurposeOption = (
+            if (!isGuest) {
+                setChannelHeaderOption = (
                     <li role='presentation'>
                         <a
                             role='menuitem'
                             href='#'
-                            onClick={() => this.setState({showEditChannelPurposeModal: true})}
+                            onClick={this.showEditChannelHeaderModal}
                         >
                             <FormattedMessage
-                                id='navbar.setPurpose'
-                                defaultMessage='Set Channel Purpose...'
+                                id='navbar.setHeader'
+                                defaultMessage='Set Channel Header...'
                             />
                         </a>
                     </li>
                 );
+
+                if (!isDirect) {
+                    setChannelPurposeOption = (
+                        <li role='presentation'>
+                            <a
+                                role='menuitem'
+                                href='#'
+                                onClick={() => this.setState({showEditChannelPurposeModal: true})}
+                            >
+                                <FormattedMessage
+                                    id='navbar.setPurpose'
+                                    defaultMessage='Set Channel Purpose...'
+                                />
+                            </a>
+                        </li>
+                    );
+                }
             }
 
             var addMembersOption;
             var leaveChannelOption;
-            if (!isDirect && !ChannelStore.isDefault(channel)) {
+            if (!isDirect && !ChannelStore.isDefault(channel) && !isGuest) {
                 addMembersOption = (
                     <li role='presentation'>
                         <ToggleModalButton
@@ -237,6 +253,7 @@ export default class Navbar extends React.Component {
             var manageMembersOption;
             var renameChannelOption;
             var deleteChannelOption;
+            var guestChannelOption;
             if (!isDirect && isAdmin) {
                 if (!ChannelStore.isDefault(channel)) {
                     manageMembersOption = (
@@ -282,6 +299,24 @@ export default class Navbar extends React.Component {
                                 defaultMessage='Rename Channel...'
                             />
                         </a>
+                    </li>
+                );
+
+                guestChannelOption = (
+                    <li
+                        key='invite_guests'
+                        role='presentation'
+                    >
+                        <ToggleModalButton
+                            role='menuitem'
+                            dialogType={ChannelGuestModal}
+                            dialogProps={{channel}}
+                        >
+                            <FormattedMessage
+                                id='navbar.guests'
+                                defaultMessage='Invite Guests'
+                            />
+                        </ToggleModalButton>
                     </li>
                 );
             }
@@ -341,6 +376,7 @@ export default class Navbar extends React.Component {
                             {setChannelHeaderOption}
                             {setChannelPurposeOption}
                             {notificationPreferenceOption}
+                            {guestChannelOption}
                             {renameChannelOption}
                             {deleteChannelOption}
                             {leaveChannelOption}
@@ -433,6 +469,7 @@ export default class Navbar extends React.Component {
         var popoverContent;
         var isAdmin = false;
         var isDirect = false;
+        var isGuest = false;
 
         var editChannelHeaderModal = null;
         var editChannelPurposeModal = null;
@@ -453,6 +490,7 @@ export default class Navbar extends React.Component {
                 </Popover>
             );
             isAdmin = Utils.isAdmin(this.state.member.roles);
+            isGuest = Utils.isGuest(this.state.member.roles);
 
             if (channel.type === 'O') {
                 channelTitle = channel.display_name;
@@ -505,52 +543,57 @@ export default class Navbar extends React.Component {
                 );
             }
 
-            editChannelHeaderModal = (
-                <EditChannelHeaderModal
-                    show={this.state.showEditChannelHeaderModal}
-                    onHide={() => this.setState({showEditChannelHeaderModal: false})}
-                    channel={channel}
-                />
-            );
+            if (!isGuest) {
+                editChannelHeaderModal = (
+                    <EditChannelHeaderModal
+                        show={this.state.showEditChannelHeaderModal}
+                        onHide={() => this.setState({showEditChannelHeaderModal: false})}
+                        channel={channel}
+                    />
+                );
 
-            editChannelPurposeModal = (
-                <EditChannelPurposeModal
-                    show={this.state.showEditChannelPurposeModal}
-                    onModalDismissed={() => this.setState({showEditChannelPurposeModal: false})}
-                    channel={channel}
-                />
-            );
+                editChannelPurposeModal = (
+                    <EditChannelPurposeModal
+                        show={this.state.showEditChannelPurposeModal}
+                        onModalDismissed={() => this.setState({showEditChannelPurposeModal: false})}
+                        channel={channel}
+                    />
+                );
 
-            renameChannelModal = (
-                <RenameChannelModal
-                    show={this.state.showRenameChannelModal}
-                    onHide={this.hideRenameChannelModal}
-                    channel={channel}
-                />
-            );
+                renameChannelModal = (
+                    <RenameChannelModal
+                        show={this.state.showRenameChannelModal}
+                        onHide={this.hideRenameChannelModal}
+                        channel={channel}
+                    />
+                );
 
-            channelMembersModal = (
-                <ChannelMembersModal
-                    show={this.state.showMembersModal}
-                    onModalDismissed={() => this.setState({showMembersModal: false})}
-                    channel={channel}
-                />
-            );
+                channelMembersModal = (
+                    <ChannelMembersModal
+                        show={this.state.showMembersModal}
+                        onModalDismissed={() => this.setState({showMembersModal: false})}
+                        channel={channel}
+                    />
+                );
+            }
         }
 
         var collapseButtons = this.createCollapseButtons(currentId);
 
-        const searchButton = (
-            <button
-                type='button'
-                className='navbar-toggle pull-right'
-                onClick={this.showSearch}
-            >
-                <span className='glyphicon glyphicon-search icon--white'/>
-            </button>
-        );
+        let searchButton;
+        if (!isGuest) {
+            searchButton = (
+                <button
+                    type='button'
+                    className='navbar-toggle pull-right'
+                    onClick={this.showSearch}
+                >
+                    <span className='glyphicon glyphicon-search icon--white'/>
+                </button>
+            );
+        }
 
-        var channelMenuDropdown = this.createDropdown(channel, channelTitle, isAdmin, isDirect, popoverContent);
+        var channelMenuDropdown = this.createDropdown(channel, channelTitle, isAdmin, isDirect, isGuest, popoverContent);
 
         return (
             <div>

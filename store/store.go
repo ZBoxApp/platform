@@ -42,6 +42,7 @@ type Store interface {
 	Preference() PreferenceStore
 	License() LicenseStore
 	MarkSystemRanUnitTests()
+	Guest() GuestStore
 	Close()
 }
 
@@ -226,4 +227,15 @@ type PreferenceStore interface {
 type LicenseStore interface {
 	Save(license *model.LicenseRecord) StoreChannel
 	Get(id string) StoreChannel
+}
+
+type GuestStore interface {
+	Save(guest *model.Guest) StoreChannel
+	Update(guest *model.Guest) StoreChannel
+	GetByChannelId(channelId string) StoreChannel
+	GetByInviteId(inviteId string) StoreChannel
+	Delete(channelId string, time int64) StoreChannel
+	GetMembers(channelId string) StoreChannel
+	RemoveMembers(channelId string, members []*model.GuestMember) StoreChannel
+	RemoveUsers(usersIds []string, time int64) StoreChannel
 }

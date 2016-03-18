@@ -125,7 +125,7 @@ export default class AboutBuildModal extends React.Component {
                             />
                         </div>
                         <div>
-                            <h3 className='about-modal__title'>{'Mattermost'} {title}</h3>
+                            <h3 className='about-modal__title'>{'ZBox Now!'} {title}</h3>
                             <p className='about-modal__subtitle padding-bottom'>{subTitle}</p>
                             <div className='form-group less'>
                                 <div>

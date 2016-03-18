@@ -620,6 +620,34 @@
     "translation": "Encountered an error writing to local server storage"
   },
   {
+    "id": "api.guest.create_guest_invitation.post_and_forget",
+    "translation": "%v has enabled guests access to this channel."
+  },
+  {
+    "id": "api.guest.create_invitation.direct_channel.app_error",
+    "translation": "Invitations cannot be created in Direct Message Channels"
+  },
+  {
+    "id": "api.guest.create_invitation.permissions.app_error",
+    "translation": "You do not have the appropriate permissions"
+  },
+  {
+    "id": "api.guest.init.debug",
+    "translation": "Initializing guest api routes"
+  },
+  {
+    "id": "api.guest.join_channel.post_and_forget",
+    "translation": "The guest %v has joined the channel."
+  },
+  {
+    "id": "api.guest.remove_guest_invitation.post_and_forget",
+    "translation": "%v has disabled guests access to this channel. All guests have been removed."
+  },
+  {
+    "id": "api.guest.remove_invitation.deleted.app_error",
+    "translation": "This invitation already has been removed"
+  },
+  {
     "id": "api.import.import_post.saving.debug",
     "translation": "Error saving post. user=%v, message=%v"
   },
@@ -2244,6 +2272,22 @@
     "translation": "Could not decode gif."
   },
   {
+    "id": "model.guest.is_valid.channel_id.app_error",
+    "translation": "Invalid channel_id"
+  },
+  {
+    "id": "model.guest.is_valid.create_at.app_error",
+    "translation": "Create at must be a valid time"
+  },
+  {
+    "id": "model.guest.is_valid.id.app_error",
+    "translation": "Invalid Id"
+  },
+  {
+    "id": "model.guest.is_valid.update_at.app_error",
+    "translation": "Update at must be a valid time"
+  },
+  {
     "id": "model.incoming_hook.channel_id.app_error",
     "translation": "Invalid channel id"
   },
@@ -2914,6 +2958,70 @@
   {
     "id": "store.sql_compliance.save.saving.app_error",
     "translation": "We encountered an error saving the compliance report"
+  },
+  {
+    "id": "store.sql_guest.delete.invite.app_error",
+    "translation": "We couldn't delete the guest invitation"
+  },
+  {
+    "id": "store.sql_guest.get_by_channel_id.finding.app_error",
+    "translation": "We couldn't get the guest invitation for the channel"
+  },
+  {
+    "id": "store.sql_guest.get_by_invite_id.expired.app_error",
+    "translation": "The guest invitation has expired"
+  },
+  {
+    "id": "store.sql_guest.get_by_invite_id.finding.app_error",
+    "translation": "We encountered an error finding the guest invitation"
+  },
+  {
+    "id": "store.sql_guest.get_members.app_error",
+    "translation": "We couldn't get the guest members"
+  },
+  {
+    "id": "store.sql_guest.remove_members.app_error",
+    "translation": "We encountered an error while removing the guest members from the channel"
+  },
+  {
+    "id": "store.sql_guest.remove_members.no_members.app_error",
+    "translation": "There are no guest members in the channel"
+  },
+  {
+    "id": "store.sql_guest.remove_members.no_users.app_error",
+    "translation": "There are no guest members users to remove"
+  },
+  {
+    "id": "store.sql_guest.remove_users.app_error",
+    "translation": "We encountered an error while deleting the guest members users"
+  },
+  {
+    "id": "store.sql_guest.save.already.app_error",
+    "translation": "This Channel already has a guest invitation"
+  },
+  {
+    "id": "store.sql_guest.save.app_error",
+    "translation": "An error while saving the channel guest invitation"
+  },
+  {
+    "id": "store.sql_guest.save.existing.app_error",
+    "translation": "You cannot update an existing guest invitation"
+  },
+  {
+    "id": "store.sql_guest.update.app_error",
+    "translation": "We couldn't update the guest invitation"
+  },
+  {
+    "id": "store.sql_guest.update.find.app_error",
+    "translation": "We couldn't find the existing guest invitation to update"
+  },
+  {
+    "id": "store.sql_guest.update.finding.app_error",
+    "translation": "We encountered an error finding the guest invitation"
+  },
+  {
+    "id": "store.sql_guest.update.updating.app_error",
+    "translation": "We encountered an error updating the guest invitation"
   },
   {
     "id": "store.sql_license.get.app_error",
@@ -3692,6 +3800,14 @@
     "translation": "Encountered an error revoking an access token, err="
   },
   {
+    "id": "web.get_guest_channel.no_member.app_error",
+    "translation": "You haven't used the invitation link to access {{.ChannelName}} channel. Please try again using the provided link."
+  },
+  {
+    "id": "web.get_guest_channel.only.app_error",
+    "translation": "You are not a Guest of {{.TeamName}} Team for the {{.ChannelName}} channel yet. Please try again using the provided link."
+  },
+  {
     "id": "web.header.back",
     "translation": "Back"
   },
@@ -3762,6 +3878,10 @@
   {
     "id": "web.reset_password.invalid_link.app_error",
     "translation": "The reset link does not appear to be valid"
+  },
+  {
+    "id": "web.root.guest_not_allowed.app_error",
+    "translation": "Your user is a guest, to enter the channel you were invited to, please use the provided link."
   },
   {
     "id": "web.root.home_title",
