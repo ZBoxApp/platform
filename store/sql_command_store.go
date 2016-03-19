@@ -34,6 +34,7 @@ func NewSqlCommandStore(sqlStore *SqlStore) CommandStore {
 }
 
 func (s SqlCommandStore) UpgradeSchemaIfNeeded() {
+	s.CreateColumnIfNotExists("Commands", "AddonId", "varchar(26)", "character varying(26)", "")
 }
 
 func (s SqlCommandStore) CreateIndexesIfNotExists() {
@@ -194,6 +195,81 @@ func (s SqlCommandStore) AnalyticsCommandCount(teamId string) StoreChannel {
 			result.Err = model.NewLocAppError("SqlCommandStore.AnalyticsCommandCount", "store.sql_command.analytics_command_count.app_error", nil, err.Error())
 		} else {
 			result.Data = c
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlCommandStore) GetByTeamAddon(teamId, addonId string) StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		var cmds []*model.Command
+
+		if _, err := s.GetReplica().Select(&cmds, "SELECT * FROM Commands WHERE AddonId = :AddonId AND TeamId = :TeamId AND DeleteAt = 0", map[string]interface{}{"AddonId": addonId, "TeamId": teamId}); err != nil {
+			result.Err = model.NewLocAppError("SqlWebhookStore.GetIncomingByAddon", "store.sql_webhooks.get_incoming_by_channel.app_error", nil, "addonId="+addonId+", err="+err.Error())
+		}
+
+		result.Data = cmds
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlCommandStore) DeleteByTeamAddon(teamId, addonId string, time int64) StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		_, err := s.GetMaster().Exec("Update Commands SET DeleteAt = :DeleteAt, UpdateAt = :UpdateAt WHERE AddonId = :AddonId AND TeamId = :TeamId", map[string]interface{}{"DeleteAt": time, "UpdateAt": time, "AddonId": addonId, "TeamId": teamId})
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlCommandStore.DeleteByTeamAddon", "store.sql_webhooks.delete_incoming.app_error", nil, "addon_id="+addonId+", err="+err.Error())
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlCommandStore) PermanentDeleteByTeamAddon(teamId, addonId string) StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		_, err := s.GetMaster().Exec("DELETE FROM Commands WHERE AddonId = :AddonId AND TeamId = :TeamId", map[string]interface{}{"AddonId": addonId, "TeamId": teamId})
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlCommandStore.PermanentDeleteByTeamAddon", "store.sql_command.save.delete_perm.app_error", nil, "addon_id="+addonId+", err="+err.Error())
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlCommandStore) PermanentDeleteByAddon(addonId string) StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		_, err := s.GetMaster().Exec("DELETE FROM Commands WHERE AddonId = :AddonId", map[string]interface{}{"AddonId": addonId})
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlCommandStore.PermanentDeleteByAddon", "store.sql_command.save.delete_perm.app_error", nil, "addon_id="+addonId+", err="+err.Error())
 		}
 
 		storeChannel <- result

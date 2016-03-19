@@ -38,6 +38,6 @@ export default class ErrorPage extends React.Component {
 }
 
 ErrorPage.propTypes = {
-    message: React.PropTypes.string.isRequired,
+    message: React.PropTypes.node.isRequired,
     goBack: React.PropTypes.func
 };

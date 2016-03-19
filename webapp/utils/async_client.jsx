@@ -224,6 +224,16 @@ export function getProfiles() {
                 return;
             }
 
+            var removeId;
+            for (var i in data) {
+                if (data[i].username === 'systembot') {
+                    removeId = i;
+                    break;
+                }
+            }
+
+            delete data[removeId];
+
             AppDispatcher.handleServerAction({
                 type: ActionTypes.RECEIVED_PROFILES,
                 profiles: data

@@ -350,9 +350,9 @@ func handleWebhookEventsAndForget(c *Context, post *model.Post, team *model.Team
 			return
 		}
 
-		if channel.Type != model.CHANNEL_OPEN {
-			return
-		}
+		//if channel.Type != model.CHANNEL_OPEN {
+		//	return
+		//}
 
 		hchan := Srv.Store.Webhook().GetOutgoingByTeam(c.Session.TeamId)
 
@@ -820,6 +820,77 @@ func getOutOfChannelMentions(post *model.Post, allProfiles map[string]*model.Use
 	}
 
 	return mentioned
+}
+
+func CreateEphemeralPost(c *Context, userId, channelId, text, overrideUsername, overrideIconUrl string, props model.StringInterface, postType string) {
+	// parse links into Markdown format
+	linkWithTextRegex := regexp.MustCompile(`<([^<\|]+)\|([^>]+)>`)
+	text = linkWithTextRegex.ReplaceAllString(text, "[${2}](${1})")
+
+	post := &model.Post{UserId: c.Session.UserId, ChannelId: channelId, Message: text, Type: postType}
+	post.AddProp("from_webhook", "true")
+
+	if utils.Cfg.ServiceSettings.EnablePostUsernameOverride {
+		if len(overrideUsername) != 0 {
+			post.AddProp("override_username", overrideUsername)
+		} else {
+			post.AddProp("override_username", model.DEFAULT_WEBHOOK_USERNAME)
+		}
+	}
+
+	if utils.Cfg.ServiceSettings.EnablePostIconOverride {
+		if len(overrideIconUrl) != 0 {
+			post.AddProp("override_icon_url", overrideIconUrl)
+		} else {
+			post.AddProp("override_icon_url", model.DEFAULT_WEBHOOK_ICON)
+		}
+	}
+
+	if len(props) > 0 {
+		for key, val := range props {
+			if key == "attachments" {
+				if list, success := val.([]interface{}); success {
+					// parse attachment links into Markdown format
+					for i, aInt := range list {
+						attachment := aInt.(map[string]interface{})
+						if _, ok := attachment["text"]; ok {
+							aText := attachment["text"].(string)
+							aText = linkWithTextRegex.ReplaceAllString(aText, "[${2}](${1})")
+							attachment["text"] = aText
+							list[i] = attachment
+						}
+						if _, ok := attachment["pretext"]; ok {
+							aText := attachment["pretext"].(string)
+							aText = linkWithTextRegex.ReplaceAllString(aText, "[${2}](${1})")
+							attachment["pretext"] = aText
+							list[i] = attachment
+						}
+						if fVal, ok := attachment["fields"]; ok {
+							if fields, ok := fVal.([]interface{}); ok {
+								// parse attachment field links into Markdown format
+								for j, fInt := range fields {
+									field := fInt.(map[string]interface{})
+									if _, ok := field["text"]; ok {
+										fText := field["text"].(string)
+										fText = linkWithTextRegex.ReplaceAllString(fText, "[${2}](${1})")
+										field["text"] = fText
+										fields[j] = field
+									}
+								}
+								attachment["fields"] = fields
+								list[i] = attachment
+							}
+						}
+					}
+					post.AddProp(key, list)
+				}
+			} else if key != "override_icon_url" && key != "override_username" && key != "from_webhook" {
+				post.AddProp(key, val)
+			}
+		}
+	}
+
+	SendEphemeralPost(c.Session.TeamId, userId, post)
 }
 
 func SendEphemeralPost(teamId, userId string, post *model.Post) {

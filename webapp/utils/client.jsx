@@ -1822,3 +1822,48 @@ export function loginGuest(name, email, inviteId, success, error) {
         }
     });
 }
+
+export function listAddons(success, error) {
+    $.ajax({
+        url: '/api/v1/addon/available',
+        dataType: 'json',
+        type: 'GET',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('listAddons', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function installAddon(addonId, success, error) {
+    $.ajax({
+        url: '/api/v1/addon/install',
+        type: 'POST',
+        data: JSON.stringify({addon_id: addonId}),
+        cache: false,
+        contentType: 'application/json',
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('installAddon', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function uninstallAddon(addonId, success, error) {
+    $.ajax({
+        url: '/api/v1/addon/uninstall',
+        type: 'POST',
+        data: JSON.stringify({addon_id: addonId}),
+        cache: false,
+        contentType: 'application/json',
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('installAddon', xhr, status, err);
+            error(e);
+        }
+    });
+}

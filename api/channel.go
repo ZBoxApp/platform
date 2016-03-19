@@ -23,6 +23,7 @@ func InitChannel(r *mux.Router) {
 
 	sr := r.PathPrefix("/channels").Subrouter()
 	sr.Handle("/", ApiUserRequiredActivity(getChannels, false)).Methods("GET")
+	sr.Handle("/all", ApiUserRequired(getAllChannels)).Methods("GET")
 	sr.Handle("/more", ApiUserRequired(getMoreChannels)).Methods("GET")
 	sr.Handle("/counts", ApiUserRequiredActivity(getChannelCounts, false)).Methods("GET")
 	sr.Handle("/create", ApiUserRequired(createChannel)).Methods("POST")
@@ -40,6 +41,8 @@ func InitChannel(r *mux.Router) {
 	sr.Handle("/{id:[A-Za-z0-9]+}/add", ApiUserRequired(addMember)).Methods("POST")
 	sr.Handle("/{id:[A-Za-z0-9]+}/remove", ApiUserRequired(removeMember)).Methods("POST")
 	sr.Handle("/{id:[A-Za-z0-9]+}/update_last_viewed_at", ApiUserRequired(updateLastViewedAt)).Methods("POST")
+	sr.Handle("/{id:[A-Za-z0-9]+}/members", ApiUserRequired(getChannelMembers)).Methods("GET")
+	sr.Handle("/{id:[A-Za-z0-9]+}/members/{member_limit:-?[0-9]+}", ApiUserRequired(getChannelMembers)).Methods("GET")
 
 }
 
@@ -393,6 +396,21 @@ func getMoreChannels(c *Context, w http.ResponseWriter, r *http.Request) {
 	// user is already in the team
 
 	if result := <-Srv.Store.Channel().GetMoreChannels(c.Session.TeamId, c.Session.UserId); result.Err != nil {
+		c.Err = result.Err
+		return
+	} else if HandleEtag(result.Data.(*model.ChannelList).Etag(), w, r) {
+		return
+	} else {
+		data := result.Data.(*model.ChannelList)
+		w.Header().Set(model.HEADER_ETAG_SERVER, data.Etag())
+		w.Write([]byte(data.ToJson()))
+	}
+}
+
+func getAllChannels(c *Context, w http.ResponseWriter, r *http.Request) {
+	// user is already in the team
+
+	if result := <-Srv.Store.Channel().GetAllChannels(c.Session.TeamId); result.Err != nil {
 		c.Err = result.Err
 		return
 	} else if HandleEtag(result.Data.(*model.ChannelList).Etag(), w, r) {
@@ -978,4 +996,61 @@ func updateNotifyProps(c *Context, w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(model.MapToJson(member.NotifyProps)))
 	}
 
+}
+
+func getChannelMembers(c *Context, w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["id"]
+
+	var memberLimit int
+	if memberLimitString, ok := params["member_limit"]; !ok {
+		memberLimit = defaultExtraMemberLimit
+	} else if memberLimitInt64, err := strconv.ParseInt(memberLimitString, 10, 0); err != nil {
+		c.Err = model.NewLocAppError("getChannelExtraInfo", "api.channel.get_channel_extra_info.member_limit.app_error", nil, err.Error())
+		return
+	} else {
+		memberLimit = int(memberLimitInt64)
+	}
+
+	sc := Srv.Store.Channel().Get(id)
+	var channel *model.Channel
+	if cresult := <-sc; cresult.Err != nil {
+		c.Err = cresult.Err
+		return
+	} else {
+		channel = cresult.Data.(*model.Channel)
+	}
+
+	extraEtag := channel.ExtraEtag(memberLimit)
+	if HandleEtag(extraEtag, w, r) {
+		return
+	}
+
+	ecm := Srv.Store.Channel().GetExtraMembers(id, memberLimit)
+	ccm := Srv.Store.Channel().GetMemberCount(id)
+
+	if ecmresult := <-ecm; ecmresult.Err != nil {
+		c.Err = ecmresult.Err
+		return
+	} else if ccmresult := <-ccm; ccmresult.Err != nil {
+		c.Err = ccmresult.Err
+		return
+	} else {
+		extraMembers := ecmresult.Data.([]model.ExtraMember)
+		memberCount := ccmresult.Data.(int64)
+
+		if !c.HasPermissionsToTeam(channel.TeamId, "getChannelExtraInfo") {
+			return
+		}
+
+		if channel.DeleteAt > 0 {
+			c.Err = model.NewLocAppError("getChannelExtraInfo", "api.channel.get_channel_extra_info.deleted.app_error", nil, "")
+			c.Err.StatusCode = http.StatusBadRequest
+			return
+		}
+
+		data := model.ChannelExtra{Id: channel.Id, Members: extraMembers, MemberCount: memberCount}
+		w.Header().Set(model.HEADER_ETAG_SERVER, extraEtag)
+		w.Write([]byte(data.ToJson()))
+	}
 }

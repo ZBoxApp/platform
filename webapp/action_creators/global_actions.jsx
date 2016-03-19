@@ -336,3 +336,18 @@ export function emitRemoteUserTypingEvent(channelId, userId, postParentId) {
     });
 }
 
+export function showInstallAddonModal(addon) {
+    AppDispatcher.handleViewAction({
+        type: ActionTypes.TOGGLE_ADDON_INSTALL_MODAL,
+        value: true,
+        addon
+    });
+}
+
+export function showUninstallAddonModal(addon) {
+    AppDispatcher.handleViewAction({
+        type: ActionTypes.TOGGLE_ADDON_UNINSTALL_MODAL,
+        value: true,
+        addon
+    });
+}

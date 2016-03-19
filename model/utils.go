@@ -379,3 +379,23 @@ func IsValidHttpsUrl(rawUrl string) bool {
 
 	return true
 }
+
+func NumberedSqlElements(startNum, numElements int) string {
+	if numElements == 1 {
+		// Special case
+		return fmt.Sprintf("(?)")
+	}
+
+	var numberedElements string
+
+	for i := startNum; i < (startNum + numElements); i++ {
+		if i < (startNum + numElements - 1) {
+			// Not the last item
+			numberedElements += fmt.Sprintf("?, ")
+		} else {
+			// Last element, no comma.
+			numberedElements += fmt.Sprintf("?")
+		}
+	}
+	return numberedElements
+}

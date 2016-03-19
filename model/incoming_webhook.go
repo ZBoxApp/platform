@@ -21,6 +21,7 @@ type IncomingWebhook struct {
 	UserId    string `json:"user_id"`
 	ChannelId string `json:"channel_id"`
 	TeamId    string `json:"team_id"`
+	AddonId   string `json:"addon_id,omitempty"`
 }
 
 type IncomingWebhookRequest struct {

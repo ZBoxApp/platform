@@ -201,7 +201,7 @@ type Config struct {
 	GoogleSettings     SSOSettings
 	LdapSettings       LdapSettings
 	ComplianceSettings ComplianceSettings
-	ZBoxSettings      SSOSettings
+	ZBoxSettings       SSOSettings
 }
 
 func (o *Config) ToJson() string {

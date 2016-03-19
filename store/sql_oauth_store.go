@@ -24,6 +24,7 @@ func NewSqlOAuthStore(sqlStore *SqlStore) OAuthStore {
 		table.ColMap("Description").SetMaxSize(512)
 		table.ColMap("CallbackUrls").SetMaxSize(1024)
 		table.ColMap("Homepage").SetMaxSize(256)
+		table.ColMap("Type").SetMaxSize(15)
 
 		tableAuth := db.AddTableWithName(model.AuthData{}, "OAuthAuthData").SetKeys(false, "Code")
 		tableAuth.ColMap("UserId").SetMaxSize(26)
@@ -44,6 +45,7 @@ func NewSqlOAuthStore(sqlStore *SqlStore) OAuthStore {
 }
 
 func (as SqlOAuthStore) UpgradeSchemaIfNeeded() {
+	as.CreateColumnIfNotExists("OAuthApps", "Type", "varchar(15)", "character varying(15)", model.OAUTH_APP_USER)
 }
 
 func (as SqlOAuthStore) CreateIndexesIfNotExists() {
