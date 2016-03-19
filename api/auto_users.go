@@ -51,6 +51,17 @@ func CreateBasicUser(client *model.Client) *model.AppError {
 	return nil
 }
 
+func CreateSystemUser(client *model.Client, teamId string) *model.AppError {
+	newuser := &model.User{TeamId: teamId, Email: model.SYSTEM_BOT_EMAIL, Username: model.SYSTEM_BOT_NAME, Nickname: model.SYSTEM_BOT_NICKNAME, Password: model.SYSTEM_BOT_PASSWORD}
+	result, err := client.CreateUser(newuser, "")
+	if err != nil {
+		return err
+	}
+	store.Must(Srv.Store.User().VerifyEmail(result.Data.(*model.User).Id))
+
+	return nil
+}
+
 func (cfg *AutoUserCreator) createRandomUser() (*model.User, bool) {
 	var userEmail string
 	var userName string

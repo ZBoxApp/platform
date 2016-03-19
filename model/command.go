@@ -31,6 +31,7 @@ type Command struct {
 	DisplayName      string `json:"display_name"`
 	Description      string `json:"description"`
 	URL              string `json:"url"`
+	AddonId          string `json:"addon_id,omitempty"`
 }
 
 func (o *Command) ToJson() string {

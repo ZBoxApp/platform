@@ -10,18 +10,19 @@ import (
 )
 
 type OutgoingWebhook struct {
-	Id           string      `json:"id"`
-	Token        string      `json:"token"`
-	CreateAt     int64       `json:"create_at"`
-	UpdateAt     int64       `json:"update_at"`
-	DeleteAt     int64       `json:"delete_at"`
-	CreatorId    string      `json:"creator_id"`
-	ChannelId    string      `json:"channel_id"`
-	TeamId       string      `json:"team_id"`
-	TriggerWords StringArray `json:"trigger_words"`
-	CallbackURLs StringArray `json:"callback_urls"`
-	DisplayName  string      `json:"display_name"`
-	Description  string      `json:"description"`
+	Id             string      `json:"id"`
+	Token          string      `json:"token"`
+	CreateAt       int64       `json:"create_at"`
+	UpdateAt       int64       `json:"update_at"`
+	DeleteAt       int64       `json:"delete_at"`
+	CreatorId      string      `json:"creator_id"`
+	ChannelId      string      `json:"channel_id"`
+	TeamId         string      `json:"team_id"`
+	TriggerWords   StringArray `json:"trigger_words"`
+	CallbackURLs   StringArray `json:"callback_urls"`
+	DisplayName    string      `json:"display_name"`
+	Description    string      `json:"description"`
+	AddonWebhookId string      `json:"addon_webhook_id,omitempty"`
 }
 
 func (o *OutgoingWebhook) ToJson() string {

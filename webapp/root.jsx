@@ -75,6 +75,7 @@ import Docs from 'help/docs.jsx';
 
 import GuestSignup from 'components/guest/guest_signup.jsx';
 import GuestRevoked from 'components/guest/guest_revoked.jsx';
+import Addons from 'components/addons/addon_controller.jsx';
 
 // This is for anything that needs to be done for ALL react components.
 // This runs before we start to render anything.
@@ -321,6 +322,13 @@ function renderRootComponent() {
                     <Route
                         path='admin_console'
                         component={AdminConsole}
+                    />
+                    <Route
+                        path='addons'
+                        components={{
+                            sidebar: null,
+                            center: Addons
+                        }}
                     />
                 </Route>
                 <Route component={NotLoggedIn}>

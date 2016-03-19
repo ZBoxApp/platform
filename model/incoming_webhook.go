@@ -23,6 +23,7 @@ type IncomingWebhook struct {
 	TeamId      string `json:"team_id"`
 	DisplayName string `json:"display_name"`
 	Description string `json:"description"`
+	AddonId     string `json:"addon_id,omitempty"`
 }
 
 type IncomingWebhookRequest struct {

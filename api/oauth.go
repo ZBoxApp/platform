@@ -28,6 +28,7 @@ func InitOAuth(r *mux.Router) {
 	sr.Handle("/{service:[A-Za-z]+}/signup", AppHandlerIndependent(signupWithOAuth)).Methods("GET")
 	sr.Handle("/authorize", ApiUserRequired(authorizeOAuth)).Methods("GET")
 	sr.Handle("/access_token", ApiAppHandler(getAccessToken)).Methods("POST")
+	sr.Handle("/client_token", ApiAppHandler(getAddonToken)).Methods("POST")
 
 	mr := Srv.Router
 	mr.Handle("/zimbra_login", AppHandler(loginWithZimbraEmail)).Methods("GET")
@@ -519,4 +520,134 @@ func loginWithZimbraEmail(c *Context, w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Redirect(w, r, c.GetSiteURL()+"/"+team.Name, http.StatusFound)
 	}
+}
+
+func getAddonToken(c *Context, w http.ResponseWriter, r *http.Request) {
+	if !utils.Cfg.ServiceSettings.EnableOAuthServiceProvider {
+		c.Err = model.NewLocAppError("getAccessToken", "web.authorize_oauth.disabled.app_error", nil, "")
+		c.Err.StatusCode = http.StatusNotImplemented
+		return
+	}
+
+	c.LogAudit("attempt")
+
+	r.ParseForm()
+
+	grantType := r.FormValue("grant_type")
+	if grantType != model.ACCESS_CLIENT_GRANT_TYPE {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.bad_grant.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	clientId := r.FormValue("client_id")
+	if len(clientId) != 26 {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.bad_client_id.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	secret := r.FormValue("client_secret")
+	if len(secret) == 0 {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.bad_client_secret.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	teamName := r.FormValue("team_name")
+	if len(teamName) == 0 {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_addon_token.missing_team.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	achan := Srv.Store.OAuth().GetApp(clientId)
+	tchan := Srv.Store.Team().GetByName(teamName)
+
+	var app *model.OAuthApp
+	if result := <-achan; result.Err != nil {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.credentials.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	} else {
+		app = result.Data.(*model.OAuthApp)
+	}
+
+	if !model.ComparePassword(app.ClientSecret, secret) {
+		c.LogAudit("fail - invalid client credentials")
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.credentials.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	var team *model.Team
+	if result := <-tchan; result.Err != nil {
+		c.LogAudit("fail - invalid team name")
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_addon_token.invalid_team.app_error", nil, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	} else {
+		team = result.Data.(*model.Team)
+	}
+
+	adchan := Srv.Store.Addon().IsInstalled(team.Id, app.CreatorId)
+	if result := <-adchan; result.Err == nil {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_addon_token.not_installed.app_error",
+			map[string]interface{}{"Team": teamName}, "")
+		c.Err.StatusCode = http.StatusUnauthorized
+		return
+	}
+
+	var user *model.User
+	uchan := Srv.Store.User().GetByUsername(team.Id, model.SYSTEM_BOT_NAME)
+	if result := <-uchan; result.Err != nil {
+		c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.internal_user.app_error", nil, "")
+		return
+	} else {
+		user = result.Data.(*model.User)
+	}
+
+	token := ""
+	authHeader := r.Header.Get(model.HEADER_AUTH)
+	if len(authHeader) > 6 && strings.ToUpper(authHeader[0:6]) == model.HEADER_BEARER {
+		// Default session token
+		token = authHeader[7:]
+
+	} else if len(authHeader) > 5 && strings.ToLower(authHeader[0:5]) == model.HEADER_TOKEN {
+		// OAuth token
+		token = authHeader[6:]
+	}
+
+	var session *model.Session
+	if len(token) != 0 {
+		schan := Srv.Store.Session().Get(token)
+
+		if result := <-schan; result.Err == nil {
+			session = result.Data.(*model.Session)
+
+		}
+	}
+
+	if session == nil || session.IsExpired() {
+		session = &model.Session{UserId: user.Id, TeamId: user.TeamId, Roles: user.Roles, IsOAuth: true}
+		session.SetExpireInDays(*utils.Cfg.ServiceSettings.SessionLengthSSOInDays)
+
+		if result := <-Srv.Store.Session().Save(session); result.Err != nil {
+			c.Err = model.NewLocAppError("getAddonToken", "web.get_access_token.internal_session.app_error", nil, "")
+			return
+		} else {
+			session = result.Data.(*model.Session)
+			AddSessionToCache(session)
+		}
+	}
+
+	accessRsp := &model.AccessResponse{AccessToken: session.Token, TokenType: model.ACCESS_CLIENT_GRANT_TYPE, ExpiresIn: int32((session.ExpiresAt - model.GetMillis()) / 1000)}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-store")
+	w.Header().Set("Pragma", "no-cache")
+
+	c.LogAuditWithUserId(user.Id, "success")
+
+	w.Write([]byte(accessRsp.ToJson()))
 }

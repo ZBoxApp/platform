@@ -357,6 +357,14 @@ func CreateTeam(c *Context, team *model.Team) *model.Team {
 			return nil
 		}
 
+		newuser := &model.User{TeamId: rteam.Id, Email: model.SYSTEM_BOT_EMAIL, Username: model.SYSTEM_BOT_NAME, Nickname: model.SYSTEM_BOT_NICKNAME, Password: model.SYSTEM_BOT_PASSWORD}
+
+		_, err := CreateUser(team, newuser)
+		if err != nil {
+			c.Err = err
+			return nil
+		}
+
 		return rteam
 	}
 }

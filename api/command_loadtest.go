@@ -15,7 +15,7 @@ import (
 	"github.com/mattermost/platform/utils"
 )
 
-var usage = `Mattermost load testing commands to help configure the system
+var usage = `ZBox Now! load testing commands to help configure the system
 
 	COMMANDS:
 

@@ -48,6 +48,18 @@
     "translation": "Septiembre"
   },
   {
+    "id": "api.addon.init.debug",
+    "translation": "Inicializando rutas del API para los complementos"
+  },
+  {
+    "id": "api.addon.publish.descriptor_url.app_error",
+    "translation": "No pudimos obtener el descriptor del URL especificado"
+  },
+  {
+    "id": "api.addon.uninstall.no_installed.app_error",
+    "translation": "Este complemento no está instalado en este equipo"
+  },
+  {
     "id": "api.admin.file_read_error",
     "translation": "Error leyendo el archivo de registro"
   },
@@ -1056,6 +1068,10 @@
     "translation": "El registro a equipos por correo electrónico está deshabilitado."
   },
   {
+    "id": "api.team.create_team.system_boot.app_error",
+    "translation": "Encontramos un error al crear el usuario System Bot."
+  },
+  {
     "id": "api.team.create_team_from_signup.email_disabled.app_error",
     "translation": "El registro a equipos por correo electrónico está deshabilitado."
   },
@@ -2012,6 +2028,198 @@
     "translation": "Token de refrescamiento inválido"
   },
   {
+    "id": "model.addon.config_url.app_error",
+    "translation": "Config URL Inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon.currency.app_error",
+    "translation": "Tipo de Moneda inválido. Debe ser un código de tipo de moneda válido según la norma ISO 4217"
+  },
+  {
+    "id": "model.addon.descriptor_url.app_error",
+    "translation": "Descriptor URL Inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon.icon_url.app_error",
+    "translation": "Icon URL Inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon.installed_url.app_error",
+    "translation": "Installed URL Inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon.invalid_category.app_error",
+    "translation": "Categoría inválida"
+  },
+  {
+    "id": "model.addon.invalid_create_at.app_error",
+    "translation": "La fecha de creación es inválida"
+  },
+  {
+    "id": "model.addon.invalid_description.app_error",
+    "translation": "Descripción inválida. No debe superar los 400 caracteres"
+  },
+  {
+    "id": "model.addon.invalid_id.app_error",
+    "translation": "id del addon inválido"
+  },
+  {
+    "id": "model.addon.invalid_key.app_error",
+    "translation": "Key inválido"
+  },
+  {
+    "id": "model.addon.invalid_name.app_error",
+    "translation": "Nombre inválido"
+  },
+  {
+    "id": "model.addon.invalid_update_at.app_error",
+    "translation": "La fecha de actualización es inválida"
+  },
+  {
+    "id": "model.addon.published_url.app_error",
+    "translation": "Published URL Inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon.uninstalled_url.app_error",
+    "translation": "Uninstalled URL Inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon_action.addon_id.app_error",
+    "translation": "Id del complemento inválido"
+  },
+  {
+    "id": "model.addon_action.invalid_id.app_error",
+    "translation": "Id inválido"
+  },
+  {
+    "id": "model.addon_action.invalid_key.app_error",
+    "translation": "Key inválido"
+  },
+  {
+    "id": "model.addon_action.invalid_name.app_error",
+    "translation": "Nombre inválido"
+  },
+  {
+    "id": "model.addon_action.invalid_target.app_error",
+    "translation": "Destino inválido"
+  },
+  {
+    "id": "model.addon_command.addon_id.app_error",
+    "translation": "Id del complemento inválido"
+  },
+  {
+    "id": "model.addon_command.invalid_id.app_error",
+    "translation": "Id inválido"
+  },
+  {
+    "id": "model.addon_compact.addon_id.app_error",
+    "translation": "Id del complemento inválido"
+  },
+  {
+    "id": "model.addon_compact.icon_url.app_error",
+    "translation": "Icon URL inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon_compact.invalid_id.app_error",
+    "translation": "Id inválido"
+  },
+  {
+    "id": "model.addon_compact.invalid_key.app_error",
+    "translation": "Key inválido"
+  },
+  {
+    "id": "model.addon_compact.invalid_name.app_error",
+    "translation": "Nombre inválido"
+  },
+  {
+    "id": "model.addon_compact.invalid_target.app_error",
+    "translation": "Destino inválido"
+  },
+  {
+    "id": "model.addon_compact.query_url.app_error",
+    "translation": "Query URL inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon_dialog.addon_id.app_error",
+    "translation": "Id del complemento inválido"
+  },
+  {
+    "id": "model.addon_dialog.invalid_id.app_error",
+    "translation": "Id inválido"
+  },
+  {
+    "id": "model.addon_dialog.invalid_key.app_error",
+    "translation": "Key inválido"
+  },
+  {
+    "id": "model.addon_dialog.invalid_url.app_error",
+    "translation": "URL inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon_dialog.primary_key.app_error",
+    "translation": "Key de la acción Primaria inválido"
+  },
+  {
+    "id": "model.addon_dialog.primary_name.app_error",
+    "translation": "Nombre de la acción Primaria inválido"
+  },
+  {
+    "id": "model.addon_dialog.secondary_key.app_error",
+    "translation": "Key de la acción Secundaria inválido"
+  },
+  {
+    "id": "model.addon_dialog.secondary_name.app_error",
+    "translation": "Nombre de la acción Secundaria inválido"
+  },
+  {
+    "id": "model.addon_dialog.title.app_error",
+    "translation": "Titulo inválido"
+  },
+  {
+    "id": "model.addon_webhook.addon_id.app_error",
+    "translation": "Id del complemento inválido"
+  },
+  {
+    "id": "model.addon_webhook.callbacks.app_error",
+    "translation": "callback urls inválidos"
+  },
+  {
+    "id": "model.addon_webhook.callbacks_url.app_error",
+    "translation": "callback URLs inválidos. Cada uno debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
+    "id": "model.addon_webhook.invalid_id.app_error",
+    "translation": "Id inválido"
+  },
+  {
+    "id": "model.addon_webhook.invalid_key.app_error",
+    "translation": "Key inválido"
+  },
+  {
+    "id": "model.addon_webhook.trigger_words.app_error",
+    "translation": "Palabraas gatilladoras inválidas"
+  },
+  {
+    "id": "model.addon_webpanel.addon_id.app_error",
+    "translation": "Id del complemento inválido"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_id.app_error",
+    "translation": "Id inválido"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_key.app_error",
+    "translation": "Key inválido"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_name.app_error",
+    "translation": "Nombre inválido"
+  },
+  {
+    "id": "model.addon_webpanel.invalid_url.app_error",
+    "translation": "URL inválido. Debe ser un URL válido y comenzar con http:// o https://"
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Código de autorización inválido"
   },
@@ -2520,6 +2728,22 @@
     "translation": "Identificador del URL es inválido"
   },
   {
+    "id": "model.team_addon.addon_id.app_error",
+    "translation": "Id del complemento inválido"
+  },
+  {
+    "id": "model.team_addon.installed.app_error",
+    "translation": "Installed debe ser una fecha válida"
+  },
+  {
+    "id": "model.team_addon.team_addon_id.app_error",
+    "translation": "Id del complemento del equipo inválido"
+  },
+  {
+    "id": "model.team_addon.team_id.app_error",
+    "translation": "Id del equipo inválido"
+  },
+  {
     "id": "model.user.is_valid.auth_data.app_error",
     "translation": "Data de auth es inválida"
   },
@@ -2718,6 +2942,158 @@
   {
     "id": "store.sql.upgraded.warn",
     "translation": "El esquema de la base de datos ha sido actualizado a la versión %v"
+  },
+  {
+    "id": "store.sql_addon.delete.addon.app_error",
+    "translation": "No pudimos eliminar el complemento"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_actions.app_error",
+    "translation": "No pudimos eliminar las acciones del complemento"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_commands.app_error",
+    "translation": "No pudimos eliminar el comando del complemento"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_compacts.app_error",
+    "translation": "No pudimos eliminar los compactos del complemento"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_dialogs.app_error",
+    "translation": "No pudimos eliminar los dialgos del complemento"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_hooks.app_error",
+    "translation": "No pudimos eliminar los webhooks del complemento"
+  },
+  {
+    "id": "store.sql_addon.delete.addon_webpanels.app_error",
+    "translation": "No pudimos eliminar los paneles web del complemento"
+  },
+  {
+    "id": "store.sql_addon.disable.app_error",
+    "translation": "No pudimos deshabilitar el complemento"
+  },
+  {
+    "id": "store.sql_addon.enable.app_error",
+    "translation": "No pudimos habilitar el complemento"
+  },
+  {
+    "id": "store.sql_addon.get.addon.app_error",
+    "translation": "No pudimos obtener el complemento"
+  },
+  {
+    "id": "store.sql_addon.get.addon_actions.app_error",
+    "translation": "No pudimos obtener las acciones del complemento"
+  },
+  {
+    "id": "store.sql_addon.get.addon_commands.app_error",
+    "translation": "No pudimos obtener los comandos del addon"
+  },
+  {
+    "id": "store.sql_addon.get.addon_compacts.app_error",
+    "translation": "No pudimos obtener los compactos del complemento"
+  },
+  {
+    "id": "store.sql_addon.get.addon_dialogs.app_error",
+    "translation": "No pudimos obtener los dialogs del complemento"
+  },
+  {
+    "id": "store.sql_addon.get.addon_hooks.app_error",
+    "translation": "No pudimos obtener los webhooks del complemento"
+  },
+  {
+    "id": "store.sql_addon.get.addon_webpanels.app_error",
+    "translation": "No pudimos obtener los paneles web del complemento"
+  },
+  {
+    "id": "store.sql_addon.get.addons.app_error",
+    "translation": "No pudimos obtener los complementos"
+  },
+  {
+    "id": "store.sql_addon.install.app_error",
+    "translation": "No pudimos instalar el complemento."
+  },
+  {
+    "id": "store.sql_addon.installed.already.app_error",
+    "translation": "Este equipo ya tiene instalado este complemento"
+  },
+  {
+    "id": "store.sql_addon.save.addon_action.app_error",
+    "translation": "No pudimos guardar la acción del complemento"
+  },
+  {
+    "id": "store.sql_addon.save.addon_command.app_error",
+    "translation": "No pudimos guardar el comando del complemento"
+  },
+  {
+    "id": "store.sql_addon.save.addon_compact.app_error",
+    "translation": "No pudimos guardar el compacto del complemento"
+  },
+  {
+    "id": "store.sql_addon.save.addon_dialog.app_error",
+    "translation": "No pudimos guardar el dialogo del complemento"
+  },
+  {
+    "id": "store.sql_addon.save.addon_hook.app_error",
+    "translation": "No pudimos guardar el webhook del complemento"
+  },
+  {
+    "id": "store.sql_addon.save.addon_webpanel.app_error",
+    "translation": "No pudimos guardar el panel Web del complemento"
+  },
+  {
+    "id": "store.sql_addon.save.already_exists.app_error",
+    "translation": "Un complemento con ese Nombre ya existe"
+  },
+  {
+    "id": "store.sql_addon.save.app_error",
+    "translation": "No pudimos guardar el complemento"
+  },
+  {
+    "id": "store.sql_addon.save.commit_transaction.app_error",
+    "translation": "No se pudo confirmar la transacción"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon.app_error",
+    "translation": "Se debe llamar a la función de actualizar para un complemento existente"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_action.app_error",
+    "translation": "Se debe llamar a la función de actualizar para una acción existente de un complemento"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_command.app_error",
+    "translation": "Se debe llamar a la función de actualizar para un comando existente de un complemento"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_compact.app_error",
+    "translation": "Se debe llamar a la función de actualizar para un compacto existente de un complemento"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_dialog.app_error",
+    "translation": "Se debe llamar a la función de actualizar para un dialogo existente de un complemento"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_hook.app_error",
+    "translation": "Se debe llamar a la función de actualizar para un webhook existente de un complemento"
+  },
+  {
+    "id": "store.sql_addon.save.existing_addon_webpanel.app_error",
+    "translation": "Se debe llamar a la función de actualizar para un panel web existente de un complemento"
+  },
+  {
+    "id": "store.sql_addon.save.open_transaction.app_error",
+    "translation": "No se pudo abrir la transacción"
+  },
+  {
+    "id": "store.sql_addon.save.previously.app_error",
+    "translation": "Un complemento con ese Nombre fue creado previamente"
+  },
+  {
+    "id": "store.sql_addon.uninstall.app_error",
+    "translation": "No pudimos desinstalar el complemento"
   },
   {
     "id": "store.sql_audit.get.finding.app_error",
@@ -3420,6 +3796,10 @@
     "translation": "Encontramos un error mientras buscabamos los perfiles de usuario"
   },
   {
+    "id": "store.sql_user.get_system_bot.app_error",
+    "translation": "No pudmos encontrar la cuenta existente"
+  },
+  {
     "id": "store.sql_user.get_total_active_users_count.app_error",
     "translation": "No pudimos contar los usuarios"
   },
@@ -3538,6 +3918,14 @@
   {
     "id": "store.sql_webhooks.delete_outgoing.app_error",
     "translation": "No pudimos eliminar el webhook"
+  },
+  {
+    "id": "store.sql_webhooks.enable_incoming.app_error",
+    "translation": "No pudimos habilitar el webhook de entrada"
+  },
+  {
+    "id": "store.sql_webhooks.enable_outgoing.app_error",
+    "translation": "No pudimos habilitar el webhook de salida"
   },
   {
     "id": "store.sql_webhooks.get_incoming.app_error",
@@ -3688,6 +4076,14 @@
     "translation": "El servidor SMTP parece no estar configurado apropiadamente err=%v details=%v"
   },
   {
+    "id": "web.addons.admin.app_error",
+    "translation": "Acceso no Authorizado. Debes ser un Administrador de Equipo o del Sistema para administrar los Complementos"
+  },
+  {
+    "id": "web.addons.title",
+    "translation": "Adminitrar Complementos de ZBox Now!"
+  },
+  {
     "id": "web.admin_console.title",
     "translation": "Consola de Administración"
   },
@@ -3722,6 +4118,10 @@
   {
     "id": "web.create_dir.error",
     "translation": "Falla al crear el vigilante de directorio %v"
+  },
+  {
+    "id": "web.create_ephemeral_post.user_id.app_error",
+    "translation": "Se debe especificar el Id del Usuario"
   },
   {
     "id": "web.dir_fail.error",
@@ -3798,6 +4198,18 @@
   {
     "id": "web.get_access_token.revoking.error",
     "translation": "Se encontró un error al revocar el acceso del token, err="
+  },
+  {
+    "id": "web.get_addon_token.invalid_team.app_error",
+    "translation": "cliente inválido: Equipo inválido"
+  },
+  {
+    "id": "web.get_addon_token.missing_team.app_error",
+    "translation": "solicitud inválida: Falta el equipo"
+  },
+  {
+    "id": "web.get_addon_token.not_installed.app_error",
+    "translation": "cliente inválido: Este complemento no esta instalado para el equipo={{.Team}}"
   },
   {
     "id": "web.get_guest_channel.no_member.app_error",
