@@ -1,4 +1,4 @@
-.PHONY: build test run clean stop
+.PHONY: build test run clean stop nuke
 
 test:
 	@echo Checking for style guide compliance
@@ -34,5 +34,7 @@ clean:
 	@echo Cleaning Webapp
 
 	rm -rf dist
-	rm -rf node_modules
 	rm -f .npminstall
+
+nuke:
+	rm -rf node_modules
