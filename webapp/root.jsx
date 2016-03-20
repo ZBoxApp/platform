@@ -71,6 +71,8 @@ const notFoundParams = {
     linkmessage: Utils.localizeMessage('error.not_found.link_message', 'Back to Mattermost')
 };
 
+import Docs from 'help/docs.jsx';
+
 // This is for anything that needs to be done for ALL react components.
 // This runs before we start to render anything.
 function preRenderSetup(callwhendone) {
@@ -219,6 +221,10 @@ function renderRootComponent() {
                 <Route
                     path='error'
                     component={ErrorPage}
+                />
+                <Route
+                    path='/help/Messaging'
+                    component={Docs}
                 />
                 <Route
                     component={LoggedIn}
