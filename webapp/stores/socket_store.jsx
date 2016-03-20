@@ -36,7 +36,8 @@ class SocketStoreClass extends EventEmitter {
 
         this.translations = this.getDefaultTranslations();
 
-        this.initialize();
+        //this.initialize();
+        UserStore.addChangeListener(this.initialize);
     }
 
     initialize() {
@@ -86,7 +87,7 @@ class SocketStoreClass extends EventEmitter {
                 this.failCount = this.failCount + 1;
 
                 if (this.failCount > 7) {
-                    ErrorStore.storeLastError({message: this.translations.socketError});
+                    ErrorStore.storeLastError({message: Utils.localizeMessage(this.translations.socketError)});
                 }
 
                 ErrorStore.setConnectionErrorCount(this.failCount);
@@ -179,19 +180,15 @@ class SocketStoreClass extends EventEmitter {
         }
     }
 
-    setTranslations(messages) {
-        this.translations = messages;
-    }
-
     getDefaultTranslations() {
         return ({
-            socketError: 'Please check connection, Mattermost unreachable. If issue persists, ask administrator to check WebSocket port.',
-            someone: 'Someone',
-            posted: 'Posted',
-            uploadedImage: ' uploaded an image',
-            uploadedFile: ' uploaded a file',
-            something: ' did something new',
-            wrote: ' wrote: '
+            socketError: 'channel_loader.socketError',
+            someone: 'channel_loader.someone',
+            posted: 'channel_loader.posted',
+            uploadedImage: 'channel_loader.uploadedImage',
+            uploadedFile: 'channel_loader.uploadedFile',
+            something: 'channel_loader.something',
+            wrote: 'channel_loader.wrote'
         });
     }
 
@@ -242,14 +239,14 @@ function handleNewPostEvent(msg, translations) {
             return;
         }
 
-        let username = translations.someone;
+        let username = Utils.localizeMessage(translations.someone);
         if (post.props.override_username && global.window.mm_config.EnablePostUsernameOverride === 'true') {
             username = post.props.override_username;
         } else if (UserStore.hasProfile(msg.user_id)) {
             username = UserStore.getProfile(msg.user_id).username;
         }
 
-        let title = translations.posted;
+        let title = Utils.localizeMessage(translations.posted);
         if (channel) {
             title = channel.display_name;
         }
@@ -261,14 +258,14 @@ function handleNewPostEvent(msg, translations) {
 
         if (notifyText.length === 0) {
             if (msgProps.image) {
-                Utils.notifyMe(title, username + translations.uploadedImage, channel);
+                Utils.notifyMe(title, username + Utils.localizeMessage(translations.uploadedImage), channel);
             } else if (msgProps.otherFile) {
-                Utils.notifyMe(title, username + translations.uploadedFile, channel);
+                Utils.notifyMe(title, username + Utils.localizeMessage(translations.uploadedFile), channel);
             } else {
-                Utils.notifyMe(title, username + translations.something, channel);
+                Utils.notifyMe(title, username + Utils.localizeMessage(translations.something), channel);
             }
         } else {
-            Utils.notifyMe(title, username + translations.wrote + notifyText, channel);
+            Utils.notifyMe(title, username + Utils.localizeMessage(translations.wrote) + notifyText, channel);
         }
         if (!user.notify_props || user.notify_props.desktop_sound === 'true') {
             Utils.ding();
