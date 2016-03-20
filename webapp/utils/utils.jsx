@@ -157,7 +157,7 @@ export function getCookie(name) {
 }
 
 export function isZBox() {
-    return navigator.userAgent.indexOf('ZBox') === -1;
+    return navigator.userAgent.indexOf('ZBox') > 0;
 }
 
 var requestedNotificationPermission = false;
