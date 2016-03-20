@@ -10,8 +10,8 @@ WORKDIR /zboxnow
 # Copy over files
 ADD ./dist/zboxnow/ /zboxnow/
 
-ADD /docker/dev/config_docker.json /zboxnow/config/config.json
-ADD /docker/dev/docker-entry.sh /
+ADD /docker/prod/config_docker.json /zboxnow/config/config.json
+ADD /docker/prod/docker-entry.sh /
 
 RUN chmod +x /docker-entry.sh
 ENTRYPOINT /docker-entry.sh
