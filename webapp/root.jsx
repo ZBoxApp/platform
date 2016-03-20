@@ -54,6 +54,8 @@ import EmailToLDAP from 'components/claim/components/email_to_ldap.jsx';
 
 import * as I18n from 'i18n/i18n.jsx';
 
+import Docs from 'help/docs.jsx';
+
 // This is for anything that needs to be done for ALL react components.
 // This runs before we start to render anything.
 function preRenderSetup(callwhendone) {
@@ -209,6 +211,10 @@ function renderRootComponent() {
                 component={Root}
                 onEnter={onRootEnter}
             >
+                <Route
+                    path='/help/Messaging'
+                    component={Docs}
+                />
                 <Route
                     component={LoggedIn}
                     onEnter={preLoggedIn}
