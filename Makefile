@@ -8,6 +8,14 @@ BUILD_HASH = $(shell git rev-parse HEAD)
 ifeq ($(BUILD_NUMBER),)
 	BUILD_NUMBER := dev
 endif
+
+ifeq ($(TRAVIS_BUILD_NUMBER),)
+	BUILD_NUMBER := dev
+else
+	BUILD_NUMBER := $(TRAVIS_BUILD_NUMBER)
+endif
+
+
 BUILD_ENTERPRISE_DIR ?= ../enterprise
 BUILD_ENTERPRISE ?= true
 BUILD_ENTERPRISE_READY = false
@@ -28,9 +36,9 @@ GOFLAGS ?= $(GOFLAGS:)
 GO=$(GOPATH)/bin/godep go
 GO_LINKER_FLAGS ?= -ldflags \
 				   "-X github.com/mattermost/platform/model.BuildNumber=$(BUILD_NUMBER)\
-				    -X 'github.com/mattermost/platform/model.BuildDate=$(BUILD_DATE)'\
-				    -X github.com/mattermost/platform/model.BuildHash=$(BUILD_HASH)\
-				    -X github.com/mattermost/platform/model.BuildEnterpriseReady=$(BUILD_ENTERPRISE_READY)"
+					-X 'github.com/mattermost/platform/model.BuildDate=$(BUILD_DATE)'\
+					-X github.com/mattermost/platform/model.BuildHash=$(BUILD_HASH)\
+					-X github.com/mattermost/platform/model.BuildEnterpriseReady=$(BUILD_ENTERPRISE_READY)"
 
 # Output paths
 DIST_ROOT=dist
@@ -44,7 +52,7 @@ DOCKER_CONTAINER_NAME ?= zboxnow-dev
 
 all: dist
 
-dist: | check-style test zbox
+dist: | zbox test
 
 dist-travis: | travis-init build-container
 
@@ -128,7 +136,7 @@ check-style:
 	fi
 
 test: start-docker
-    sed -i'.bak' 's|"EnableOAuthServiceProvider": true,|"EnableOAuthServiceProvider": false,|g' config/config.json
+	sed -i'.bak' 's|"EnableOAuthServiceProvider": true,|"EnableOAuthServiceProvider": false,|g' config/config.json
 
 	$(GO) test $(GOFLAGS) -run=$(TESTS) -test.v -test.timeout=180s ./api || exit 1
 	$(GO) test $(GOFLAGS) -run=$(TESTS) -test.v -test.timeout=12s ./model || exit 1
@@ -269,8 +277,8 @@ nuke: clean clean-docker
 setup-mac:
 	echo $$(boot2docker ip 2> /dev/null) dockerhost | sudo tee -a /etc/hosts
 
-zbox: build build-client
-    @ echo Packaging ZBox Now!
+zbox: check-style build build-client
+	@ echo Packaging ZBox Now!
 
 	# Remove any old files
 	rm -Rf $(DIST_ROOT)
@@ -280,7 +288,7 @@ zbox: build build-client
 	mkdir -p $(DIST_PATH)/logs
 
 	# Copy binary
-    @if [ "$(GOOS)" = "linux" ]; then \
+	@if [ "$(GOOS)" = "linux" ]; then \
 		echo Packaging ZBox Now! for linux; \
 		cp $(GOPATH)/bin/linux_amd64/platform $(DIST_PATH)/bin; \
 	else \
