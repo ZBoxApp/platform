@@ -55,6 +55,7 @@ export function initialize() {
 
             pastFirstInit = true;
             connectFailCount = 0;
+            sendMessage({action: SocketEvents.USER_CONNECTED});
         };
 
         conn.onclose = () => {
