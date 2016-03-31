@@ -45,13 +45,14 @@ func UpdateChannelAccessCacheAndForget(teamId, userId, channelId string) {
 
 func (h *Hub) Register(webConn *WebConn) {
 	h.register <- webConn
-	h.Broadcast(&model.Message{TeamId: webConn.TeamId, Action: "connected", UserId: webConn.UserId})
 }
 
 func (h *Hub) Unregister(webConn *WebConn) {
 	h.unregister <- webConn
-	h.Broadcast(&model.Message{TeamId: webConn.TeamId, Action: "disconnected", UserId: webConn.UserId})
-	go SetUserOffline(webConn.UserId)
+	go func() {
+		h.Broadcast(&model.Message{TeamId: webConn.TeamId, Action: "disconnected", UserId: webConn.UserId})
+		SetUserOffline(webConn.UserId)
+	}()
 }
 
 func (h *Hub) Broadcast(message *model.Message) {
