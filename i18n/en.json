@@ -1420,6 +1420,22 @@
     "translation": "MFA is not configured or supported on this server"
   },
   {
+    "id": "api.user.check_user_mfa.bad_code.app_error",
+    "translation": "Invalid MFA token."
+  },
+  {
+    "id": "api.user.check_user_login_attempts.too_many.app_error",
+    "translation": "Your account is locked because of too many failed password attempts. Please reset your password."
+  },
+  {
+    "id": "api.user.check_user_mfa.bad_code.app_error",
+    "translation": "Invalid MFA token."
+  },
+  {
+    "id": "api.user.check_user_mfa.not_available.app_error",
+    "translation": "MFA is not configured or supported on this server"
+  },
+  {
     "id": "api.user.check_user_password.invalid.app_error",
     "translation": "Login failed because of invalid password"
   },
