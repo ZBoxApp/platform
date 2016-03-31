@@ -135,7 +135,7 @@ check-style:
 		exit 1; \
 	fi
 
-test: start-docker
+test:
 	sed -i'.bak' 's|"EnableOAuthServiceProvider": true,|"EnableOAuthServiceProvider": false,|g' config/config.json
 
 	$(GO) test $(GOFLAGS) -run=$(TESTS) -test.v -test.timeout=180s ./api || exit 1
