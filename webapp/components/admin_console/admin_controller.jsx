@@ -27,6 +27,7 @@ import ComplianceSettingsTab from './compliance_settings.jsx';
 import LicenseSettingsTab from './license_settings.jsx';
 import SystemAnalyticsTab from '../analytics/system_analytics.jsx';
 import ZBoxSettingsTab from './zbox_settings.jsx';
+import VideoCallSettingsTab from './video_call_settings.jsx';
 
 import React from 'react';
 
@@ -177,6 +178,8 @@ export default class AdminController extends React.Component {
                 }
             } else if (this.state.selected === 'system_analytics') {
                 tab = <SystemAnalyticsTab/>;
+            } else if (this.state.selected === 'video_call_settings') {
+                tab = <VideoCallSettingsTab config={this.state.config}/>;
             }
         }
 

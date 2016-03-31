@@ -13,6 +13,7 @@ import Constants from 'utils/constants.jsx';
 const TutorialSteps = Constants.TutorialSteps;
 const Preferences = Constants.Preferences;
 import ErrorBar from 'components/error_bar.jsx';
+import VideoCallNotification from 'components/webrtc/video_call_notification.jsx';
 import * as Websockets from 'action_creators/websocket_actions.jsx';
 
 import {browserHistory} from 'react-router';
@@ -183,7 +184,6 @@ export default class LoggedIn extends React.Component {
         $(window).off('focus');
         $(window).off('blur');
 
-        Websockets.close();
         UserStore.removeChangeListener(this.onUserChanged);
 
         $('body').off('click.userpopover');
@@ -221,6 +221,7 @@ export default class LoggedIn extends React.Component {
         return (
             <div className='channel-view'>
                 <ErrorBar/>
+                <VideoCallNotification/>
                 <div className='container-fluid'>
                     <SidebarRight/>
                     <SidebarRightMenu/>

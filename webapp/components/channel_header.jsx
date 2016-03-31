@@ -48,6 +48,7 @@ export default class ChannelHeader extends React.Component {
         this.showRenameChannelModal = this.showRenameChannelModal.bind(this);
         this.hideRenameChannelModal = this.hideRenameChannelModal.bind(this);
         this.initialGuestUrl = this.initialGuestUrl.bind(this);
+        this.makeCall = this.makeCall.bind(this);
 
         const state = this.getStateFromStores();
         state.showEditChannelPurposeModal = false;
@@ -57,15 +58,29 @@ export default class ChannelHeader extends React.Component {
     }
     getStateFromStores() {
         const extraInfo = ChannelStore.getExtraInfo(this.props.channelId);
+        const channel = ChannelStore.get(this.props.channelId);
+        const currentUser = UserStore.getCurrentUser();
+        let contact = null;
+
+        if (currentUser) {
+            if (channel.type === 'D' && extraInfo.members.length > 1) {
+                if (extraInfo.members[0].id === currentUser.id) {
+                    contact = extraInfo.members[1];
+                } else {
+                    contact = extraInfo.members[0];
+                }
+            }
+        }
 
         return {
-            channel: ChannelStore.get(this.props.channelId),
+            channel,
             memberChannel: ChannelStore.getMember(this.props.channelId),
             guestUrl: ChannelStore.getGuestUrl(),
             users: extraInfo.members,
             userCount: extraInfo.member_count,
             searchVisible: SearchStore.getSearchResults() !== null,
-            currentUser: UserStore.getCurrentUser()
+            currentUser,
+            contact
         };
     }
     validState() {
@@ -85,6 +100,7 @@ export default class ChannelHeader extends React.Component {
         SearchStore.addSearchChangeListener(this.onListenerChange);
         PreferenceStore.addChangeListener(this.onListenerChange);
         UserStore.addChangeListener(this.onListenerChange);
+        UserStore.addStatusesChangeListener(this.onListenerChange);
         $('.sidebar--left .dropdown-menu').perfectScrollbar();
     }
     componentWillUnmount() {
@@ -93,6 +109,7 @@ export default class ChannelHeader extends React.Component {
         SearchStore.removeSearchChangeListener(this.onListenerChange);
         PreferenceStore.removeChangeListener(this.onListenerChange);
         UserStore.removeChangeListener(this.onListenerChange);
+        UserStore.removeStatusesChangeListener(this.onListenerChange);
     }
     initialGuestUrl() {
         Client.channelGuestInvite(ChannelStore.getCurrentId(),
@@ -167,6 +184,11 @@ export default class ChannelHeader extends React.Component {
             showRenameChannelModal: false
         });
     }
+    makeCall(data, isOnline) {
+        if (isOnline) {
+            GlobalActions.makeVideoCall(data.contact.id);
+        }
+    }
     render() {
         if (!this.validState()) {
             return null;
@@ -197,20 +219,67 @@ export default class ChannelHeader extends React.Component {
             </Popover>
         );
         let channelTitle = channel.display_name;
-        const currentId = this.state.currentUser.id;
-        const isAdmin = Utils.isAdmin(this.state.memberChannel.roles) || Utils.isAdmin(this.state.currentUser.roles);
-        const isGuest = Utils.isGuest(this.state.memberChannel.roles) || Utils.isGuest(this.state.currentUser.roles);
+        let makeCall;
+        const roles = this.state.currentUser.roles;
+        const isAdmin = Utils.isAdmin(roles) || Utils.isAdmin(roles);
+        const isGuest = Utils.isGuest(roles) || Utils.isGuest(roles);
         const isDirect = (this.state.channel.type === 'D');
 
         if (isDirect) {
-            if (this.state.users.length > 1) {
-                let contact;
-                if (this.state.users[0].id === currentId) {
-                    contact = this.state.users[1];
-                } else {
-                    contact = this.state.users[0];
+            const contact = this.state.contact;
+            const userMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+            channelTitle = Utils.displayUsername(contact.id);
+
+            if (global.window.mm_config.EnableTwilio === 'true' && userMedia) {
+                const isOffline = UserStore.getStatus(contact.id) === 'offline';
+                let circleClass = '';
+                let offlineClass = 'on';
+                if (isOffline) {
+                    circleClass = 'offline';
+                    offlineClass = 'off';
                 }
-                channelTitle = Utils.displayUsername(contact.id);
+
+                makeCall = (
+                    <div className='video-call__header'>
+                        <a
+                            href='#'
+                            onClick={() => this.makeCall(this.state, !isOffline)}
+                            disabled={isOffline}
+                        >
+                            <svg
+                                id='video-btn'
+                                xmlns='http://www.w3.org/2000/svg'
+                            >
+                                <circle
+                                    className={circleClass}
+                                    cx='16'
+                                    cy='16'
+                                    r='18'
+                                >
+                                    <title>
+                                        <FormattedMessage
+                                            id='channel_header.make_video_call'
+                                            defaultMessage='Make Video Call'
+                                        />
+                                    </title>
+                                </circle>
+                                <path
+                                    className={offlineClass}
+                                    transform='scale(0.4), translate(17,16)'
+                                    d='M40 8H15.64l8 8H28v4.36l1.13 1.13L36 16v12.36l7.97 7.97L44 36V12c0-2.21-1.79-4-4-4zM4.55 2L2 4.55l4.01 4.01C4.81 9.24 4 10.52 4 12v24c0 2.21 1.79 4 4 4h29.45l4 4L44 41.46 4.55 2zM12 16h1.45L28 30.55V32H12V16z'
+                                    fill='white'
+                                />
+                                <path
+                                    className='off'
+                                    transform='scale(0.4), translate(17,16)'
+                                    d='M40 8H8c-2.21 0-4 1.79-4 4v24c0 2.21 1.79 4 4 4h32c2.21 0 4-1.79 4-4V12c0-2.21-1.79-4-4-4zm-4 24l-8-6.4V32H12V16h16v6.4l8-6.4v16z'
+                                    fill='white'
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                );
             }
         }
 
@@ -509,6 +578,7 @@ export default class ChannelHeader extends React.Component {
                         <tr>
                             <th>
                                 <div className='channel-header__info'>
+                                    {makeCall}
                                     <div className='dropdown'>
                                         <a
                                             href='#'

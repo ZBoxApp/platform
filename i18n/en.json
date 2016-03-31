@@ -48,6 +48,10 @@
     "translation": "September"
   },
   {
+    "id": "api.addon.init.debug",
+    "translation": "Initializing addons api routes"
+  },
+  {
     "id": "api.addon.publish.descriptor_url.app_error",
     "translation": "We couldn't get the descriptor from the specified Descriptor URL"
   },
@@ -670,10 +674,6 @@
   {
     "id": "api.license.add_license.unique_users.app_error",
     "translation": "This license only supports {{.Users}} users, when your system has {{.Count}} unique users. Unique users are counted distinctly by email address. You can see total user count under Site Reports -> View Statistics."
-  },
-  {
-    "id": "api.addon.init.debug",
-    "translation": "Initializing addons api routes"
   },
   {
     "id": "api.license.init.debug",
@@ -2354,6 +2354,22 @@
   {
     "id": "model.config.is_valid.sql_max_conn.app_error",
     "translation": "Invalid maximum open connection for SQL settings.  Must be a positive number."
+  },
+  {
+    "id": "model.config.is_valid.twilio_account_sid.app_error",
+    "translation": "Twilio Account Sid must be set"
+  },
+  {
+    "id": "model.config.is_valid.twilio_api_key.app_error",
+    "translation": "Twilio Api Key must be set"
+  },
+  {
+    "id": "model.config.is_valid.twilio_api_secret.app_error",
+    "translation": "Twilio Api Secret must be set"
+  },
+  {
+    "id": "model.config.is_valid.twilio_config_sid.app_error",
+    "translation": "Twilio Configuration Profile Sid must be set"
   },
   {
     "id": "model.file_info.get.gif.app_error",

@@ -33,6 +33,8 @@ import {browserHistory, Link} from 'react-router';
 import favicon from 'images/favicon/favicon-16x16.png';
 import redFavicon from 'images/favicon/redfavicon-16x16.png';
 
+const GUEST_STATUS_INTERVAL = 30000;
+
 export default class Sidebar extends React.Component {
     constructor(props) {
         super(props);
@@ -167,13 +169,6 @@ export default class Sidebar extends React.Component {
         this.updateUnreadIndicators();
 
         window.addEventListener('resize', this.handleResize);
-
-        if (this.state.isGuest) {
-            const membersIds = this.state.channelMembers.map((m) => {
-                return m.id;
-            });
-            this.intervalId = setInterval(() => AsyncClient.getMemberStatuses(membersIds), 30000);
-        }
     }
     shouldComponentUpdate(nextProps, nextState) {
         if (!Utils.areObjectsEqual(nextState, this.state)) {
@@ -186,6 +181,14 @@ export default class Sidebar extends React.Component {
         this.updateUnreadIndicators();
         if (!Utils.isMobile()) {
             $('.sidebar--left .nav-pills__container').perfectScrollbar();
+        }
+
+        if (this.state.isGuest && !this.intervalId) {
+            const membersIds = this.state.channelMembers.map((m) => {
+                return m.id;
+            });
+            AsyncClient.getMemberStatuses(membersIds);
+            this.intervalId = setInterval(() => AsyncClient.getMemberStatuses(membersIds), GUEST_STATUS_INTERVAL);
         }
     }
     componentWillUnmount() {
@@ -360,8 +363,8 @@ export default class Sidebar extends React.Component {
 
     createMemberElement(member) {
         const userStatus = UserStore.getStatus(member.id);
-        var status = null;
-        var statusIcon = '';
+        let status;
+        let statusIcon = '';
         if (userStatus === 'online') {
             statusIcon = Constants.ONLINE_ICON_SVG;
         } else if (userStatus === 'away') {

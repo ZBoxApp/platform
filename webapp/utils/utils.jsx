@@ -92,7 +92,7 @@ export function isMobileApp() {
     const userAgent = navigator.userAgent;
 
     // the mobile app has different user agents for the native api calls and the shim, so handle them both
-    const isApi = userAgent.indexOf('Mattermost') !== -1;
+    const isApi = userAgent.indexOf('Mattermost') !== -1 || userAgent.indexOf('ZBox') !== -1;
     const isShim = userAgent.indexOf('iPhone') !== -1 && userAgent.indexOf('Safari') === -1 && userAgent.indexOf('Chrome') === -1;
 
     return isApi || isShim;
@@ -329,13 +329,7 @@ export function getTimestamp() {
 
 // extracts links not styled by Markdown
 export function extractLinks(text) {
-    text; // eslint-disable-line no-unused-expressions
-    Autolinker; // eslint-disable-line no-unused-expressions
-
-    // skip this operation because autolinker is having issues
-    return [];
-
-    /*const links = [];
+    const links = [];
     let inText = text;
 
     // strip out code blocks
@@ -369,7 +363,7 @@ export function extractLinks(text) {
         }
     );
 
-    return links;*/
+    return links;
 }
 
 export function escapeRegExp(string) {

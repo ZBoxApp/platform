@@ -6,9 +6,11 @@ import velocity from 'velocity-animate';
 
 import SearchResults from './search_results.jsx';
 import RhsThread from './rhs_thread.jsx';
+import VideoCall from './webrtc/video_call.jsx';
 import SearchStore from 'stores/search_store.jsx';
 import PostStore from 'stores/post_store.jsx';
 import UserStore from 'stores/user_store.jsx';
+import VideoCallStore from 'stores/video_call_store.jsx';
 import * as Utils from 'utils/utils.jsx';
 
 const SIDEBAR_SCROLL_DELAY = 500;
@@ -26,6 +28,8 @@ export default class SidebarRight extends React.Component {
         this.onUserChange = this.onUserChange.bind(this);
         this.onShowSearch = this.onShowSearch.bind(this);
 
+        this.onInitializeVideoCall = this.onInitializeVideoCall.bind(this);
+
         this.doStrangeThings = this.doStrangeThings.bind(this);
 
         this.state = {
@@ -33,7 +37,10 @@ export default class SidebarRight extends React.Component {
             isMentionSearch: SearchStore.getIsMentionSearch(),
             postRightVisible: !!PostStore.getSelectedPost(),
             fromSearch: false,
-            currentUser: UserStore.getCurrentUser()
+            currentUser: UserStore.getCurrentUser(),
+            videoCallVisible: false,
+            isCaller: false,
+            videoCallWithUserId: null
         };
     }
     componentDidMount() {
@@ -41,6 +48,7 @@ export default class SidebarRight extends React.Component {
         PostStore.addSelectedPostChangeListener(this.onSelectedChange);
         SearchStore.addShowSearchListener(this.onShowSearch);
         UserStore.addChangeListener(this.onUserChange);
+        VideoCallStore.addCallListener(this.onInitializeVideoCall);
         this.doStrangeThings();
     }
     componentWillUnmount() {
@@ -48,6 +56,7 @@ export default class SidebarRight extends React.Component {
         PostStore.removeSelectedPostChangeListener(this.onSelectedChange);
         SearchStore.removeShowSearchListener(this.onShowSearch);
         UserStore.removeChangeListener(this.onUserChange);
+        VideoCallStore.removeCallListener(this.onInitializeVideoCall);
     }
     shouldComponentUpdate(nextProps, nextState) {
         return !Utils.areObjectsEqual(nextState, this.state);
@@ -72,7 +81,7 @@ export default class SidebarRight extends React.Component {
         $('.sidebar--right').addClass('move--left');
 
         //$('.sidebar--right').prepend('<div class="sidebar__overlay"></div>');
-        if (this.state.searchVisible || this.state.postRightVisible) {
+        if (this.state.searchVisible || this.state.postRightVisible || this.state.videoCallVisible) {
             if (windowWidth > 960) {
                 velocity($('.inner-wrap'), {marginRight: sidebarRightWidth}, {duration: 500, easing: 'easeOutSine'});
                 velocity($('.sidebar--right'), {translateX: 0}, {duration: 500, easing: 'easeOutSine'});
@@ -105,6 +114,7 @@ export default class SidebarRight extends React.Component {
     }
     onSelectedChange(fromSearch) {
         this.setState({
+            videoCallVisible: false,
             postRightVisible: !!PostStore.getSelectedPost(),
             fromSearch
         });
@@ -112,7 +122,8 @@ export default class SidebarRight extends React.Component {
     onSearchChange() {
         this.setState({
             searchVisible: SearchStore.getSearchResults() !== null,
-            isMentionSearch: SearchStore.getIsMentionSearch()
+            isMentionSearch: SearchStore.getIsMentionSearch(),
+            videoCallVisible: false
         });
     }
     onUserChange() {
@@ -123,9 +134,20 @@ export default class SidebarRight extends React.Component {
     onShowSearch() {
         if (!this.state.searchVisible) {
             this.setState({
+                videoCallVisible: false,
                 searchVisible: true
             });
         }
+    }
+    onInitializeVideoCall(userId, isCaller) {
+        this.setState({
+            searchVisible: false,
+            isMentionSearch: false,
+            postRightVisible: false,
+            videoCallVisible: true,
+            isCaller,
+            videoCallWithUserId: userId
+        });
     }
     render() {
         let content = null;
@@ -138,6 +160,15 @@ export default class SidebarRight extends React.Component {
                     fromSearch={this.state.fromSearch}
                     isMentionSearch={this.state.isMentionSearch}
                     currentUser={this.state.currentUser}
+                />
+            );
+        } else if (this.state.videoCallVisible) {
+            content = (
+                <VideoCall
+                    isMentionSearch={this.state.isMentionSearch}
+                    currentUser={this.state.currentUser}
+                    userId={this.state.videoCallWithUserId}
+                    isCaller={this.state.isCaller}
                 />
             );
         }

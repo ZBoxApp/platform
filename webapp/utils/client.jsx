@@ -626,21 +626,6 @@ export function getAllTeams(success, error) {
     });
 }
 
-export function getMeLocale(success, error) {
-    return $.ajax({
-        cache: false,
-        url: '/api/v1/users/me_locale',
-        dataType: 'json',
-        contentType: 'application/json',
-        type: 'GET',
-        success,
-        error: function onError(xhr, status, err) {
-            var e = handleError('getMeLocale', xhr, status, err);
-            error(e);
-        }
-    });
-}
-
 export function getMeLoggedIn(success, error) {
     return $.ajax({
         cache: false,
@@ -1863,6 +1848,20 @@ export function uninstallAddon(addonId, success, error) {
         success,
         error: (xhr, status, err) => {
             var e = handleError('installAddon', xhr, status, err);
+            error(e);
+        }
+    });
+}
+
+export function getTwilioToken(success, error) {
+    return $.ajax({
+        url: '/api/v1/users/twilio_token',
+        type: 'POST',
+        cache: false,
+        dataType: 'json',
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('getTwilioToken', xhr, status, err);
             error(e);
         }
     });

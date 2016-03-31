@@ -191,6 +191,7 @@ function doChannelChange(state) {
 
 function onLoggedOut(nextState) {
     const teamName = nextState.params.team;
+    Websockets.close();
     Client.logout(
         () => {
             browserHistory.push('/' + teamName + '/login');
@@ -234,7 +235,8 @@ function renderRootComponent() {
                     />
                     <Route
                         path=':team/guest/:channel'
-                        onEnter={onChannelChange}
+                        onEnter={onChannelEnter}
+                        onChange={onChannelChange}
                         components={{
                             sidebar: Sidebar,
                             center: ChannelView

@@ -416,6 +416,18 @@ export default class AdminSidebar extends React.Component {
                                         />
                                     </a>
                                 </li>
+                                <li>
+                                    <a
+                                        href='#'
+                                        className={this.isSelected('video_call_settings')}
+                                        onClick={this.handleClick.bind(this, 'video_call_settings', null)}
+                                    >
+                                        <FormattedMessage
+                                            id='admin.sidebar.video_call'
+                                            defaultMessage='Video Call Settings'
+                                        />
+                                    </a>
+                                </li>
                                 {ldapSettings}
                                 {complianceSettings}
                                 <li>

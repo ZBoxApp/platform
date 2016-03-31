@@ -368,9 +368,11 @@ export default class PostsView extends React.Component {
         this.updateScrolling();
     }
     scrollToBottom() {
-        window.requestAnimationFrame(() => {
-            this.refs.postlist.scrollTop = this.refs.postlist.scrollHeight;
-        });
+        if (this.refs.postlist) {
+            window.requestAnimationFrame(() => {
+                this.refs.postlist.scrollTop = this.refs.postlist.scrollHeight;
+            });
+        }
     }
     scrollToBottomAnimated() {
         var postList = $(this.refs.postlist);
