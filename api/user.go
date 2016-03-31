@@ -9,6 +9,7 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/ZBoxApp/twilio-accesstoken-go"
 	l4g "github.com/alecthomas/log4go"
 	"github.com/disintegration/imaging"
 	"github.com/golang/freetype"
@@ -57,13 +58,13 @@ func InitUser(r *mux.Router) {
 	sr.Handle("/mfa", ApiAppHandler(checkMfa)).Methods("POST")
 	sr.Handle("/generate_mfa_qr", ApiUserRequired(generateMfaQrCode)).Methods("GET")
 	sr.Handle("/update_mfa", ApiUserRequired(updateMfa)).Methods("POST")
-	sr.Handle("/locale", ApiAppHandler(getDefaultLocale)).Methods("POST")
 
 	sr.Handle("/newimage", ApiUserRequired(uploadProfileImage)).Methods("POST")
 
+	sr.Handle("/twilio_token", ApiUserRequired(twilioToken)).Methods("POST")
+
 	sr.Handle("/me", ApiAppHandler(getMe)).Methods("GET")
 	sr.Handle("/me_logged_in", ApiAppHandler(getMeLoggedIn)).Methods("GET")
-	sr.Handle("/me_locale", ApiAppHandler(getMeLocale)).Methods("GET")
 	sr.Handle("/status", ApiUserRequiredActivity(getStatuses, false)).Methods("POST")
 	sr.Handle("/status_info", ApiAppHandler(getUserStatusInfo)).Methods("POST")
 	sr.Handle("/profiles", ApiUserRequired(getProfiles)).Methods("GET")
@@ -1118,24 +1119,6 @@ func getMeLoggedIn(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 		data["logged_in"] = "true"
 		data["team_name"] = team.Name
-	}
-	w.Write([]byte(model.MapToJson(data)))
-}
-
-func getMeLocale(c *Context, w http.ResponseWriter, r *http.Request) {
-	data := make(map[string]string)
-	data["locale"] = c.Locale
-
-	if len(c.Session.UserId) != 0 {
-		userChan := Srv.Store.User().Get(c.Session.UserId)
-		var user *model.User
-		if ur := <-userChan; ur.Err != nil {
-			c.Err = ur.Err
-			return
-		} else {
-			user = ur.Data.(*model.User)
-		}
-		data["locale"] = user.Locale
 	}
 	w.Write([]byte(model.MapToJson(data)))
 }
@@ -2900,5 +2883,51 @@ func createSystemBots(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write([]byte("true"))
 		return
+	}
+}
+
+func twilioToken(c *Context, w http.ResponseWriter, r *http.Request) {
+	if !*utils.Cfg.TwilioSettings.Enable {
+		c.Err = model.NewLocAppError("twilioToken", "api.user.twilio_token.disabled.app_error", nil, "")
+		c.Err.StatusCode = http.StatusNotImplemented
+		return
+	}
+
+	c.LogAudit("attempt")
+
+	// Create an Access Token
+	myToken := accesstoken.New(*utils.Cfg.TwilioSettings.AccountSid,
+		*utils.Cfg.TwilioSettings.ApiKey, *utils.Cfg.TwilioSettings.ApiSecret)
+
+	myToken.Identity = c.Session.UserId
+
+	grant := accesstoken.NewConversationsGrant(*utils.Cfg.TwilioSettings.ConfigurationProfileSid)
+	myToken.AddGrant(grant)
+
+	signedJWT, err := myToken.ToJWT(accesstoken.DefaultAlgorithm)
+
+	if err != nil {
+		c.Err = model.NewLocAppError("twilioToken", "api.user.twilio_token.signed.app_error", nil, err.Error())
+		return
+	}
+
+	result := make(map[string]string)
+	result["identity"] = c.Session.UserId
+	result["token"] = signedJWT
+
+	w.Write([]byte(model.MapToJson(result)))
+}
+
+func SetUserOffline(userId string) {
+	offline := model.GetMillis() - model.USER_OFFLINE_TIMEOUT
+	achan := Srv.Store.User().UpdateLastActivityAt(userId, offline)
+	pchan := Srv.Store.User().UpdateLastPingAt(userId, offline)
+
+	if result := <-achan; result.Err != nil {
+		l4g.Error(utils.T("api.web_conn.new_web_conn.last_activity.error"), userId, "", result.Err)
+	}
+
+	if result := <-pchan; result.Err != nil {
+		l4g.Error(utils.T("api.web_conn.new_web_conn.last_ping.error"), userId, result.Err)
 	}
 }

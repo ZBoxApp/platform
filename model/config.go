@@ -188,6 +188,14 @@ type ComplianceSettings struct {
 	EnableDaily *bool
 }
 
+type TwilioSettings struct {
+	Enable                  *bool
+	AccountSid              *string
+	ApiKey                  *string
+	ApiSecret               *string
+	ConfigurationProfileSid *string
+}
+
 type Config struct {
 	ServiceSettings    ServiceSettings
 	TeamSettings       TeamSettings
@@ -203,6 +211,7 @@ type Config struct {
 	LdapSettings       LdapSettings
 	ComplianceSettings ComplianceSettings
 	ZBoxSettings       SSOSettings
+	TwilioSettings     TwilioSettings
 }
 
 func (o *Config) ToJson() string {
@@ -435,6 +444,11 @@ func (o *Config) SetDefaults() {
 		o.ComplianceSettings.EnableDaily = new(bool)
 		*o.ComplianceSettings.EnableDaily = false
 	}
+
+	if o.TwilioSettings.Enable == nil {
+		o.TwilioSettings.Enable = new(bool)
+		*o.TwilioSettings.Enable = false
+	}
 }
 
 func (o *Config) IsValid() *AppError {
@@ -521,6 +535,18 @@ func (o *Config) IsValid() *AppError {
 
 	if o.RateLimitSettings.PerSec <= 0 {
 		return NewLocAppError("Config.IsValid", "model.config.is_valid.rate_sec.app_error", nil, "")
+	}
+
+	if *o.TwilioSettings.Enable {
+		if len(*o.TwilioSettings.AccountSid) == 0 {
+			return NewLocAppError("Config.IsValid", "model.config.is_valid.twilio_account_sid.app_error", nil, "")
+		} else if len(*o.TwilioSettings.ApiKey) == 0 {
+			return NewLocAppError("Config.IsValid", "model.config.is_valid.twilio_api_key.app_error", nil, "")
+		} else if len(*o.TwilioSettings.ApiSecret) == 0 {
+			return NewLocAppError("Config.IsValid", "model.config.is_valid.twilio_api_secret.app_error", nil, "")
+		} else if len(*o.TwilioSettings.ConfigurationProfileSid) == 0 {
+			return NewLocAppError("Config.IsValid", "model.config.is_valid.twilio_config_sid.app_error", nil, "")
+		}
 	}
 
 	return nil

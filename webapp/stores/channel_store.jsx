@@ -383,3 +383,5 @@ ChannelStore.dispatchToken = AppDispatcher.register((payload) => {
 });
 
 export default ChannelStore;
+
+global.window.ChannelStore = ChannelStore;

@@ -2476,6 +2476,22 @@
     "translation": "Inválida cantidad de conexiones abiertas para la configuración de SQL.  Debe ser un número positivo."
   },
   {
+    "id": "model.config.is_valid.twilio_account_sid.app_error",
+    "translation": "El Sid de la cuenta de Twilio es obligatorio"
+  },
+  {
+    "id": "model.config.is_valid.twilio_api_key.app_error",
+    "translation": "La llave del Api de Twilio es obligatoria"
+  },
+  {
+    "id": "model.config.is_valid.twilio_api_secret.app_error",
+    "translation": "La clave secreta del Api de Twilio es obligatoria"
+  },
+  {
+    "id": "model.config.is_valid.twilio_config_sid.app_error",
+    "translation": "El Sid del Perfil de Configuración de Twilio es obligatorio"
+  },
+  {
     "id": "model.file_info.get.gif.app_error",
     "translation": "No se pudo decodificar el gif."
   },
