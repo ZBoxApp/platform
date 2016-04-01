@@ -14,7 +14,7 @@
         "EnableTesting": false,
         "EnableDeveloper": false,
         "EnableSecurityFixAlert": true,
-        "EnableInsecureOutgoingConnections": false,
+        "EnableInsecureOutgoingConnections": true,
         "AllowCorsFrom": "*",
         "SessionLengthWebInDays": 30,
         "SessionLengthMobileInDays": 30,
@@ -22,7 +22,7 @@
         "SessionCacheInMinutes": 10,
         "WebsocketSecurePort": 443,
         "WebsocketPort": 80,
-        "WebserverMode": "gzip"
+        "WebserverMode": "regular"
     },
     "TeamSettings": {
         "SiteName": "ZBox Now!",
@@ -118,6 +118,11 @@
         "TokenEndpoint": "",
         "UserApiEndpoint": ""
     },
+    "ComplianceSettings": {
+        "Enable": false,
+        "Directory": "./data/",
+        "EnableDaily": false
+    },
     "ZBoxSettings": {
         "Enable": true,
         "Secret": "RZqS6sS4Wv3X7Sex",
@@ -128,9 +133,11 @@
         "UserApiEndpoint": "https://oauth.zboxapp.com/me",
         "LoginEndPoint": "https://oauth.zboxapp.com/login"
     },
-    "ComplianceSettings": {
-        "Enable": false,
-        "Directory": "./data/",
-        "EnableDaily": false
+    "TwilioSettings": {
+        "Enable": true,
+        "AccountSid": "AC556823c3d28ac704df6239be0b0423fb",
+        "ApiKey": "SKc06bb18f5bf102b19d00eb697f6ba67f",
+        "ApiSecret": "PVRzWGG1Tg6szn7IQMvhpAvLByScWxdy",
+        "ConfigurationProfileSid": "VSd8fde6c50a5165e1077bdada30ef0008"
     }
 }

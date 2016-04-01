@@ -7,7 +7,8 @@ import * as Client from 'utils/client.jsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {FormattedMessage} from 'react-intl';
-import {browserHistory} from 'react-router';
+
+// import {browserHistory} from 'react-router';
 
 export default class EmailToOAuth extends React.Component {
     constructor(props) {
@@ -40,7 +41,8 @@ export default class EmailToOAuth extends React.Component {
         Client.emailToOAuth(postData,
             (data) => {
                 if (data.follow_link) {
-                    browserHistory.push(data.follow_link);
+                    // browserHistory.push(data.follow_link);
+                    window.location.href = data.follow_link;
                 }
             },
             (error) => {

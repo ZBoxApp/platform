@@ -2,7 +2,7 @@
 # See License.txt for license information.
 FROM alpine:3.3
 
-RUN apk add --update bash && rm -rf /var/cache/apk/*
+RUN apk add --update bash ca-certificates && rm -rf /var/cache/apk/*
 
 RUN mkdir -p /zboxnow
 WORKDIR /zboxnow

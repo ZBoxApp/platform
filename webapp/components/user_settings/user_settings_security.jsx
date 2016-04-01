@@ -612,7 +612,7 @@ class SecurityTab extends React.Component {
                     <div>
                         <Link
                             className='btn btn-primary'
-                            href={'/' + teamName + '/claim/email_to_oauth?email=' + encodeURIComponent(user.email) + '&old_type=' + user.auth_service + '&new_type=' + Constants.ZBOX_SERVICE}
+                            to={'/' + teamName + '/claim/email_to_oauth?email=' + encodeURIComponent(user.email) + '&old_type=' + user.auth_service + '&new_type=' + Constants.ZBOX_SERVICE}
                         >
                             <FormattedMessage
                                 id='user.settings.security.switchZBox'

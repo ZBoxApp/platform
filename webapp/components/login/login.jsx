@@ -215,10 +215,10 @@ export default class Login extends React.Component {
                 </Link>
             );
         }
-        
+
         if (zboxSigninEnabled) {
             oauthLogins.push(
-                <Link
+                <a
                     className='btn btn-custom-login zbox'
                     key={Constants.ZBOX_SERVICE}
                     href={'/api/v1/oauth/zbox/login?team=' + encodeURIComponent(teamName)}
@@ -230,7 +230,7 @@ export default class Login extends React.Component {
                             defaultMessage='with ZBox'
                         />
                     </span>
-                </Link>
+                </a>
             );
         }
 

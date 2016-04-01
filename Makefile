@@ -159,7 +159,11 @@ ifeq ($(BUILD_ENTERPRISE_READY),true)
 endif
 
 build: .prebuild prepare-enterprise
-	@echo Building ZBox Now! server
+	@if [ "$(GOOS)" = "linux" ]; then \
+		echo Building ZBox Now! linux server; \
+	else \
+		echo Building ZBox Now! server; \
+	fi
 
 	$(GO) clean $(GOFLAGS) -i ./...
 	$(GO) install $(GOFLAGS) $(GO_LINKER_FLAGS) ./...
@@ -325,12 +329,12 @@ zbox-run:
 zbox-dev:
 	@echo Building DEV Docker Image
 	@docker build -t ${DOCKERNAME}:dev -f docker/dev/Dockerfile .
-	@rm -rf $(DIST_PATH)
+	#@rm -rf $(DIST_PATH)
 
 zbox-prod:
 	@echo Building PRODUCTION Docker Image
 	@docker build -t ${DOCKERNAME}:${ZBOXNOW_VERSION} -f docker/prod/Dockerfile .
-	@rm -rf $(DIST_PATH)
+	#@rm -rf $(DIST_PATH)
 	@docker tag -f ${DOCKERNAME}:${ZBOXNOW_VERSION} ${DOCKERNAME}:latest; \
 
 deploy:
