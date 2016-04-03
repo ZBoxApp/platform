@@ -1,6 +1,7 @@
 // Copyright (c) 2015 ZBox, Spa. All Rights Reserved.
 // See License.txt for license information.
 
+import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -9,7 +10,6 @@ import * as Client from '../../utils/client.jsx';
 import UserStore from '../../stores/user_store.jsx';
 import Constants from '../../utils/constants.jsx';
 import LoadingScreen from '../../components/loading_screen.jsx';
-import ErrorPage from '../../components/error_page.jsx';
 
 import {FormattedMessage, FormattedHTMLMessage} from 'react-intl';
 import {browserHistory} from 'react-router';
@@ -59,9 +59,14 @@ class GuestSignup extends React.Component {
         }
     }
     inviteInfoError(err) {
-        this.setState({
-            inviteError: err.message
-        });
+        const invalidParams = {
+            title: Utils.localizeMessage('error.guest_invite.title', 'Invitation not found'),
+            message: err.message,
+            link: '/',
+            linkmessage: Utils.localizeMessage('error.not_found.link_message', 'Back to ZBox Now!')
+        };
+
+        browserHistory.push('/error?' + $.param(invalidParams));
     }
     handleSubmit(e) {
         e.preventDefault();
@@ -184,15 +189,6 @@ class GuestSignup extends React.Component {
     render() {
         if (this.state.teamId === '' && !this.state.inviteError) {
             return (<LoadingScreen/>);
-        }
-
-        if (this.state.inviteError) {
-            return (
-                <ErrorPage
-                    message={this.state.inviteError}
-                    goBack={this.props.history.goBack}
-                />
-            );
         }
 
         // set up error labels
