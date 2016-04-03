@@ -506,7 +506,7 @@ func LoginByUsername(c *Context, w http.ResponseWriter, r *http.Request, usernam
 	return nil
 }
 
-func LoginByOAuth(c *Context, w http.ResponseWriter, r *http.Request, service string, userData io.Reader, team *model.Team) *model.User {
+func LoginByOAuth(c *Context, w http.ResponseWriter, r *http.Request, service string, userData io.Reader, team *model.Team, deviceId string) *model.User {
 	buf := bytes.Buffer{}
 	buf.ReadFrom(userData)
 
@@ -546,7 +546,7 @@ func LoginByOAuth(c *Context, w http.ResponseWriter, r *http.Request, service st
 		return nil
 	} else {
 		user = result.Data.(*model.User)
-		Login(c, w, r, user, "")
+		Login(c, w, r, user, deviceId)
 		return user
 	}
 }
@@ -595,7 +595,7 @@ func LoginByZBox(c *Context, w http.ResponseWriter, r *http.Request, email, pass
 				team = result.Data.(*model.Team)
 			}
 
-			return LoginByOAuth(c, w, r, service, bytes.NewReader(buf.Bytes()), team)
+			return LoginByOAuth(c, w, r, service, bytes.NewReader(buf.Bytes()), team, deviceId)
 		}
 	}
 }
@@ -634,7 +634,7 @@ func LoginByZimbra(c *Context, w http.ResponseWriter, r *http.Request, email str
 				team = result.Data.(*model.Team)
 			}
 
-			if user := LoginByOAuth(c, w, r, service, bytes.NewReader(buf.Bytes()), team); user == nil {
+			if user := LoginByOAuth(c, w, r, service, bytes.NewReader(buf.Bytes()), team, ""); user == nil {
 				return c.Err, nil
 			}
 

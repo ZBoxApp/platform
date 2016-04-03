@@ -205,7 +205,7 @@ func completeOAuth(c *Context, w http.ResponseWriter, r *http.Request) {
 			}
 			break
 		case model.OAUTH_ACTION_LOGIN:
-			LoginByOAuth(c, w, r, service, body, team)
+			LoginByOAuth(c, w, r, service, body, team, "")
 			if c.Err == nil {
 				http.Redirect(w, r, GetProtocol(r)+"://"+r.Host+"/"+team.Name, http.StatusTemporaryRedirect)
 			}
@@ -217,13 +217,13 @@ func completeOAuth(c *Context, w http.ResponseWriter, r *http.Request) {
 			}
 			break
 		case model.OAUTH_ACTION_SSO_TO_EMAIL:
-			LoginByOAuth(c, w, r, service, body, team)
+			LoginByOAuth(c, w, r, service, body, team, "")
 			if c.Err == nil {
 				http.Redirect(w, r, GetProtocol(r)+"://"+r.Host+"/"+team.Name+"/"+"/claim?email="+url.QueryEscape(props["email"]), http.StatusTemporaryRedirect)
 			}
 			break
 		default:
-			LoginByOAuth(c, w, r, service, body, team)
+			LoginByOAuth(c, w, r, service, body, team, "")
 			if c.Err == nil {
 				http.Redirect(w, r, GetProtocol(r)+"://"+r.Host+"/"+team.Name, http.StatusTemporaryRedirect)
 			}
