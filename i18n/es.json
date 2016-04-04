@@ -1909,7 +1909,7 @@
   },
   {
     "id": "error.generic.link_message",
-    "translation": "Volver a Mattermost"
+    "translation": "Volver a ZBox Now!"
   },
   {
     "id": "error.generic.message",
@@ -1921,7 +1921,7 @@
   },
   {
     "id": "error.not_found.link_message",
-    "translation": "Volver a Mattermost"
+    "translation": "Volver a ZBox Now!"
   },
   {
     "id": "error.not_found.message",
