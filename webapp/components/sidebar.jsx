@@ -102,6 +102,11 @@ export default class Sidebar extends React.Component {
                 continue;
             }
 
+            const profile = UserStore.getProfile(name);
+            if (profile && profile.delete_at !== 0) {
+                continue;
+            }
+
             const teammateId = name;
 
             let directChannel = channels.find(Utils.isDirectChannelForUser.bind(null, teammateId));
@@ -128,11 +133,11 @@ export default class Sidebar extends React.Component {
 
         directChannels.sort(this.sortChannelsByDisplayName);
 
-        const hiddenDirectChannelCount = UserStore.getActiveOnlyProfileList(true).
-            filter((user) => {
-                return !Utils.isGuest(user.roles);
-            }).length - directChannels.length;
-
+        const activeUsersExcludingGuests = UserStore.getActiveOnlyProfileList(true).
+        filter((user) => {
+            return !Utils.isGuest(user.roles);
+        }).length;
+        const hiddenDirectChannelCount = activeUsersExcludingGuests - directChannels.length;
         const tutorialStep = PreferenceStore.getInt(Preferences.TUTORIAL_STEP, UserStore.getCurrentId(), 999);
 
         let channelMembers;
