@@ -23,6 +23,7 @@ import SearchStore from 'stores/search_store.jsx';
 import PreferenceStore from 'stores/preference_store.jsx';
 
 import AppDispatcher from '../dispatcher/app_dispatcher.jsx';
+import * as GlobalActions from 'action_creators/global_actions.jsx';
 import * as Utils from 'utils/utils.jsx';
 import * as TextFormatting from 'utils/text_formatting.jsx';
 import * as AsyncClient from 'utils/async_client.jsx';

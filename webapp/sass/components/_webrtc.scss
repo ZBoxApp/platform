@@ -5,12 +5,7 @@ $video-circle-hover: #56C303;
 $video-circle-offline: #666;
 $connecting: #2EF90D;
 
-.video-call__header {
-  position: relative;
-  float: left;
-  margin-right: 10px;
-  top: 10px;
-
+@mixin video-button {
   #video-btn {
 	transition: 120ms;
 	border-radius: 48px;
@@ -74,6 +69,25 @@ $connecting: #2EF90D;
 	  }
 	}
   }
+}
+
+.video-call__user-profile {
+  text-align: center;
+  @include video-button;
+
+  #video-btn {
+	display: inherit;
+  }
+}
+
+.video-call__header {
+  position: relative;
+  float: left;
+  margin-right: 10px;
+  top: 10px;
+
+  @include video-button;
+
 }
 
 .video-call__error {

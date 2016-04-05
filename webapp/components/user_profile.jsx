@@ -1,6 +1,8 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
+import UserStore from 'stores/user_store.jsx';
+import * as GlobalActions from 'action_creators/global_actions.jsx';
 import * as Utils from 'utils/utils.jsx';
 
 import {FormattedMessage} from 'react-intl';
@@ -20,6 +22,34 @@ export default class UserProfile extends React.Component {
     constructor(props) {
         super(props);
         this.uniqueId = nextId();
+
+        this.onListenerChange = this.onListenerChange.bind(this);
+        this.makeCall = this.makeCall.bind(this);
+
+        this.state = this.getStateFromStores();
+    }
+    getStateFromStores() {
+        return {
+            currentUser: UserStore.getCurrentUser(),
+            isOnline: UserStore.getStatus(this.props.user.id) !== 'offline'
+        };
+    }
+    componentDidMount() {
+        UserStore.addStatusesChangeListener(this.onListenerChange);
+    }
+    componentWillUnmount() {
+        UserStore.removeStatusesChangeListener(this.onListenerChange);
+    }
+    onListenerChange() {
+        const newState = this.getStateFromStores();
+        if (!Utils.areObjectsEqual(newState, this.state)) {
+            this.setState(newState);
+        }
+    }
+    makeCall() {
+        if (this.state.isOnline) {
+            GlobalActions.makeVideoCall(this.props.user.id);
+        }
     }
     render() {
         let name = '...';
@@ -43,6 +73,61 @@ export default class UserProfile extends React.Component {
             return <div>{name}</div>;
         }
 
+        let makeCall;
+        const userMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        if (global.window.mm_config.EnableTwilio === 'true' && userMedia && this.props.user.id !== this.state.currentUser.id) {
+            let circleClass = 'offline';
+            let offlineClass = 'off';
+            if (this.state.isOnline) {
+                circleClass = '';
+                offlineClass = 'on';
+            }
+
+            makeCall = (
+                <div
+                    className='video-call__user-profile'
+                    key='makeCall'
+                >
+                    <a
+                        href='#'
+                        onClick={() => this.makeCall()}
+                        disabled={!this.state.isOnline}
+                    >
+                        <svg
+                            id='video-btn'
+                            xmlns='http://www.w3.org/2000/svg'
+                        >
+                            <circle
+                                className={circleClass}
+                                cx='16'
+                                cy='16'
+                                r='18'
+                            >
+                                <title>
+                                    <FormattedMessage
+                                        id='channel_header.make_video_call'
+                                        defaultMessage='Make Video Call'
+                                    />
+                                </title>
+                            </circle>
+                            <path
+                                className={offlineClass}
+                                transform='scale(0.4), translate(17,16)'
+                                d='M40 8H15.64l8 8H28v4.36l1.13 1.13L36 16v12.36l7.97 7.97L44 36V12c0-2.21-1.79-4-4-4zM4.55 2L2 4.55l4.01 4.01C4.81 9.24 4 10.52 4 12v24c0 2.21 1.79 4 4 4h29.45l4 4L44 41.46 4.55 2zM12 16h1.45L28 30.55V32H12V16z'
+                                fill='white'
+                            />
+                            <path
+                                className='off'
+                                transform='scale(0.4), translate(17,16)'
+                                d='M40 8H8c-2.21 0-4 1.79-4 4v24c0 2.21 1.79 4 4 4h32c2.21 0 4-1.79 4-4V12c0-2.21-1.79-4-4-4zm-4 24l-8-6.4V32H12V16h16v6.4l8-6.4v16z'
+                                fill='white'
+                            />
+                        </svg>
+                    </a>
+                </div>
+            );
+        }
+
         var dataContent = [];
         dataContent.push(
             <img
@@ -53,6 +138,8 @@ export default class UserProfile extends React.Component {
                 key='user-popover-image'
             />
         );
+
+        dataContent.push(makeCall);
 
         if (!global.window.mm_config.ShowEmailAddress === 'true') {
             dataContent.push(
