@@ -21,7 +21,7 @@ export default class AboutBuildModal extends React.Component {
     render() {
         const config = global.window.mm_config;
         const license = global.window.mm_license;
-        const mattermostLogo = Constants.MATTERMOST_ICON_SVG;
+        const mattermostLogo = Constants.ZBOXNOW_ICON_SVG;
 
         let title = (
             <FormattedMessage
@@ -45,9 +45,9 @@ export default class AboutBuildModal extends React.Component {
                 />
                 <a
                     target='_blank'
-                    href='http://www.mattermost.org/'
+                    href='http://www.zboxnow.com/'
                 >
-                    {'mattermost.org'}
+                    {'zboxnow.com'}
                 </a>
             </div>
         );
@@ -76,9 +76,9 @@ export default class AboutBuildModal extends React.Component {
                     />
                     <a
                         target='_blank'
-                        href='http://about.mattermost.com/'
+                        href='http://zboxnow.com/'
                     >
-                        {'about.mattermost.com'}
+                        {'zboxnow.com'}
                     </a>
                 </div>
             );

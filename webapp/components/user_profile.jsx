@@ -23,31 +23,13 @@ export default class UserProfile extends React.Component {
         super(props);
         this.uniqueId = nextId();
 
-        this.onListenerChange = this.onListenerChange.bind(this);
         this.makeCall = this.makeCall.bind(this);
-
-        this.state = this.getStateFromStores();
-    }
-    getStateFromStores() {
-        return {
-            currentUser: UserStore.getCurrentUser(),
-            isOnline: UserStore.getStatus(this.props.user.id) !== 'offline'
+        this.state = {
+            currentUserId: UserStore.getCurrentId()
         };
     }
-    componentDidMount() {
-        UserStore.addStatusesChangeListener(this.onListenerChange);
-    }
-    componentWillUnmount() {
-        UserStore.removeStatusesChangeListener(this.onListenerChange);
-    }
-    onListenerChange() {
-        const newState = this.getStateFromStores();
-        if (!Utils.areObjectsEqual(newState, this.state)) {
-            this.setState(newState);
-        }
-    }
     makeCall() {
-        if (this.state.isOnline) {
+        if (UserStore.getStatus(this.props.user.id) !== 'offline') {
             GlobalActions.makeVideoCall(this.props.user.id);
         }
     }
@@ -75,10 +57,11 @@ export default class UserProfile extends React.Component {
 
         let makeCall;
         const userMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        if (global.window.mm_config.EnableTwilio === 'true' && userMedia && this.props.user.id !== this.state.currentUser.id) {
+        if (global.window.mm_config.EnableTwilio === 'true' && userMedia && this.props.user.id !== this.state.currentUserId) {
+            const isOnline = UserStore.getStatus(this.props.user.id) !== 'offline';
             let circleClass = 'offline';
             let offlineClass = 'off';
-            if (this.state.isOnline) {
+            if (isOnline) {
                 circleClass = '';
                 offlineClass = 'on';
             }
@@ -91,7 +74,7 @@ export default class UserProfile extends React.Component {
                     <a
                         href='#'
                         onClick={() => this.makeCall()}
-                        disabled={!this.state.isOnline}
+                        disabled={!isOnline}
                     >
                         <svg
                             id='video-btn'
